@@ -1,0 +1,3 @@
+"""
+Clases base del sistema.
+"""
