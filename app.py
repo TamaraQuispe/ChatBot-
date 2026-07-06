@@ -51,19 +51,25 @@ class UTPHandler(BaseHTTPRequestHandler):
                 if msg["tipo"] == "user":
                     texto = escapar(msg["texto"])
                     historial_rendered += f'''
-                    <div class="flex justify-end message-in">
-                        <div class="max-w-[80%] bg-[#465f88] text-white p-4 rounded-xl rounded-tr-none shadow-sm">
-                            <p class="text-sm">{texto}</p>
+                    <div class="flex flex-col items-end message-in">
+                        <div class="max-w-[80%] text-right">
+                            <p class="text-text-primary font-body-md text-[17px] leading-relaxed">{texto}</p>
+                            <span class="inline-block mt-2 text-[10px] text-text-secondary/50 font-bold uppercase tracking-widest">Tu • 14:20 PM</span>
                         </div>
                     </div>
                     '''
                 elif msg["tipo"] == "bot":
                     texto = escapar(msg["texto"])
                     historial_rendered += f'''
-                    <div class="flex justify-start gap-3 message-in">
-                        <div class="w-8 h-8 rounded-full bg-[#9e001f] flex items-center justify-center text-white text-xs">🤖</div>
-                        <div class="bg-white border p-4 rounded-xl rounded-tl-none shadow-sm text-gray-800 max-w-[85%]">
-                            <p class="text-sm">{texto}</p>
+                    <div class="flex items-start gap-6 message-in">
+                        <div class="w-10 h-10 rounded-xl bg-utp-red-institutional flex items-center justify-center flex-shrink-0 shadow-lg shadow-utp-red-institutional/20 mt-1">
+                            <span class="material-symbols-outlined text-[22px] text-white" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+                        </div>
+                        <div class="flex-1 space-y-4">
+                            <div class="glass-dark p-7 rounded-3xl rounded-tl-none shadow-sm">
+                                <p class="text-text-primary font-body-md text-[17px] leading-relaxed">{texto}</p>
+                            </div>
+                            <span class="inline-block text-[10px] text-text-secondary/50 font-bold uppercase tracking-widest">Asistente • 14:21 PM</span>
                         </div>
                     </div>
                     '''
@@ -76,45 +82,94 @@ class UTPHandler(BaseHTTPRequestHandler):
                     software = escapar(d["software"])
                     id_espacio = d["id_espacio"]
                     historial_rendered += f'''
-                    <div class="flex items-start gap-3 message-in">
-                        <div class="flex flex-col items-center">
-                            <div class="w-8 h-8 rounded-full bg-[#9e001f] flex items-center justify-center text-white text-xs shrink-0">🤖</div>
-                            <div class="w-0.5 flex-1 min-h-[20px] bg-[#9e001f]/20 mt-1"></div>
+                    <div class="flex items-start gap-6 message-in">
+                        <div class="w-10 h-10 rounded-xl bg-utp-red-institutional flex items-center justify-center flex-shrink-0 shadow-lg shadow-utp-red-institutional/20 mt-1">
+                            <span class="material-symbols-outlined text-[22px] text-white" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
                         </div>
-                        <div class="bg-white border border-l-4 border-[#9e001f] rounded-xl overflow-hidden shadow-lg max-w-sm flex-1">
-                            <div class="p-4 bg-gray-50 border-b flex justify-between items-center">
-                                <div>
-                                    <h3 class="font-bold text-lg text-[#9e001f]">{nombre}</h3>
-                                    <p class="text-xs text-gray-500 font-bold uppercase">{ubicacion}</p>
+                        <div class="flex-1 space-y-4">
+                            <div class="bg-white rounded-[32px] shadow-[0_12px_40px_rgba(0,0,0,0.04)] border border-black/5 overflow-hidden group hover:shadow-[0_20px_50px_rgba(0,0,0,0.08)] transition-all duration-500">
+                                <div class="p-8">
+                                    <div class="flex justify-between items-start mb-8">
+                                        <div>
+                                            <div class="flex items-center gap-2 mb-1">
+                                                <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                                                <span class="text-[11px] font-bold text-green-600 uppercase tracking-widest">Disponible Ahora</span>
+                                            </div>
+                                            <h3 class="font-headline-lg text-[26px] text-text-primary">{nombre}</h3>
+                                            <p class="text-text-secondary text-sm flex items-center gap-1.5 mt-1 font-medium">
+                                                <span class="material-symbols-outlined text-[18px]">location_on</span>
+                                                {ubicacion}
+                                            </p>
+                                        </div>
+                                        <div class="w-14 h-14 rounded-2xl bg-utp-red-institutional/5 flex items-center justify-center text-utp-red-institutional">
+                                            <span class="material-symbols-outlined text-[32px]">computer</span>
+                                        </div>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-y-8 gap-x-12 mb-10">
+                                        <div class="flex items-center gap-4">
+                                            <div class="w-12 h-12 rounded-2xl bg-surface flex items-center justify-center text-text-secondary/80">
+                                                <span class="material-symbols-outlined">groups</span>
+                                            </div>
+                                            <div>
+                                                <p class="text-[10px] text-text-secondary font-bold uppercase tracking-wider mb-0.5">Capacidad</p>
+                                                <p class="text-text-primary font-bold text-[15px]">{capacidad} Alumnos</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center gap-4">
+                                            <div class="w-12 h-12 rounded-2xl bg-surface flex items-center justify-center text-text-secondary/80">
+                                                <span class="material-symbols-outlined">memory</span>
+                                            </div>
+                                            <div>
+                                                <p class="text-[10px] text-text-secondary font-bold uppercase tracking-wider mb-0.5">Hardware</p>
+                                                <p class="text-text-primary font-bold text-[15px]">{equipamiento}</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center gap-4">
+                                            <div class="w-12 h-12 rounded-2xl bg-surface flex items-center justify-center text-text-secondary/80">
+                                                <span class="material-symbols-outlined">code</span>
+                                            </div>
+                                            <div>
+                                                <p class="text-[10px] text-text-secondary font-bold uppercase tracking-wider mb-0.5">Software</p>
+                                                <p class="text-text-primary font-bold text-[15px]">{software}</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center gap-4">
+                                            <div class="w-12 h-12 rounded-2xl bg-surface flex items-center justify-center text-text-secondary/80">
+                                                <span class="material-symbols-outlined">schedule</span>
+                                            </div>
+                                            <div>
+                                                <p class="text-[10px] text-text-secondary font-bold uppercase tracking-wider mb-0.5">Horario</p>
+                                                <p class="text-text-primary font-bold text-[15px]">Miercoles 15:00 - 17:00</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <form method="POST" action="/reservar">
+                                        <input type="hidden" name="id_espacio" value="{id_espacio}">
+                                        <input type="hidden" name="nombre_aula" value="{nombre}">
+                                        <button type="submit" class="w-full py-4.5 bg-utp-red-institutional text-white font-bold rounded-[20px] transition-all hover:bg-primary hover:shadow-xl hover:shadow-utp-red-institutional/20 flex items-center justify-center gap-3 active:scale-[0.98]">
+                                            <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                                            Confirmar Reserva
+                                        </button>
+                                    </form>
                                 </div>
-                                <span class="text-[10px] font-bold bg-green-100 text-green-700 px-2 py-0.5 rounded-full">DISPONIBLE</span>
                             </div>
-                            <div class="p-4 grid grid-cols-2 gap-3 text-xs text-gray-600">
-                                <div>👥 <strong>Capacidad:</strong> {capacidad} Alumnos</div>
-                                <div>💻 <strong>Equipamiento:</strong> {equipamiento}</div>
-                                <div class="col-span-2">🛠️ <strong>Software:</strong> {software}</div>
-                                <div class="col-span-2">⏰ <strong>Horario Propuesto:</strong> 15:00 - 17:00 (Jueves)</div>
-                            </div>
-                            <div class="p-4 pt-0">
-                                <form method="POST" action="/reservar">
-                                    <input type="hidden" name="id_espacio" value="{id_espacio}">
-                                    <input type="hidden" name="nombre_aula" value="{nombre}">
-                                    <button type="submit" class="w-full bg-[#9e001f] text-white py-2 rounded-lg font-bold hover:bg-[#c8102e] transition-all text-xs">
-                                        Confirmar Reserva
-                                    </button>
-                                </form>
-                            </div>
+                            <span class="inline-block text-[10px] text-text-secondary/50 font-bold uppercase tracking-widest">Asistente • 14:21 PM</span>
                         </div>
                     </div>
                     '''
                 elif msg["tipo"] == "success":
                     texto = escapar(msg["texto"])
                     historial_rendered += f'''
-                    <div class="flex justify-start gap-3 message-in">
-                        <div class="w-8 h-8 rounded-full bg-green-600 flex items-center justify-center text-white text-xs">&#10003;</div>
-                        <div class="bg-green-50 border border-green-200 p-4 rounded-xl rounded-tl-none shadow-sm text-green-800">
-                            <p class="text-sm font-bold">Reserva Confirmada Exitosamente</p>
-                            <p class="text-xs mt-1">El ambiente <strong>{texto}</strong> ha sido asignado y el estado cambio a OCUPADO en PostgreSQL.</p>
+                    <div class="flex items-start gap-6 message-in">
+                        <div class="w-10 h-10 rounded-xl bg-green-500 flex items-center justify-center flex-shrink-0 shadow-lg shadow-green-500/20 mt-1">
+                            <span class="material-symbols-outlined text-[22px] text-white" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                        </div>
+                        <div class="flex-1">
+                            <div class="bg-green-50 border border-green-200 p-7 rounded-3xl rounded-tl-none shadow-sm">
+                                <p class="font-bold text-[17px] text-green-800 mb-1">Reserva Confirmada Exitosamente</p>
+                                <p class="text-sm text-green-700">El ambiente <strong>{texto}</strong> ha sido asignado correctamente.</p>
+                            </div>
+                            <span class="inline-block mt-2 text-[10px] text-text-secondary/50 font-bold uppercase tracking-widest">Sistema • Confirmado</span>
                         </div>
                     </div>
                     '''

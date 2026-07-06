@@ -1,155 +1,168 @@
 HTML_CHAT = """
 <!DOCTYPE html>
-
 <html class="light" lang="es"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Asistente Academico UTP - Chat Docente</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=Libre+Franklin:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=Libre+Franklin:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
-tailwind.config = {
-  darkMode: "class",
-  theme: {
-    extend: {
-      colors: {
-        "tertiary-fixed-dim": "#b7c8e1","inverse-primary": "#ffb3af","on-secondary": "#ffffff","on-surface-variant": "#5b403e","surface-tint": "#bc1127","primary-container": "#b00020","secondary": "#5f5e5e","surface-container-low": "#f3f4f5","on-primary": "#ffffff","on-surface": "#191c1d","outline": "#906f6d","primary-fixed-dim": "#ffb3af","inverse-on-surface": "#f0f1f2","surface-container": "#edeeef","inverse-surface": "#2e3132","on-secondary-fixed-variant": "#474746","surface-container-lowest": "#ffffff","surface-container-high": "#e7e8e9","on-tertiary-fixed": "#0b1c30","primary": "#840015","surface": "#f8f9fa","on-primary-container": "#ffbbb8","tertiary": "#304055","surface-container-highest": "#e1e3e4","error-container": "#ffdad6","outline-variant": "#e4bdbb","secondary-fixed-dim": "#c8c6c5","background": "#f8f9fa","surface-dim": "#d9dadb","error": "#ba1a1a","secondary-container": "#e2dfde","on-error-container": "#93000a","surface-bright": "#f8f9fa","on-primary-fixed": "#410006","surface-variant": "#e1e3e4","primary-fixed": "#ffdad8","on-error": "#ffffff","on-tertiary-fixed-variant": "#38485d","tertiary-container": "#47576d","on-secondary-fixed": "#1c1b1b","on-secondary-container": "#636262","secondary-fixed": "#e5e2e1","tertiary-fixed": "#d3e4fe","on-tertiary": "#ffffff","on-primary-fixed-variant": "#930019","on-tertiary-container": "#bccde6","on-background": "#191c1d",
-        "utp-red-vibrant": "#bc1127","utp-red-muted": "#840015","text-primary": "#191c1d","text-secondary": "#5b403e","border-subtle": "#e1e3e4"
-      },
-      borderRadius: { DEFAULT: "0.5rem", lg: "0.75rem", xl: "1rem", full: "9999px" },
-      spacing: { xs: "4px", gutter: "24px", "margin-mobile": "16px", "margin-desktop": "40px", sm: "12px", xl: "80px", base: "8px", lg: "48px", md: "24px" },
-      fontFamily: { "headline-lg-mobile": ["Libre Franklin"], "headline-lg": ["Libre Franklin"], "label-md": ["Libre Franklin"], "body-sm": ["Libre Franklin"], "headline-md": ["Libre Franklin"], "display-lg": ["Libre Franklin"], "body-lg": ["Libre Franklin"], "body-md": ["Libre Franklin"] },
-      fontSize: {
-        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
-        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
-        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
-        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
-        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
-        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
-        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
-        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
-      }
-    }
-  }
-}
-</script>
+try{
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#840015",
+                        "utp-red-vibrant": "#bc1127",
+                        "utp-red-institutional": "#B00020",
+                        "text-primary": "#191c1d",
+                        "text-secondary": "#5b403e",
+                        "surface": "#f8f9fa",
+                        "background": "#ffffff",
+                        "error": "#ba1a1a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.5rem",
+                        "lg": "0.75rem",
+                        "xl": "1rem",
+                        "2xl": "1.5rem",
+                        "3xl": "2rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Libre Franklin", "sans-serif"],
+                        "body-md": ["Libre Franklin", "sans-serif"],
+                        "label-md": ["Libre Franklin", "sans-serif"]
+                    }
+                },
+            },
+        }
+    }catch(_e){}</script>
 <style>
-body {
-    background: radial-gradient(60% 50% at 30% 40%, #ffecee 0%, #f0f4f9 60%, #e8edf5 100%);
-    color: #191c1d;
-    font-family: 'Libre Franklin', sans-serif;
-}
-.material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-.glass { background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid rgba(255, 255, 255, 0.4); }
-.scrollbar-hide::-webkit-scrollbar { display: none; }
-.message-in { animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-@keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-.gemini-bg { background: radial-gradient(circle at 70% 20%, rgba(188, 17, 39, 0.08) 0%, transparent 50%), radial-gradient(circle at 20% 80%, rgba(71, 87, 109, 0.06) 0%, transparent 40%); }
+  body { font-family: 'Libre Franklin', sans-serif; background: #f8f9fa; }
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
+  .message-in { animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+  @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  .glass-dark { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid rgba(0, 0, 0, 0.04); }
+  .glass { background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); }
 </style>
 </head>
-<body class="overflow-hidden">
-<div id="sidebar-overlay" class="fixed inset-0 bg-black/30 z-30 hidden lg:hidden transition-opacity" onclick="toggleSidebar()"></div>
+<body class="overflow-hidden min-h-screen">
 
-<aside id="sidebar" class="fixed left-0 top-0 h-screen w-[240px] -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out z-40 border-r border-border-subtle bg-surface-container-lowest flex flex-col py-6 lg:py-8 shadow-lg lg:shadow-none">
-<div class="px-5 lg:px-6 mb-6 lg:mb-10 flex items-center justify-between">
-<div class="flex items-center gap-3">
-<div class="w-9 h-9 lg:w-10 lg:h-10 bg-utp-red-vibrant rounded-lg flex items-center justify-center shadow-md">
-<span class="text-white font-bold text-lg lg:text-xl">U</span>
-</div>
-<div>
-<h1 class="font-headline-lg text-[16px] lg:text-[18px] font-bold text-utp-red-vibrant leading-tight">Asistente</h1>
-<p class="font-label-md text-[9px] lg:text-[10px] text-text-secondary">UTP PERU</p>
-</div>
-</div>
-<button onclick="toggleSidebar()" class="lg:hidden text-text-secondary hover:text-utp-red-vibrant p-1">
-<span class="material-symbols-outlined">close</span>
-</button>
-</div>
-<nav class="flex-1 space-y-1">
-<a class="flex items-center gap-3 px-4 lg:px-4 py-2.5 lg:py-3 text-text-secondary hover:bg-surface-container-low transition-all duration-200" href="#">
-<span class="material-symbols-outlined text-[20px]" data-icon="history">history</span>
-<span class="font-body-md text-body-md">Historial</span>
-</a>
-<a class="flex items-center gap-3 px-4 lg:px-4 py-2.5 lg:py-3 text-text-secondary hover:bg-surface-container-low transition-all duration-200" href="#">
-<span class="material-symbols-outlined text-[20px]" data-icon="search">search</span>
-<span class="font-body-md text-body-md">Buscar historial</span>
-</a>
-</nav>
-<div class="px-4 lg:px-4 mt-auto space-y-1">
-<a class="flex items-center gap-3 px-4 lg:px-4 py-2.5 lg:py-3 text-text-secondary hover:bg-surface-container-low transition-all duration-200" href="#">
-<span class="material-symbols-outlined text-[20px]" data-icon="settings">settings</span>
-<span class="font-body-md text-body-md">Configuracion</span>
-</a>
-<a class="flex items-center gap-3 px-4 lg:px-4 py-2.5 lg:py-3 text-text-secondary hover:bg-surface-container-low transition-all duration-200" href="/logout">
-<span class="material-symbols-outlined text-[20px]" data-icon="logout">logout</span>
-<span class="font-body-md text-body-md">Cerrar Sesion</span>
-</a>
-</div>
+<!-- Sidebar -->
+<aside class="fixed left-0 top-0 h-screen w-[260px] border-r border-black/5 bg-white/30 backdrop-blur-xl flex flex-col z-50">
+    <div class="px-8 py-10">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-utp-red-institutional rounded-xl flex items-center justify-center shadow-lg shadow-utp-red-institutional/20">
+                <span class="text-white font-bold text-xl">U</span>
+            </div>
+            <div>
+                <h1 class="font-headline-lg text-[18px] font-bold text-utp-red-institutional leading-tight tracking-tight">Asistente</h1>
+                <p class="font-label-md text-[10px] text-text-secondary uppercase tracking-widest font-semibold">UTP PERU</p>
+            </div>
+        </div>
+    </div>
+
+    <nav class="flex-1 px-4 space-y-1">
+        <a class="flex items-center gap-4 px-4 py-3 rounded-2xl text-text-secondary hover:bg-black/5 hover:text-text-primary transition-all duration-200" href="#">
+            <span class="material-symbols-outlined" data-icon="chat">chat</span>
+            <span class="font-body-md font-medium">Chat Actual</span>
+        </a>
+        <a class="flex items-center gap-4 px-4 py-3 rounded-2xl text-text-secondary hover:bg-black/5 hover:text-text-primary transition-all duration-200" href="#">
+            <span class="material-symbols-outlined" data-icon="history">history</span>
+            <span class="font-body-md font-medium">Historial</span>
+        </a>
+        <a class="flex items-center gap-4 px-4 py-3 rounded-2xl text-text-secondary hover:bg-black/5 hover:text-text-primary transition-all duration-200" href="#">
+            <span class="material-symbols-outlined" data-icon="explore">explore</span>
+            <span class="font-body-md font-medium">Explorar</span>
+        </a>
+    </nav>
+
+    <div class="px-4 pb-10 space-y-1">
+        <div class="h-px bg-black/5 mx-4 mb-4"></div>
+        <a class="flex items-center gap-4 px-4 py-3 rounded-2xl text-text-secondary hover:bg-black/5 hover:text-text-primary transition-all duration-200" href="#">
+            <span class="material-symbols-outlined" data-icon="settings">settings</span>
+            <span class="font-body-md font-medium">Configuracion</span>
+        </a>
+        <a class="flex items-center gap-4 px-4 py-3 rounded-2xl text-error/80 hover:bg-error/5 transition-all duration-200" href="/logout">
+            <span class="material-symbols-outlined" data-icon="logout">logout</span>
+            <span class="font-body-md font-medium">Cerrar Sesion</span>
+        </a>
+    </div>
 </aside>
 
-<main class="ml-0 lg:ml-[240px] h-screen flex flex-col relative gemini-bg">
-<header class="h-14 lg:h-16 flex justify-between lg:justify-end items-center px-3 md:px-6 lg:px-8 border-b border-border-subtle bg-surface/80 backdrop-blur-[20px] z-30">
-<div class="flex items-center gap-3 lg:hidden">
-<button onclick="toggleSidebar()" class="p-2 -ml-1 text-text-secondary hover:text-utp-red-vibrant rounded-lg hover:bg-surface-container-low transition-colors">
-<span class="material-symbols-outlined">menu</span>
-</button>
-<p class="font-headline-md text-[14px] text-text-primary truncate">$NOMBRE_DOCENTE</p>
-</div>
-<div class="flex items-center gap-4 lg:gap-6">
-<button class="relative text-text-secondary hover:text-utp-red-vibrant transition-colors">
-<span class="material-symbols-outlined text-[20px] lg:text-[24px]" data-icon="notifications">notifications</span>
-<span class="absolute top-0.5 right-0.5 w-1.5 h-1.5 lg:w-2 lg:h-2 bg-utp-red-vibrant rounded-full border-2 border-surface"></span>
-</button>
-<div class="hidden lg:flex items-center gap-3 pl-6 border-l border-border-subtle">
-<div class="text-right">
-<p class="font-headline-md text-[14px] text-text-primary">$NOMBRE_DOCENTE</p>
-<p class="font-label-md text-[10px] text-text-secondary uppercase">DOCENTE PRINCIPAL</p>
-</div>
-</div>
-</div>
-</header>
+<!-- Main Content -->
+<main class="ml-[260px] h-screen flex flex-col relative overflow-hidden">
+    <!-- Header -->
+    <header class="h-20 flex justify-between items-center px-10 z-40 bg-white/10">
+        <div class="flex-1 max-w-lg">
+            <div class="relative group">
+                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-secondary/60 text-[20px]">search</span>
+                <input class="w-full bg-white/40 border border-white/60 rounded-2xl py-2.5 pl-12 pr-4 text-sm focus:ring-2 focus:ring-utp-red-institutional/10 focus:bg-white/80 outline-none transition-all placeholder:text-text-secondary/40 shadow-sm" placeholder="Buscar en la conversacion..." type="text"/>
+            </div>
+        </div>
 
-<div class="flex-1 flex overflow-hidden">
-<section class="flex-1 flex flex-col bg-background relative">
-<div class="flex-1 overflow-y-auto scrollbar-hide">
-<div class="max-w-4xl mx-auto w-full px-4 md:px-8 py-6 lg:py-12 space-y-6 lg:space-y-8" id="chat-messages">
+        <div class="flex items-center gap-6">
+            <button class="w-10 h-10 flex items-center justify-center text-text-secondary hover:bg-black/5 rounded-full transition-colors relative">
+                <span class="material-symbols-outlined">notifications</span>
+                <span class="absolute top-2.5 right-2.5 w-2 h-2 bg-utp-red-institutional rounded-full ring-2 ring-white"></span>
+            </button>
+            <div class="flex items-center gap-4 pl-6 border-l border-black/5">
+                <div class="text-right hidden sm:block">
+                    <p class="font-bold text-sm text-text-primary">$NOMBRE_DOCENTE</p>
+                    <p class="text-[10px] text-text-secondary font-bold uppercase tracking-wider">DOCENTE PRINCIPAL</p>
+                </div>
+                <div class="w-10 h-10 rounded-full border-2 border-white shadow-sm bg-utp-red-institutional flex items-center justify-center text-white font-bold text-sm">U</div>
+            </div>
+        </div>
+    </header>
 
-$HISTORIAL_CHAT
+    <!-- Chat Space -->
+    <div class="flex-1 flex overflow-hidden">
+        <section class="flex-1 flex flex-col relative overflow-y-auto scrollbar-hide w-full">
+            <div class="max-w-4xl mx-auto w-full px-12 pt-12 pb-48 space-y-12" id="chat-messages">
 
-</div>
-</div>
-<div class="w-full p-4 md:p-8 bg-gradient-to-t from-background via-background/90 to-transparent">
-<div class="max-w-4xl mx-auto w-full px-0 md:px-8">
-<form method="POST" action="/query" class="glass p-1.5 lg:p-2 pl-4 lg:pl-6 pr-1.5 lg:pr-2 rounded-2xl flex items-center gap-2 lg:gap-4 border border-border-subtle shadow-xl focus-within:ring-2 focus-within:ring-utp-red-vibrant/10 transition-all">
-<input class="flex-1 bg-transparent border-none focus:ring-0 text-text-primary text-body-sm lg:text-body-md placeholder:text-text-secondary/50 py-3 lg:py-4" name="prompt" placeholder="Escribe tu consulta academica..." type="text"/>
-<button class="w-10 h-10 lg:w-12 lg:h-12 rounded-xl bg-utp-red-vibrant text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-md" type="submit">
-<span class="material-symbols-outlined text-[18px] lg:text-[24px]" data-icon="send">send</span>
-</button>
-</form>
-<p class="text-center text-[9px] lg:text-[10px] text-text-secondary mt-2 lg:mt-3 font-label-md uppercase tracking-widest">IA ACADEMICA UTP &bull; VERIFICA SIEMPRE LA DISPONIBILIDAD FINAL.</p>
-</div>
-</div>
-</section>
+                $HISTORIAL_CHAT
+
+            </div>
+        </section>
+    </div>
+
+    <!-- Floating Input Area -->
+    <div class="absolute bottom-0 left-0 w-full px-8 pb-8 pt-12 bg-gradient-to-t from-background via-background/80 to-transparent pointer-events-none">
+        <div class="max-w-3xl mx-auto w-full pointer-events-auto">
+            <form method="POST" action="/query" class="glass pl-6 pr-2.5 py-2.5 rounded-[28px] flex items-center gap-3 border border-white shadow-[0_10px_40px_rgba(0,0,0,0.06)] focus-within:shadow-[0_15px_50px_rgba(0,0,0,0.1)] focus-within:ring-2 focus-within:ring-utp-red-institutional/5 transition-all bg-white/60 backdrop-blur-2xl">
+                <button class="w-10 h-10 flex items-center justify-center text-text-secondary/60 hover:text-utp-red-institutional transition-colors rounded-full hover:bg-black/5" type="button">
+                    <span class="material-symbols-outlined">add</span>
+                </button>
+                <input class="flex-1 bg-transparent border-none focus:ring-0 text-text-primary text-[16px] placeholder:text-text-secondary/30 py-2.5" name="prompt" placeholder="Escribe tu consulta academica..." type="text"/>
+                <div class="flex items-center gap-1.5">
+                    <button class="w-10 h-10 flex items-center justify-center text-text-secondary/60 hover:text-utp-red-institutional transition-colors rounded-full hover:bg-black/5" type="button">
+                        <span class="material-symbols-outlined">mic</span>
+                    </button>
+                    <button class="w-12 h-12 bg-utp-red-institutional text-white rounded-full flex items-center justify-center shadow-lg shadow-utp-red-institutional/30 hover:scale-105 active:scale-95 transition-all group" type="submit">
+                        <span class="material-symbols-outlined group-hover:translate-x-0.5 transition-transform" style="font-variation-settings: 'FILL' 1;">send</span>
+                    </button>
+                </div>
+            </form>
+            <p class="text-center text-[10px] text-text-secondary/40 mt-5 font-bold uppercase tracking-[0.25em]">
+                Inteligencia Artificial UTP &bull; Modelo Optimizado v2.4
+            </p>
+        </div>
+    </div>
 </main>
+
 <script>
-function toggleSidebar() {
-  const sidebar = document.getElementById('sidebar');
-  const overlay = document.getElementById('sidebar-overlay');
-  const isOpen = sidebar.classList.contains('translate-x-0');
-  sidebar.classList.toggle('-translate-x-full', isOpen);
-  sidebar.classList.toggle('translate-x-0', !isOpen);
-  overlay.classList.toggle('hidden', isOpen);
-}
-const chatInput = document.querySelector('input[name="prompt"]');
-if(chatInput) {
-    chatInput.addEventListener('focus', () => {
-        chatInput.parentElement.classList.add('shadow-utp-red-vibrant/10');
-    });
-    chatInput.addEventListener('blur', () => {
-        chatInput.parentElement.classList.remove('shadow-utp-red-vibrant/10');
-    });
-}
+    const chatInput = document.querySelector('input[name="prompt"]');
+    if(chatInput) {
+        chatInput.addEventListener('focus', () => {
+            chatInput.closest('form').classList.add('shadow-[0_15px_50px_rgba(0,0,0,0.1)]');
+        });
+        chatInput.addEventListener('blur', () => {
+            chatInput.closest('form').classList.remove('shadow-[0_15px_50px_rgba(0,0,0,0.1)]');
+        });
+    }
 </script>
 </body></html>
 """

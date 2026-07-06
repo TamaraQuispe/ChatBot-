@@ -1,248 +1,274 @@
 HTML_LOGIN = """
 <!DOCTYPE html>
 
-<html lang="es"><head>
+<html class="light" lang="es"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Login | Asistente Academico UTP</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<title>Asistente Academico UTP - Login</title>
+<!-- Google Fonts: Libre Franklin -->
+<link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script id="tailwind-config">
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            "colors": {
-                    "tertiary-fixed-dim": "#b7c8e1",
-                    "inverse-primary": "#ffb3af",
-                    "on-secondary": "#ffffff",
-                    "on-surface-variant": "#5b403e",
-                    "surface-tint": "#bc1127",
-                    "primary-container": "#b00020",
-                    "secondary": "#5f5e5e",
-                    "surface-container-low": "#f3f4f5",
-                    "on-primary": "#ffffff",
-                    "on-surface": "#191c1d",
-                    "outline": "#906f6d",
-                    "primary-fixed-dim": "#ffb3af",
-                    "inverse-on-surface": "#f0f1f2",
-                    "surface-container": "#edeeef",
-                    "inverse-surface": "#2e3132",
-                    "on-secondary-fixed-variant": "#474746",
-                    "surface-container-lowest": "#ffffff",
-                    "surface-container-high": "#e7e8e9",
-                    "on-tertiary-fixed": "#0b1c30",
-                    "primary": "#840015",
-                    "surface": "#f8f9fa",
-                    "on-primary-container": "#ffbbb8",
-                    "tertiary": "#304055",
-                    "surface-container-highest": "#e1e3e4",
-                    "error-container": "#ffdad6",
-                    "outline-variant": "#e4bdbb",
-                    "secondary-fixed-dim": "#c8c6c5",
-                    "background": "#f8f9fa",
-                    "surface-dim": "#d9dadb",
-                    "error": "#ba1a1a",
-                    "secondary-container": "#e2dfde",
-                    "on-error-container": "#93000a",
-                    "surface-bright": "#f8f9fa",
-                    "on-primary-fixed": "#410006",
-                    "surface-variant": "#e1e3e4",
-                    "primary-fixed": "#ffdad8",
-                    "on-error": "#ffffff",
-                    "on-tertiary-fixed-variant": "#38485d",
-                    "tertiary-container": "#47576d",
-                    "on-secondary-fixed": "#1c1b1b",
-                    "on-secondary-container": "#636262",
-                    "secondary-fixed": "#e5e2e1",
-                    "tertiary-fixed": "#d3e4fe",
-                    "on-tertiary": "#ffffff",
-                    "on-primary-fixed-variant": "#930019",
-                    "on-tertiary-container": "#bccde6",
-                    "on-background": "#191c1d"
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "background": "#f8f9fa",
+                        "tertiary-fixed-dim": "#b7c8e1",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary": "#304055",
+                        "surface": "#f8f9fa",
+                        "on-tertiary-fixed": "#0b1c30",
+                        "surface-tint": "#bc1127",
+                        "on-tertiary-fixed-variant": "#38485d",
+                        "on-tertiary": "#ffffff",
+                        "primary": "#840015",
+                        "on-tertiary-container": "#bccde6",
+                        "tertiary-container": "#47576d",
+                        "surface-bright": "#f8f9fa",
+                        "on-surface": "#191c1d",
+                        "primary-fixed-dim": "#ffb3af",
+                        "on-surface-variant": "#5b403e",
+                        "surface-container-high": "#e7e8e9",
+                        "error-container": "#ffdad6",
+                        "secondary-fixed-dim": "#c8c6c5",
+                        "on-secondary": "#ffffff",
+                        "secondary-fixed": "#e5e2e1",
+                        "on-background": "#191c1d",
+                        "error": "#ba1a1a",
+                        "surface-dim": "#d9dadb",
+                        "surface-container-low": "#f3f4f5",
+                        "inverse-primary": "#ffb3af",
+                        "on-primary-container": "#ffbbb8",
+                        "on-error": "#ffffff",
+                        "primary-fixed": "#ffdad8",
+                        "on-secondary-container": "#636262",
+                        "on-primary": "#ffffff",
+                        "on-secondary-fixed-variant": "#474746",
+                        "on-primary-fixed": "#410006",
+                        "surface-variant": "#e1e3e4",
+                        "inverse-surface": "#2e3132",
+                        "secondary-container": "#e2dfde",
+                        "on-secondary-fixed": "#1c1b1b",
+                        "tertiary-fixed": "#d3e4fe",
+                        "on-primary-fixed-variant": "#930019",
+                        "secondary": "#5f5e5e",
+                        "primary-container": "#b00020",
+                        "on-error-container": "#93000a",
+                        "outline": "#906f6d",
+                        "outline-variant": "#e4bdbb",
+                        "inverse-on-surface": "#f0f1f2",
+                        "surface-container": "#edeeef",
+                        "surface-container-highest": "#e1e3e4",
+                        "utp-red": {
+                            "vibrant": "#B00020",
+                            "muted": "#840015"
+                        }
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "xl": "80px",
+                        "gutter": "24px",
+                        "base": "8px",
+                        "margin-desktop": "40px",
+                        "lg": "48px",
+                        "margin-mobile": "16px",
+                        "sm": "12px",
+                        "md": "24px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Libre Franklin"],
+                        "headline-md": ["Libre Franklin"],
+                        "label-md": ["Libre Franklin"],
+                        "body-sm": ["Libre Franklin"],
+                        "headline-lg-mobile": ["Libre Franklin"],
+                        "headline-lg": ["Libre Franklin"],
+                        "display-lg": ["Libre Franklin"],
+                        "body-md": ["Libre Franklin"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+                    }
+                },
             },
-            "borderRadius": {
-                    "DEFAULT": "0.5rem",
-                    "lg": "0.5rem",
-                    "xl": "0.75rem",
-                    "full": "9999px"
-            },
-            "spacing": {
-                    "xs": "4px",
-                    "gutter": "24px",
-                    "margin-mobile": "16px",
-                    "margin-desktop": "40px",
-                    "sm": "12px",
-                    "xl": "80px",
-                    "base": "8px",
-                    "lg": "48px",
-                    "md": "24px"
-            },
-            "fontFamily": {
-                    "headline-lg-mobile": ["Libre Franklin"],
-                    "headline-lg": ["Libre Franklin"],
-                    "label-md": ["Libre Franklin"],
-                    "body-sm": ["Libre Franklin"],
-                    "headline-md": ["Libre Franklin"],
-                    "display-lg": ["Libre Franklin"],
-                    "body-lg": ["Libre Franklin"],
-                    "body-md": ["Libre Franklin"]
-            },
-            "fontSize": {
-                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
-                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
-                    "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
-                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
-                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
-                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
-                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
-                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
-            }
-          },
-        },
-      }
+        }
     </script>
 <style>
         body {
             font-family: 'Libre Franklin', sans-serif;
-            background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCyy-kSoGFOOqTPDq8N97CxJG54vsGcdflKwmyflmroxVdFGZXYl9bV13m9Cg3GWF9j2Fh7W6AOCdImvSVR8quZBnWpOEh6v-xjyWRuAF7ToWLNXBnlsqVfkBW5VFFP-lp0_vAyuoRSy3_wDgGqtp_YwBgkrxerYc8TcEyKBfkkf2Ef03Sxss3UZ5XldBOA4KzKWIXAFpZAlj-zI-yrAU_wWck4w7CN9a1ZGIwJze95nue18Ulv_p21UWBUrUfkmQOlvoD4HHgOqgY');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            background-repeat: no-repeat;
+            background-color: #f8f9fa;
         }
-
-        body::before {
-            content: "";
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.45);
-            backdrop-filter: blur(2px);
-            z-index: 0;
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
-
-        .login-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
-            position: relative;
+        .benefit-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.2s ease;
         }
-        
-        .input-field:focus-within {
-            border-color: #bc1127;
-            box-shadow: 0 0 0 2px rgba(188, 17, 39, 0.1);
+        .benefit-card:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.2);
         }
-
-        .btn-primary-utp {
-            background-color: #bc1127;
-            transition: all 0.2s ease;
+        .left-panel-image {
+            clip-path: polygon(0 0, 100% 0, 85% 100%, 0% 100%);
         }
-
-        .btn-primary-utp:hover {
-            background-color: #840015;
-            transform: translateY(-1px);
-        }
-
-        .btn-primary-utp:active {
-            transform: translateY(0);
-        }
-
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        @media (max-width: 768px) {
+            .left-panel-image {
+                clip-path: none;
+            }
         }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-margin-mobile md:p-0">
-<main class="w-full max-w-[440px] z-10">
-<div class="login-card p-8 md:p-12 rounded-lg flex flex-col items-center">
-<div class="mb-10 text-center">
-<div class="mb-6 flex justify-center">
-<div class="w-16 h-16 bg-primary-fixed rounded-lg flex items-center justify-center">
-<span class="material-symbols-outlined text-primary text-4xl" style="font-variation-settings: 'FILL' 1;">school</span>
+<body class="min-h-screen overflow-x-hidden">
+<main class="flex flex-col md:flex-row min-h-screen w-full">
+<!-- Left Panel: Brand & Vision -->
+<section class="relative w-full md:w-[60%] min-h-[40vh] md:min-h-screen overflow-hidden left-panel-image">
+<div class="absolute inset-0 z-0">
+<img alt="UTP Campus Architectural View" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AP1WRLtUW08J5I16wLdtDb0w2hed5a0DxIQlyT5bXuNcvz0SpjZmh1DyplG5t9bfWrg70ccPpRdAO1rXalBRAbu0HDLJMhVQPdvnASNoMy8QSznac3IDwaUD0NFd5rM6Dccsgf85T3OpYYWm3BWVhuxWjIsIecr9zU0IzWL-fZH6hP_ClDP0nEUurktQ5f_nxHXjP-CTCQ01Q8uVq12bRGwPUKTCsjpmemw8oMj7aLyGVs49iwZpSoiaAH1N0w"/>
+<div class="absolute inset-0 bg-gradient-to-r from-utp-red-muted/80 to-transparent"></div>
+</div>
+<!-- Content Overlay -->
+<div class="relative z-10 flex flex-col justify-center h-full px-margin-mobile md:px-margin-desktop text-white max-w-2xl py-12">
+<div class="mb-8">
+<span class="inline-block py-1 px-3 bg-white/20 backdrop-blur-md rounded-full font-label-md text-label-md uppercase mb-4 tracking-wider">
+                        UTP Peru • Inteligencia Artificial
+                    </span>
+<h1 class="font-display-lg text-display-lg leading-tight md:text-5xl lg:text-6xl font-extrabold mb-6">
+                        Tu asistente academico, <span class="text-primary-fixed">impulsado por IA</span>
+</h1>
+<p class="font-body-lg text-body-lg opacity-90 mb-10 max-w-lg">
+                        La plataforma inteligente disenada para optimizar la gestion docente y potenciar la experiencia educativa en todo momento.
+                    </p>
+</div>
+<!-- Benefits Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<div class="benefit-card p-4 rounded-xl flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-white">schedule</span>
+</div>
+<span class="font-body-md text-body-md font-semibold">Consultas en tiempo real</span>
+</div>
+<div class="benefit-card p-4 rounded-xl flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-white">smart_toy</span>
+</div>
+<span class="font-body-md text-body-md font-semibold">Gestion de aulas inteligente</span>
+</div>
+<div class="benefit-card p-4 rounded-xl flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-white">support_agent</span>
+</div>
+<span class="font-body-md text-body-md font-semibold">Soporte docente 24/7</span>
 </div>
 </div>
-<h1 class="font-headline-lg text-headline-lg text-on-surface mb-2 tracking-tight">
-                Asistente Academico UTP
-            </h1>
-<p class="font-label-md text-label-md text-secondary uppercase tracking-widest">
-                Portal Inteligente de Gestion Docente
-            </p>
 </div>
-<form class="w-full space-y-6" action="/login" method="POST">
-<div class="space-y-2">
-<label class="font-label-md text-label-md text-on-surface-variant block px-1" for="username">Usuario</label>
-<div class="relative group input-field border border-outline-variant bg-surface-container-lowest rounded-lg transition-all duration-200">
-<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within:text-primary transition-colors">person</span>
-<input autocomplete="username" class="w-full bg-transparent border-none py-3.5 pl-12 pr-4 text-on-surface font-body-md placeholder:text-on-surface-variant/50 focus:ring-0" id="username" name="username" placeholder="Ej. C1234567" type="text"/>
+</section>
+<!-- Right Panel: Login Interface -->
+<section class="w-full md:w-[40%] flex items-center justify-center bg-surface relative p-margin-mobile md:p-12">
+<!-- Abstract background shape for subtle depth -->
+<div class="absolute top-0 right-0 w-64 h-64 bg-primary-fixed-dim/10 rounded-full blur-3xl -mr-32 -mt-32"></div>
+<div class="absolute bottom-0 left-0 w-48 h-48 bg-primary/5 rounded-full blur-2xl -ml-24 -mb-24"></div>
+<!-- Login Card -->
+<div class="glass-card w-full max-w-md p-8 md:p-10 rounded-3xl shadow-xl z-10 transition-all duration-300 hover:shadow-2xl">
+<!-- Institutional Identity -->
+<div class="flex flex-col items-center mb-8">
+<div class="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center mb-4 shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-white text-3xl" style="font-variation-settings: 'FILL' 1;">school</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface mb-2">Bienvenido</h2>
+<p class="font-body-sm text-body-sm text-secondary text-center">Ingresa para interactuar con tu asistente academico virtual</p>
+</div>
+<!-- Form -->
+<form class="space-y-6" action="/login" method="POST">
+<div class="space-y-1.5">
+<label class="font-label-md text-label-md text-on-surface-variant block ml-1" for="username">Correo institucional</label>
+<div class="relative group">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-secondary group-focus-within:text-primary transition-colors">
+<span class="material-symbols-outlined text-body-lg">alternate_email</span>
+</div>
+<input class="block w-full pl-11 pr-4 py-3.5 bg-white border border-outline-variant rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none font-body-md text-on-surface" id="username" name="username" placeholder="usuario@utp.edu.pe" required="" type="text"/>
 </div>
 </div>
-<div class="space-y-2">
-<div class="flex justify-between items-center px-1">
-<label class="font-label-md text-label-md text-on-surface-variant block" for="password">Contrasena</label>
-<a class="font-label-md text-label-md text-primary hover:underline transition-colors" href="#">¿Olvidaste tu contrasena?</a>
+<div class="space-y-1.5">
+<label class="font-label-md text-label-md text-on-surface-variant block ml-1" for="password">Contrasena</label>
+<div class="relative group">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-secondary group-focus-within:text-primary transition-colors">
+<span class="material-symbols-outlined text-body-lg">lock_open</span>
 </div>
-<div class="relative group input-field border border-outline-variant bg-surface-container-lowest rounded-lg transition-all duration-200">
-<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within:text-primary transition-colors">lock</span>
-<input autocomplete="current-password" class="w-full bg-transparent border-none py-3.5 pl-12 pr-12 text-on-surface font-body-md placeholder:text-on-surface-variant/50 focus:ring-0" id="password" name="password" placeholder="********" type="password"/>
-<button class="absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface transition-colors" type="button">
-<span class="material-symbols-outlined text-[20px]">visibility</span>
+<input class="block w-full pl-11 pr-12 py-3.5 bg-white border border-outline-variant rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none font-body-md text-on-surface" id="password" name="password" placeholder="********" required="" type="password"/>
+<button class="absolute inset-y-0 right-0 pr-4 flex items-center text-secondary hover:text-primary transition-colors" type="button">
+<span class="material-symbols-outlined text-body-md">visibility</span>
 </button>
 </div>
 </div>
-<div class="flex items-center gap-3 px-1">
-<div class="relative flex items-center h-5">
-<input class="w-4 h-4 rounded border-outline bg-surface-container-lowest text-primary focus:ring-primary/30 focus:ring-offset-0" id="remember" type="checkbox"/>
+<div class="flex items-center justify-between">
+<div class="flex items-center">
+<input class="w-4 h-4 text-primary border-outline-variant rounded focus:ring-primary" id="remember" name="remember" type="checkbox"/>
+<label class="ml-2 font-body-sm text-body-sm text-secondary cursor-pointer select-none" for="remember">Recordarme</label>
 </div>
-<label class="font-body-sm text-body-sm text-on-surface-variant cursor-pointer select-none" for="remember">Recordar sesion</label>
+<a class="font-label-md text-label-md text-primary hover:underline font-semibold" href="#">¿Olvidaste tu contrasena?</a>
 </div>
-<button class="w-full btn-primary-utp py-4 rounded-lg text-on-primary font-headline-md text-headline-md flex items-center justify-center gap-2 group" type="submit">
-<span>Iniciar Sesion</span>
-<span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+<button class="w-full py-4 bg-utp-red-vibrant text-white font-body-md font-bold rounded-xl shadow-lg shadow-utp-red-vibrant/25 hover:bg-utp-red-muted active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2 group" type="submit">
+                        Iniciar Sesion
+                        <span class="material-symbols-outlined transition-transform group-hover:translate-x-1">arrow_forward</span>
 </button>
 </form>
-<div class="mt-10 pt-8 border-t border-outline-variant w-full flex flex-col items-center gap-4">
-<p class="font-label-md text-label-md text-secondary text-center">
-                Acceso exclusivo para personal academico UTP
-            </p>
-<div class="flex items-center gap-2">
-<div class="w-2 h-2 rounded-full bg-green-600"></div>
-<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-widest text-[10px]">Sistemas Operativos</span>
+<!-- Footer Info -->
+<div class="mt-8 pt-6 border-t border-surface-variant flex items-center justify-center gap-2 text-secondary">
+<span class="material-symbols-outlined text-sm">lock</span>
+<p class="font-label-md text-label-md">Acceso seguro para personal academico</p>
 </div>
 </div>
+<!-- Version / Brand Footer -->
+<div class="absolute bottom-6 flex items-center gap-4 text-secondary/60">
+<p class="font-label-md text-label-md tracking-widest">© 2024 UTP PERU</p>
+<div class="h-1 w-1 bg-secondary/40 rounded-full"></div>
+<p class="font-label-md text-label-md">V2.4.0</p>
 </div>
-<footer class="mt-8 flex justify-between px-2 relative z-10">
-<p class="font-label-md text-label-md text-white/80">&copy; 2024 UTP Peru</p>
-<div class="flex gap-4">
-<a class="font-label-md text-label-md text-white/80 hover:text-white transition-colors" href="#">Privacidad</a>
-<a class="font-label-md text-label-md text-white/80 hover:text-white transition-colors" href="#">Ayuda</a>
-</div>
-</footer>
+</section>
 </main>
 <script>
-    const toggleBtn = document.querySelector('button[type="button"]');
-    const passInput = document.getElementById('password');
-    
-    toggleBtn?.addEventListener('click', () => {
-        const isPass = passInput.type === 'password';
-        passInput.type = isPass ? 'text' : 'password';
-        toggleBtn.querySelector('span').textContent = isPass ? 'visibility_off' : 'visibility';
-    });
+        const inputs = document.querySelectorAll('input');
+        inputs.forEach(input => {
+            input.addEventListener('focus', () => {
+                input.parentElement.parentElement.classList.add('is-focused');
+            });
+            input.addEventListener('blur', () => {
+                input.parentElement.parentElement.classList.remove('is-focused');
+            });
+        });
 
-    document.addEventListener('DOMContentLoaded', () => {
-        const main = document.querySelector('main');
-        main.style.opacity = '0';
-        main.style.transform = 'translateY(10px)';
-        
-        setTimeout(() => {
-            main.style.transition = 'all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1)';
-            main.style.opacity = '1';
-            main.style.transform = 'translateY(0)';
-        }, 50);
-    });
-</script>
+        const togglePass = document.querySelector('button[type="button"]');
+        const passInput = document.getElementById('password');
+        if (togglePass && passInput) {
+            togglePass.addEventListener('click', () => {
+                const isPassword = passInput.type === 'password';
+                passInput.type = isPassword ? 'text' : 'password';
+                togglePass.querySelector('span').textContent = isPassword ? 'visibility_off' : 'visibility';
+            });
+        }
+    </script>
 </body></html>
 """
