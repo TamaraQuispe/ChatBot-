@@ -1,14 +1,44 @@
-HTML_SALONES = """
+HTML_RESERVAS = """
 <!DOCTYPE html>
 
 <html class="light" lang="es"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>UTP Academic | Gestion de Salones</title>
+<title>UTP Academic | Gestion de Reservas</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@100;300;400;500;600;700;800;900&amp;family=Courier+Prime&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            background-color: #F8F9FA;
+            color: #191C1D;
+            -webkit-font-smoothing: antialiased;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(230, 232, 235, 1);
+        }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+        .timeline-line::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #e1e3e4;
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #e1e3e4; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #585f64; }
+    </style>
 <script id="tailwind-config">
       tailwind.config = {
         darkMode: "class",
@@ -103,37 +133,6 @@ HTML_SALONES = """
         },
       }
     </script>
-<style>
-        body {
-            background-color: #F8F9FA;
-            color: #191C1D;
-            -webkit-font-smoothing: antialiased;
-        }
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-            vertical-align: middle;
-        }
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(230, 232, 235, 1);
-        }
-        .sparkline-svg {
-            stroke: #840015;
-            stroke-width: 2;
-            fill: none;
-            stroke-linecap: round;
-        }
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-        }
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #e1e3e4; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #585f64; }
-    </style>
 </head>
 <body class="font-body-md text-body-md">
 <!-- Side Navigation Shell -->
@@ -148,9 +147,9 @@ HTML_SALONES = """
 <span class="material-symbols-outlined">dashboard</span>
 <span class="font-medium">Inicio</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-primary font-bold border-r-4 border-primary bg-surface-container-low" href="/admin/salones">
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-secondary hover:bg-surface-container-low transition-colors duration-200" href="/admin/salones">
 <span class="material-symbols-outlined">meeting_room</span>
-<span class="font-bold">Salones</span>
+<span class="font-medium">Salones</span>
 </a>
 <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-secondary hover:bg-surface-container-low transition-colors duration-200" href="/admin/software">
 <span class="material-symbols-outlined">computer</span>
@@ -164,9 +163,9 @@ HTML_SALONES = """
 <span class="material-symbols-outlined">person</span>
 <span class="font-medium">Docentes</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-secondary hover:bg-surface-container-low transition-colors duration-200" href="/admin/reservas">
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-primary font-bold border-r-4 border-primary bg-surface-container-low" href="/admin/reservas">
 <span class="material-symbols-outlined">event_seat</span>
-<span class="font-medium">Reservas</span>
+<span class="font-bold">Reservas</span>
 </a>
 <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-secondary hover:bg-surface-container-low transition-colors duration-200" href="/admin/reportes">
 <span class="material-symbols-outlined">assessment</span>
@@ -206,173 +205,189 @@ HTML_SALONES = """
 <span class="absolute inset-y-0 left-3 flex items-center text-secondary">
 <span class="material-symbols-outlined text-[20px]">search</span>
 </span>
-<input class="pl-10 pr-4 py-1.5 bg-surface-container-low border-none rounded-full text-body-md focus:ring-1 focus:ring-primary w-64 transition-all" placeholder="Buscar recurso..." type="text"/>
+<input class="pl-10 pr-4 py-1.5 bg-surface-container-low border-none rounded-full text-body-md focus:ring-1 focus:ring-primary w-64 transition-all" placeholder="Buscar reservas..." type="text"/>
 </div>
 <button class="material-symbols-outlined text-secondary hover:text-primary transition-colors">notifications</button>
 <button class="material-symbols-outlined text-secondary hover:text-primary transition-colors">apps</button>
+<button class="px-4 py-2 bg-primary text-white rounded-lg font-label-md text-label-md font-bold hover:opacity-90 transition-all">Nueva Reserva</button>
 <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white font-bold text-sm">A</div>
 </div>
 </header>
 <div class="mt-16 px-container-padding pt-10">
-<!-- Page Header -->
-<section class="flex justify-between items-end mb-12">
+<!-- Header Section -->
+<section class="mb-10 flex justify-between items-end">
 <div>
-<h1 class="font-headline-lg text-headline-lg text-on-surface">Gestion de Salones</h1>
-<p class="text-secondary mt-1">Supervision en tiempo real, asignacion de espacios e inventario tecnologico.</p>
+<h1 class="font-headline-lg text-headline-lg text-on-surface">Gestion de Reservas</h1>
+<div class="flex items-center gap-4 mt-1">
+<div class="flex items-center text-label-md text-secondary">
+<span class="status-dot bg-emerald-500"></span>
+                        Sistema Operativo
+                    </div>
+<span class="text-surface-container-highest">|</span>
+<span class="text-body-md text-secondary">24 Solicitudes pendientes de revision</span>
+</div>
 </div>
 <div class="flex gap-3">
-<button class="px-5 py-2.5 rounded-xl border border-surface-container-highest bg-white text-on-surface font-medium hover:bg-surface-container-low transition-all flex items-center gap-2">
-<span class="material-symbols-outlined text-[18px]">ios_share</span>
-                        Exportar
-                    </button>
-<button class="px-5 py-2.5 rounded-xl bg-primary text-white font-bold hover:opacity-90 transition-all flex items-center gap-2 shadow-lg shadow-primary/20">
-<span class="material-symbols-outlined text-[18px]">add_circle</span>
-                        Agregar Salon
-                    </button>
+<button class="flex items-center gap-2 border border-surface-container-highest bg-white px-4 py-2 rounded-lg font-label-md text-label-md text-on-surface hover:bg-surface-container-low transition-all">
+<span class="material-symbols-outlined text-sm">filter_list</span> Filtrar
+                </button>
+<button class="flex items-center gap-2 border border-surface-container-highest bg-white px-4 py-2 rounded-lg font-label-md text-label-md text-on-surface hover:bg-surface-container-low transition-all">
+<span class="material-symbols-outlined text-sm">download</span> Descargar Reporte
+                </button>
 </div>
 </section>
-<!-- KPI Grid -->
-<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter mb-section-gap">
-<div class="glass-panel p-6 rounded-2xl shadow-sm hover:shadow-md transition-all">
-<div class="flex justify-between items-start mb-4">
-<div class="p-2 bg-surface-container-low rounded-lg">
-<span class="material-symbols-outlined text-primary">domain</span>
-</div>
-<div class="text-right">
-<span class="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">+2.5%</span>
-</div>
-</div>
-<h3 class="text-secondary text-label-md uppercase tracking-wider mb-1">Total de Salones</h3>
-<div class="flex items-end justify-between">
-<span class="text-headline-md font-bold">$TOTAL_SALONES</span>
-<div class="w-24 h-10">
-<svg class="w-full h-full" viewbox="0 0 100 40">
-<path class="sparkline-svg" d="M0,35 Q10,30 20,38 T40,25 T60,30 T80,10 T100,15"></path>
-</svg>
+<!-- Bento Layout -->
+<div class="grid grid-cols-12 gap-gutter">
+<!-- Main Reservations List -->
+<div class="col-span-12 lg:col-span-8 space-y-stack-lg">
+<div class="glass-panel p-6 rounded-2xl shadow-sm">
+<div class="flex justify-between items-center mb-6">
+<h3 class="font-title-lg text-title-lg">Solicitudes Recientes</h3>
+<div class="flex bg-surface-container-low p-1 rounded-lg">
+<button class="px-4 py-1 text-label-md bg-white shadow-sm rounded-md font-semibold">Pendientes</button>
+<button class="px-4 py-1 text-label-md text-secondary hover:text-on-surface">Historial</button>
 </div>
 </div>
-</div>
-<div class="glass-panel p-6 rounded-2xl shadow-sm hover:shadow-md transition-all">
-<div class="flex justify-between items-start mb-4">
-<div class="p-2 bg-surface-container-low rounded-lg">
-<span class="material-symbols-outlined text-primary">event_available</span>
-</div>
-<div class="text-right">
-<span class="text-[11px] font-bold text-secondary bg-surface-container-low px-2 py-0.5 rounded-full">Actual</span>
-</div>
-</div>
-<h3 class="text-secondary text-label-md uppercase tracking-wider mb-1">Salones Disponibles</h3>
-<div class="flex items-end justify-between">
-<span class="text-headline-md font-bold">88</span>
-<div class="w-24 h-10 opacity-50">
-<svg class="w-full h-full" viewbox="0 0 100 40">
-<path class="sparkline-svg" d="M0,10 Q10,25 20,20 T40,35 T60,15 T80,25 T100,5"></path>
-</svg>
-</div>
-</div>
-</div>
-<div class="glass-panel p-6 rounded-2xl shadow-sm hover:shadow-md transition-all">
-<div class="flex justify-between items-start mb-4">
-<div class="p-2 bg-surface-container-low rounded-lg">
-<span class="material-symbols-outlined text-primary">build</span>
-</div>
-<div class="text-right">
-<span class="text-[11px] font-bold text-error bg-error-container/20 px-2 py-0.5 rounded-full">Atencion</span>
-</div>
-</div>
-<h3 class="text-secondary text-label-md uppercase tracking-wider mb-1">En Mantenimiento</h3>
-<div class="flex items-end justify-between">
-<span class="text-headline-md font-bold">12</span>
-<div class="w-24 h-10">
-<svg class="w-full h-full" viewbox="0 0 100 40">
-<path class="sparkline-svg" d="M0,35 L20,32 L40,38 L60,20 L80,25 L100,5" style="stroke: #ba1a1a;"></path>
-</svg>
-</div>
-</div>
-</div>
-<div class="glass-panel p-6 rounded-2xl shadow-sm hover:shadow-md transition-all">
-<div class="flex justify-between items-start mb-4">
-<div class="p-2 bg-surface-container-low rounded-lg">
-<span class="material-symbols-outlined text-primary">pie_chart</span>
-</div>
-<div class="text-right">
-<span class="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Alto</span>
-</div>
-</div>
-<h3 class="text-secondary text-label-md uppercase tracking-wider mb-1">Tasa de Ocupacion</h3>
-<div class="flex items-end justify-between">
-<span class="text-headline-md font-bold">76.4%</span>
-<div class="w-24 h-10">
-<svg class="w-full h-full" viewbox="0 0 100 40">
-<path class="sparkline-svg" d="M0,38 C20,38 20,10 40,10 C60,10 60,25 80,25 C100,25 100,5 100,5"></path>
-</svg>
-</div>
-</div>
-</div>
-</section>
-<!-- Filters and Search Bar -->
-<section class="mb-12">
-<div class="glass-panel p-6 rounded-2xl shadow-sm flex flex-col md:flex-row items-center gap-4">
-<div class="flex-1 w-full relative">
-<span class="absolute inset-y-0 left-4 flex items-center text-secondary">
-<span class="material-symbols-outlined">search</span>
-</span>
-<input class="w-full pl-12 pr-4 py-3 bg-surface-container-low border border-surface-container-highest rounded-xl focus:ring-1 focus:ring-primary focus:border-primary transition-all" placeholder="Filtrar por nombre, aula o software (AutoCAD, SAP...)" type="text"/>
-</div>
-<div class="flex items-center gap-3 w-full md:w-auto">
-<select class="bg-white border border-surface-container-highest rounded-xl px-4 py-3 text-body-md focus:ring-1 focus:ring-primary min-w-[140px]">
-<option>Tipo: Todos</option>
-<option>Laboratorio</option>
-<option>Aula Magna</option>
-<option>Auditorio</option>
-</select>
-<select class="bg-white border border-surface-container-highest rounded-xl px-4 py-3 text-body-md focus:ring-1 focus:ring-primary min-w-[140px]">
-<option>Pabellon</option>
-<option>Pabellon A</option>
-<option>Pabellon B</option>
-<option>Pabellon C</option>
-</select>
-<button class="p-3 bg-surface-container-low hover:bg-surface-container-highest rounded-xl transition-colors">
-<span class="material-symbols-outlined">tune</span>
-</button>
-</div>
-</div>
-</section>
-<!-- Premium Data Table -->
-<section class="glass-panel rounded-2xl shadow-sm overflow-hidden mb-section-gap">
 <div class="overflow-x-auto">
-<table class="w-full text-left border-collapse">
+<table class="w-full text-left">
 <thead>
-<tr class="bg-surface-container-low/50">
-<th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider border-b border-surface-container-highest">Salon / Tipo</th>
-<th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider border-b border-surface-container-highest">Ubicacion</th>
-<th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider border-b border-surface-container-highest">Capacidad</th>
-<th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider border-b border-surface-container-highest">Software</th>
-<th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider border-b border-surface-container-highest">Estado</th>
-<th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider border-b border-surface-container-highest text-right">Acciones</th>
+<tr class="border-b border-surface-container-highest text-label-md text-secondary uppercase tracking-wider">
+<th class="pb-4 font-medium">Solicitante</th>
+<th class="pb-4 font-medium">Espacio / Aula</th>
+<th class="pb-4 font-medium">Fecha y Hora</th>
+<th class="pb-4 font-medium">Estado</th>
+<th class="pb-4 font-medium text-right">Acciones</th>
 </tr>
 </thead>
 <tbody class="divide-y divide-surface-container-highest">
-$TABLA_SALONES
+$TABLA_RESERVAS
 </tbody>
 </table>
 </div>
-<!-- Pagination -->
-<div class="px-6 py-4 flex items-center justify-between border-t border-surface-container-highest bg-white">
-<p class="text-secondary text-label-md">Mostrando <span class="font-bold text-on-surface">$TOTAL_SALONES</span> salones</p>
-<div class="flex gap-2">
-<button class="p-2 rounded-lg border border-surface-container-highest disabled:opacity-50" disabled>
-<span class="material-symbols-outlined">chevron_left</span>
-</button>
-<button class="p-2 rounded-lg border border-surface-container-highest hover:bg-surface-container-low transition-colors">
-<span class="material-symbols-outlined">chevron_right</span>
-</button>
+</div>
+<!-- Usage Analytics -->
+<div class="grid grid-cols-2 gap-gutter">
+<div class="glass-panel p-6 rounded-2xl shadow-sm">
+<div class="flex justify-between items-start mb-2">
+<span class="text-label-md text-secondary font-medium">Tasa de Ocupacion</span>
+<span class="text-emerald-600 font-bold text-xs">+12.5%</span>
+</div>
+<div class="text-headline-md font-headline-md">78.4%</div>
+<div class="h-8 mt-4 flex items-end gap-1">
+<div class="flex-1 bg-surface-container-highest rounded-t-sm h-1/2"></div>
+<div class="flex-1 bg-surface-container-highest rounded-t-sm h-3/4"></div>
+<div class="flex-1 bg-primary rounded-t-sm h-full"></div>
+<div class="flex-1 bg-primary rounded-t-sm h-2/3"></div>
+<div class="flex-1 bg-surface-container-highest rounded-t-sm h-4/5"></div>
+<div class="flex-1 bg-surface-container-highest rounded-t-sm h-1/2"></div>
+</div>
+</div>
+<div class="glass-panel p-6 rounded-2xl shadow-sm">
+<div class="flex justify-between items-start mb-2">
+<span class="text-label-md text-secondary font-medium">Promedio Respuesta</span>
+<span class="text-amber-500 font-bold text-xs">-2m</span>
+</div>
+<div class="text-headline-md font-headline-md">14.2 min</div>
+<div class="h-8 mt-4 flex items-center justify-center">
+<div class="w-full h-1 bg-surface-container-highest rounded-full relative overflow-hidden">
+<div class="absolute left-0 top-0 h-full w-[65%] bg-primary"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Timeline -->
+<div class="col-span-12 lg:col-span-4 space-y-stack-lg">
+<div class="glass-panel p-6 rounded-2xl shadow-sm h-full">
+<div class="flex justify-between items-center mb-8">
+<h3 class="font-title-lg text-title-lg">Timeline Proximo</h3>
+<button class="material-symbols-outlined text-secondary hover:text-on-surface">more_vert</button>
+</div>
+<div class="relative timeline-line space-y-8 pl-10">
+<div class="relative">
+<div class="absolute -left-10 top-0 w-6 h-6 rounded-full bg-white border-4 border-primary z-10"></div>
+<div class="flex flex-col">
+<span class="text-label-md font-bold text-primary mb-1">HOY - 14:00</span>
+<h4 class="font-body-md text-body-md font-semibold">Consejo Universitario</h4>
+<p class="text-label-md text-secondary">Sala de Juntas B</p>
+<div class="mt-2 flex -space-x-2">
+<div class="w-6 h-6 rounded-full border-2 border-white bg-surface-container-highest"></div>
+<div class="w-6 h-6 rounded-full border-2 border-white bg-surface-container-high"></div>
+<div class="w-6 h-6 rounded-full border-2 border-white bg-surface-container"></div>
+<div class="w-6 h-6 rounded-full border-2 border-white bg-surface-container-highest flex items-center justify-center text-[8px] font-bold">+8</div>
+</div>
+</div>
+</div>
+<div class="relative">
+<div class="absolute -left-10 top-0 w-6 h-6 rounded-full bg-white border-4 border-surface-container-highest z-10"></div>
+<div class="flex flex-col">
+<span class="text-label-md font-bold text-secondary mb-1">HOY - 16:30</span>
+<h4 class="font-body-md text-body-md font-semibold">Taller de Innovacion</h4>
+<p class="text-label-md text-secondary">Laboratorio 102</p>
+</div>
+</div>
+<div class="relative">
+<div class="absolute -left-10 top-0 w-6 h-6 rounded-full bg-white border-4 border-surface-container-highest z-10"></div>
+<div class="flex flex-col">
+<span class="text-label-md font-bold text-secondary mb-1">MANANA - 08:00</span>
+<h4 class="font-body-md text-body-md font-semibold">Examen Parcial de Fisica</h4>
+<p class="text-label-md text-secondary">Auditorio Sur</p>
+<div class="mt-3 p-3 bg-surface-container-low rounded-lg border border-surface-container-highest">
+<div class="flex items-center gap-2 text-label-md text-primary font-bold">
+<span class="material-symbols-outlined text-sm">warning</span>
+                                        Requiere Proyector 4K
+                                    </div>
+</div>
+</div>
+</div>
+<div class="relative">
+<div class="absolute -left-10 top-0 w-6 h-6 rounded-full bg-white border-4 border-surface-container-highest z-10"></div>
+<div class="flex flex-col">
+<span class="text-label-md font-bold text-secondary mb-1">MANANA - 11:30</span>
+<h4 class="font-body-md text-body-md font-semibold">Entrevista Docente</h4>
+<p class="text-label-md text-secondary">Oficina Administrativa 3</p>
+</div>
+</div>
+</div>
+<button class="w-full mt-10 py-3 border border-dashed border-surface-container-highest rounded-xl text-label-md text-secondary hover:border-primary hover:text-primary transition-all">
+                        Ver calendario completo
+                    </button>
+</div>
+</div>
+</div>
+<!-- System Alerts -->
+<section class="mt-gutter grid grid-cols-3 gap-gutter mb-section-gap">
+<div class="glass-panel p-5 rounded-2xl shadow-sm flex items-center gap-4">
+<div class="w-12 h-12 rounded-xl bg-primary-fixed flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">event_busy</span>
+</div>
+<div>
+<div class="text-label-md text-secondary">Conflictos detectados</div>
+<div class="font-title-lg text-title-lg">03 Salas</div>
+</div>
+</div>
+<div class="glass-panel p-5 rounded-2xl shadow-sm flex items-center gap-4">
+<div class="w-12 h-12 rounded-xl bg-secondary-fixed flex items-center justify-center text-on-secondary-fixed-variant">
+<span class="material-symbols-outlined">cleaning_services</span>
+</div>
+<div>
+<div class="text-label-md text-secondary">Tareas de Mantenimiento</div>
+<div class="font-title-lg text-title-lg">12 Pendientes</div>
+</div>
+</div>
+<div class="glass-panel p-5 rounded-2xl shadow-sm flex items-center gap-4">
+<div class="w-12 h-12 rounded-xl bg-tertiary-fixed flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined">energy_savings_leaf</span>
+</div>
+<div>
+<div class="text-label-md text-secondary">Ahorro Energetico (Aulas)</div>
+<div class="font-title-lg text-title-lg">Optimizado</div>
 </div>
 </div>
 </section>
 </div>
-<!-- Footer Shell -->
-<footer class="w-full py-stack-lg mt-section-gap border-t border-surface-container-highest bg-surface">
+<!-- Footer -->
+<footer class="w-full py-stack-lg border-t border-surface-container-highest bg-surface">
 <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center px-container-padding gap-4">
 <span class="font-label-md text-label-md font-medium text-secondary">© 2024 UTP Academic Management. SaaS Elite Tier.</span>
 <div class="flex gap-6 text-secondary text-label-md">
@@ -386,7 +401,10 @@ $TABLA_SALONES
 <script>
         document.querySelectorAll('tr').forEach(row => {
             row.addEventListener('mouseenter', () => {
-                row.style.cursor = 'pointer';
+                row.style.transform = 'scale(1.002)';
+            });
+            row.addEventListener('mouseleave', () => {
+                row.style.transform = 'scale(1)';
             });
         });
         const searchInput = document.querySelector('input[type="text"]');

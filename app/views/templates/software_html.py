@@ -1,10 +1,10 @@
-HTML_SALONES = """
+HTML_SOFTWARE = """
 <!DOCTYPE html>
 
 <html class="light" lang="es"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>UTP Academic | Gestion de Salones</title>
+<title>UTP Academic | Software y Equipos</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@100;300;400;500;600;700;800;900&amp;family=Courier+Prime&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
@@ -129,6 +129,17 @@ HTML_SALONES = """
             height: 8px;
             border-radius: 50%;
         }
+        .health-bar {
+            height: 6px;
+            border-radius: 10px;
+            background: #e1e3e4;
+            overflow: hidden;
+        }
+        .health-bar-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.8s ease;
+        }
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #e1e3e4; border-radius: 10px; }
@@ -148,13 +159,13 @@ HTML_SALONES = """
 <span class="material-symbols-outlined">dashboard</span>
 <span class="font-medium">Inicio</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-primary font-bold border-r-4 border-primary bg-surface-container-low" href="/admin/salones">
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-secondary hover:bg-surface-container-low transition-colors duration-200" href="/admin/salones">
 <span class="material-symbols-outlined">meeting_room</span>
-<span class="font-bold">Salones</span>
+<span class="font-medium">Salones</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-secondary hover:bg-surface-container-low transition-colors duration-200" href="/admin/software">
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-primary font-bold border-r-4 border-primary bg-surface-container-low" href="/admin/software">
 <span class="material-symbols-outlined">computer</span>
-<span class="font-medium">Software y Equipos</span>
+<span class="font-bold">Software y Equipos</span>
 </a>
 <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-secondary hover:bg-surface-container-low transition-colors duration-200" href="/admin/horarios">
 <span class="material-symbols-outlined">calendar_today</span>
@@ -217,8 +228,8 @@ HTML_SALONES = """
 <!-- Page Header -->
 <section class="flex justify-between items-end mb-12">
 <div>
-<h1 class="font-headline-lg text-headline-lg text-on-surface">Gestion de Salones</h1>
-<p class="text-secondary mt-1">Supervision en tiempo real, asignacion de espacios e inventario tecnologico.</p>
+<h1 class="font-headline-lg text-headline-lg text-on-surface">Software y Equipos</h1>
+<p class="text-secondary mt-1">Inventario tecnologico, licencias, mantenimiento y monitoreo de activos informaticos.</p>
 </div>
 <div class="flex gap-3">
 <button class="px-5 py-2.5 rounded-xl border border-surface-container-highest bg-white text-on-surface font-medium hover:bg-surface-container-low transition-all flex items-center gap-2">
@@ -227,7 +238,7 @@ HTML_SALONES = """
                     </button>
 <button class="px-5 py-2.5 rounded-xl bg-primary text-white font-bold hover:opacity-90 transition-all flex items-center gap-2 shadow-lg shadow-primary/20">
 <span class="material-symbols-outlined text-[18px]">add_circle</span>
-                        Agregar Salon
+                        Agregar Activo
                     </button>
 </div>
 </section>
@@ -236,15 +247,15 @@ HTML_SALONES = """
 <div class="glass-panel p-6 rounded-2xl shadow-sm hover:shadow-md transition-all">
 <div class="flex justify-between items-start mb-4">
 <div class="p-2 bg-surface-container-low rounded-lg">
-<span class="material-symbols-outlined text-primary">domain</span>
+<span class="material-symbols-outlined text-primary">devices</span>
 </div>
 <div class="text-right">
-<span class="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">+2.5%</span>
+<span class="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">+3.2%</span>
 </div>
 </div>
-<h3 class="text-secondary text-label-md uppercase tracking-wider mb-1">Total de Salones</h3>
+<h3 class="text-secondary text-label-md uppercase tracking-wider mb-1">Total de Activos</h3>
 <div class="flex items-end justify-between">
-<span class="text-headline-md font-bold">$TOTAL_SALONES</span>
+<span class="text-headline-md font-bold">$TOTAL_ACTIVOS</span>
 <div class="w-24 h-10">
 <svg class="w-full h-full" viewbox="0 0 100 40">
 <path class="sparkline-svg" d="M0,35 Q10,30 20,38 T40,25 T60,30 T80,10 T100,15"></path>
@@ -255,18 +266,18 @@ HTML_SALONES = """
 <div class="glass-panel p-6 rounded-2xl shadow-sm hover:shadow-md transition-all">
 <div class="flex justify-between items-start mb-4">
 <div class="p-2 bg-surface-container-low rounded-lg">
-<span class="material-symbols-outlined text-primary">event_available</span>
+<span class="material-symbols-outlined text-primary">warning</span>
 </div>
 <div class="text-right">
-<span class="text-[11px] font-bold text-secondary bg-surface-container-low px-2 py-0.5 rounded-full">Actual</span>
+<span class="text-[11px] font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full">Por vencer</span>
 </div>
 </div>
-<h3 class="text-secondary text-label-md uppercase tracking-wider mb-1">Salones Disponibles</h3>
+<h3 class="text-secondary text-label-md uppercase tracking-wider mb-1">Licencias por Vencer</h3>
 <div class="flex items-end justify-between">
-<span class="text-headline-md font-bold">88</span>
-<div class="w-24 h-10 opacity-50">
+<span class="text-headline-md font-bold">8</span>
+<div class="w-24 h-10">
 <svg class="w-full h-full" viewbox="0 0 100 40">
-<path class="sparkline-svg" d="M0,10 Q10,25 20,20 T40,35 T60,15 T80,25 T100,5"></path>
+<path class="sparkline-svg" d="M0,10 Q10,25 20,20 T40,35 T60,15 T80,25 T100,5" style="stroke: #f59e0b;"></path>
 </svg>
 </div>
 </div>
@@ -282,7 +293,7 @@ HTML_SALONES = """
 </div>
 <h3 class="text-secondary text-label-md uppercase tracking-wider mb-1">En Mantenimiento</h3>
 <div class="flex items-end justify-between">
-<span class="text-headline-md font-bold">12</span>
+<span class="text-headline-md font-bold">5</span>
 <div class="w-24 h-10">
 <svg class="w-full h-full" viewbox="0 0 100 40">
 <path class="sparkline-svg" d="M0,35 L20,32 L40,38 L60,20 L80,25 L100,5" style="stroke: #ba1a1a;"></path>
@@ -296,12 +307,12 @@ HTML_SALONES = """
 <span class="material-symbols-outlined text-primary">pie_chart</span>
 </div>
 <div class="text-right">
-<span class="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Alto</span>
+<span class="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">87%</span>
 </div>
 </div>
-<h3 class="text-secondary text-label-md uppercase tracking-wider mb-1">Tasa de Ocupacion</h3>
+<h3 class="text-secondary text-label-md uppercase tracking-wider mb-1">Uso de Software</h3>
 <div class="flex items-end justify-between">
-<span class="text-headline-md font-bold">76.4%</span>
+<span class="text-headline-md font-bold">67.2%</span>
 <div class="w-24 h-10">
 <svg class="w-full h-full" viewbox="0 0 100 40">
 <path class="sparkline-svg" d="M0,38 C20,38 20,10 40,10 C60,10 60,25 80,25 C100,25 100,5 100,5"></path>
@@ -317,20 +328,22 @@ HTML_SALONES = """
 <span class="absolute inset-y-0 left-4 flex items-center text-secondary">
 <span class="material-symbols-outlined">search</span>
 </span>
-<input class="w-full pl-12 pr-4 py-3 bg-surface-container-low border border-surface-container-highest rounded-xl focus:ring-1 focus:ring-primary focus:border-primary transition-all" placeholder="Filtrar por nombre, aula o software (AutoCAD, SAP...)" type="text"/>
+<input class="w-full pl-12 pr-4 py-3 bg-surface-container-low border border-surface-container-highest rounded-xl focus:ring-1 focus:ring-primary focus:border-primary transition-all" placeholder="Buscar por activo, categoria, software o licencia..." type="text"/>
 </div>
 <div class="flex items-center gap-3 w-full md:w-auto">
 <select class="bg-white border border-surface-container-highest rounded-xl px-4 py-3 text-body-md focus:ring-1 focus:ring-primary min-w-[140px]">
-<option>Tipo: Todos</option>
-<option>Laboratorio</option>
-<option>Aula Magna</option>
-<option>Auditorio</option>
+<option>Categoria: Todas</option>
+<option>Hardware</option>
+<option>Software</option>
+<option>Licencia</option>
+<option>Equipo</option>
 </select>
 <select class="bg-white border border-surface-container-highest rounded-xl px-4 py-3 text-body-md focus:ring-1 focus:ring-primary min-w-[140px]">
-<option>Pabellon</option>
-<option>Pabellon A</option>
-<option>Pabellon B</option>
-<option>Pabellon C</option>
+<option>Estado: Todos</option>
+<option>Activo</option>
+<option>Inactivo</option>
+<option>Mantenimiento</option>
+<option>Vencido</option>
 </select>
 <button class="p-3 bg-surface-container-low hover:bg-surface-container-highest rounded-xl transition-colors">
 <span class="material-symbols-outlined">tune</span>
@@ -344,22 +357,22 @@ HTML_SALONES = """
 <table class="w-full text-left border-collapse">
 <thead>
 <tr class="bg-surface-container-low/50">
-<th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider border-b border-surface-container-highest">Salon / Tipo</th>
-<th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider border-b border-surface-container-highest">Ubicacion</th>
-<th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider border-b border-surface-container-highest">Capacidad</th>
-<th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider border-b border-surface-container-highest">Software</th>
+<th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider border-b border-surface-container-highest">Activo / ID</th>
+<th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider border-b border-surface-container-highest">Categoria</th>
 <th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider border-b border-surface-container-highest">Estado</th>
-<th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider border-b border-surface-container-highest text-right">Acciones</th>
+<th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider border-b border-surface-container-highest">Software / Licencia</th>
+<th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider border-b border-surface-container-highest">Ultimo Mantenimiento</th>
+<th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider border-b border-surface-container-highest text-right">Uso Historico</th>
 </tr>
 </thead>
 <tbody class="divide-y divide-surface-container-highest">
-$TABLA_SALONES
+$TABLA_SOFTWARE
 </tbody>
 </table>
 </div>
 <!-- Pagination -->
 <div class="px-6 py-4 flex items-center justify-between border-t border-surface-container-highest bg-white">
-<p class="text-secondary text-label-md">Mostrando <span class="font-bold text-on-surface">$TOTAL_SALONES</span> salones</p>
+<p class="text-secondary text-label-md">Mostrando <span class="font-bold text-on-surface">$TOTAL_ACTIVOS</span> activos</p>
 <div class="flex gap-2">
 <button class="p-2 rounded-lg border border-surface-container-highest disabled:opacity-50" disabled>
 <span class="material-symbols-outlined">chevron_left</span>
@@ -367,6 +380,61 @@ $TABLA_SALONES
 <button class="p-2 rounded-lg border border-surface-container-highest hover:bg-surface-container-low transition-colors">
 <span class="material-symbols-outlined">chevron_right</span>
 </button>
+</div>
+</div>
+</section>
+<!-- System Health Section -->
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter mb-section-gap">
+<div class="glass-panel p-6 rounded-2xl shadow-sm">
+<div class="flex items-center gap-3 mb-4">
+<div class="w-3 h-3 rounded-full bg-green-500"></div>
+<h3 class="font-bold text-on-surface">Servidores</h3>
+</div>
+<div class="health-bar mb-2">
+<div class="health-bar-fill bg-green-500" style="width: 98%"></div>
+</div>
+<div class="flex justify-between text-label-md text-secondary">
+<span>98% Disponibilidad</span>
+<span>Lat: 12ms</span>
+</div>
+</div>
+<div class="glass-panel p-6 rounded-2xl shadow-sm">
+<div class="flex items-center gap-3 mb-4">
+<div class="w-3 h-3 rounded-full bg-green-500"></div>
+<h3 class="font-bold text-on-surface">Base de Datos</h3>
+</div>
+<div class="health-bar mb-2">
+<div class="health-bar-fill bg-green-500" style="width: 95%"></div>
+</div>
+<div class="flex justify-between text-label-md text-secondary">
+<span>95% Rendimiento</span>
+<span>Sincronizada</span>
+</div>
+</div>
+<div class="glass-panel p-6 rounded-2xl shadow-sm">
+<div class="flex items-center gap-3 mb-4">
+<div class="w-3 h-3 rounded-full bg-amber-500"></div>
+<h3 class="font-bold text-on-surface">Red</h3>
+</div>
+<div class="health-bar mb-2">
+<div class="health-bar-fill bg-amber-500" style="width: 72%"></div>
+</div>
+<div class="flex justify-between text-label-md text-secondary">
+<span>72% Capacidad</span>
+<span>Trafico: 850 Mbps</span>
+</div>
+</div>
+<div class="glass-panel p-6 rounded-2xl shadow-sm">
+<div class="flex items-center gap-3 mb-4">
+<div class="w-3 h-3 rounded-full bg-primary"></div>
+<h3 class="font-bold text-on-surface">Licencias</h3>
+</div>
+<div class="health-bar mb-2">
+<div class="health-bar-fill bg-primary" style="width: 88%"></div>
+</div>
+<div class="flex justify-between text-label-md text-secondary">
+<span>88% Vigentes</span>
+<span>12% Prox. Vencer</span>
 </div>
 </div>
 </section>

@@ -1,14 +1,34 @@
-HTML_SALONES = """
+HTML_ROLES = """
 <!DOCTYPE html>
 
 <html class="light" lang="es"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>UTP Academic | Gestion de Salones</title>
+<title>UTP Academic | Roles y Permisos</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@100;300;400;500;600;700;800;900&amp;family=Courier+Prime&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            background-color: #F8F9FA;
+            color: #191C1D;
+            -webkit-font-smoothing: antialiased;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(230, 232, 235, 1);
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #e1e3e4; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #585f64; }
+    </style>
 <script id="tailwind-config">
       tailwind.config = {
         darkMode: "class",
@@ -103,37 +123,6 @@ HTML_SALONES = """
         },
       }
     </script>
-<style>
-        body {
-            background-color: #F8F9FA;
-            color: #191C1D;
-            -webkit-font-smoothing: antialiased;
-        }
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-            vertical-align: middle;
-        }
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(230, 232, 235, 1);
-        }
-        .sparkline-svg {
-            stroke: #840015;
-            stroke-width: 2;
-            fill: none;
-            stroke-linecap: round;
-        }
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-        }
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #e1e3e4; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #585f64; }
-    </style>
 </head>
 <body class="font-body-md text-body-md">
 <!-- Side Navigation Shell -->
@@ -148,9 +137,9 @@ HTML_SALONES = """
 <span class="material-symbols-outlined">dashboard</span>
 <span class="font-medium">Inicio</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-primary font-bold border-r-4 border-primary bg-surface-container-low" href="/admin/salones">
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-secondary hover:bg-surface-container-low transition-colors duration-200" href="/admin/salones">
 <span class="material-symbols-outlined">meeting_room</span>
-<span class="font-bold">Salones</span>
+<span class="font-medium">Salones</span>
 </a>
 <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-secondary hover:bg-surface-container-low transition-colors duration-200" href="/admin/software">
 <span class="material-symbols-outlined">computer</span>
@@ -172,9 +161,9 @@ HTML_SALONES = """
 <span class="material-symbols-outlined">assessment</span>
 <span class="font-medium">Reportes</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-secondary hover:bg-surface-container-low transition-colors duration-200" href="/admin/roles">
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-primary font-bold border-r-4 border-primary bg-surface-container-low" href="/admin/roles">
 <span class="material-symbols-outlined">admin_panel_settings</span>
-<span class="font-medium">Roles y Permisos</span>
+<span class="font-bold">Roles y Permisos</span>
 </a>
 </nav>
 <div class="pt-6 border-t border-surface-container-highest space-y-2">
@@ -206,7 +195,7 @@ HTML_SALONES = """
 <span class="absolute inset-y-0 left-3 flex items-center text-secondary">
 <span class="material-symbols-outlined text-[20px]">search</span>
 </span>
-<input class="pl-10 pr-4 py-1.5 bg-surface-container-low border-none rounded-full text-body-md focus:ring-1 focus:ring-primary w-64 transition-all" placeholder="Buscar recurso..." type="text"/>
+<input class="pl-10 pr-4 py-1.5 bg-surface-container-low border-none rounded-full text-body-md focus:ring-1 focus:ring-primary w-64 transition-all" placeholder="Buscar modulos..." type="text"/>
 </div>
 <button class="material-symbols-outlined text-secondary hover:text-primary transition-colors">notifications</button>
 <button class="material-symbols-outlined text-secondary hover:text-primary transition-colors">apps</button>
@@ -217,162 +206,135 @@ HTML_SALONES = """
 <!-- Page Header -->
 <section class="flex justify-between items-end mb-12">
 <div>
-<h1 class="font-headline-lg text-headline-lg text-on-surface">Gestion de Salones</h1>
-<p class="text-secondary mt-1">Supervision en tiempo real, asignacion de espacios e inventario tecnologico.</p>
+<h1 class="font-headline-lg text-headline-lg text-on-surface">Roles y Permisos</h1>
+<p class="text-secondary mt-1">Gestiona los niveles de acceso y privilegios del personal academico y administrativo.</p>
 </div>
 <div class="flex gap-3">
-<button class="px-5 py-2.5 rounded-xl border border-surface-container-highest bg-white text-on-surface font-medium hover:bg-surface-container-low transition-all flex items-center gap-2">
-<span class="material-symbols-outlined text-[18px]">ios_share</span>
-                        Exportar
+<button class="flex items-center gap-2 border border-surface-container-highest bg-white px-4 py-2 rounded-lg text-label-md font-label-md hover:bg-surface-container-low transition-all">
+<span class="material-symbols-outlined text-[18px]">download</span>
+                        Auditoria de Cambios
                     </button>
-<button class="px-5 py-2.5 rounded-xl bg-primary text-white font-bold hover:opacity-90 transition-all flex items-center gap-2 shadow-lg shadow-primary/20">
-<span class="material-symbols-outlined text-[18px]">add_circle</span>
-                        Agregar Salon
+<button class="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-lg text-label-md font-label-md hover:opacity-90 transition-all">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                        Crear Nuevo Rol
                     </button>
 </div>
 </section>
-<!-- KPI Grid -->
-<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter mb-section-gap">
-<div class="glass-panel p-6 rounded-2xl shadow-sm hover:shadow-md transition-all">
+<!-- Role Cards -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-gutter mb-section-gap">
+<div class="bg-white border border-surface-container-highest rounded-2xl p-6 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
 <div class="flex justify-between items-start mb-4">
-<div class="p-2 bg-surface-container-low rounded-lg">
-<span class="material-symbols-outlined text-primary">domain</span>
+<div class="p-3 bg-primary-container/10 rounded-lg">
+<span class="material-symbols-outlined text-primary">admin_panel_settings</span>
 </div>
-<div class="text-right">
-<span class="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">+2.5%</span>
-</div>
-</div>
-<h3 class="text-secondary text-label-md uppercase tracking-wider mb-1">Total de Salones</h3>
-<div class="flex items-end justify-between">
-<span class="text-headline-md font-bold">$TOTAL_SALONES</span>
-<div class="w-24 h-10">
-<svg class="w-full h-full" viewbox="0 0 100 40">
-<path class="sparkline-svg" d="M0,35 Q10,30 20,38 T40,25 T60,30 T80,10 T100,15"></path>
-</svg>
-</div>
-</div>
-</div>
-<div class="glass-panel p-6 rounded-2xl shadow-sm hover:shadow-md transition-all">
-<div class="flex justify-between items-start mb-4">
-<div class="p-2 bg-surface-container-low rounded-lg">
-<span class="material-symbols-outlined text-primary">event_available</span>
-</div>
-<div class="text-right">
-<span class="text-[11px] font-bold text-secondary bg-surface-container-low px-2 py-0.5 rounded-full">Actual</span>
-</div>
-</div>
-<h3 class="text-secondary text-label-md uppercase tracking-wider mb-1">Salones Disponibles</h3>
-<div class="flex items-end justify-between">
-<span class="text-headline-md font-bold">88</span>
-<div class="w-24 h-10 opacity-50">
-<svg class="w-full h-full" viewbox="0 0 100 40">
-<path class="sparkline-svg" d="M0,10 Q10,25 20,20 T40,35 T60,15 T80,25 T100,5"></path>
-</svg>
-</div>
-</div>
-</div>
-<div class="glass-panel p-6 rounded-2xl shadow-sm hover:shadow-md transition-all">
-<div class="flex justify-between items-start mb-4">
-<div class="p-2 bg-surface-container-low rounded-lg">
-<span class="material-symbols-outlined text-primary">build</span>
-</div>
-<div class="text-right">
-<span class="text-[11px] font-bold text-error bg-error-container/20 px-2 py-0.5 rounded-full">Atencion</span>
-</div>
-</div>
-<h3 class="text-secondary text-label-md uppercase tracking-wider mb-1">En Mantenimiento</h3>
-<div class="flex items-end justify-between">
-<span class="text-headline-md font-bold">12</span>
-<div class="w-24 h-10">
-<svg class="w-full h-full" viewbox="0 0 100 40">
-<path class="sparkline-svg" d="M0,35 L20,32 L40,38 L60,20 L80,25 L100,5" style="stroke: #ba1a1a;"></path>
-</svg>
-</div>
-</div>
-</div>
-<div class="glass-panel p-6 rounded-2xl shadow-sm hover:shadow-md transition-all">
-<div class="flex justify-between items-start mb-4">
-<div class="p-2 bg-surface-container-low rounded-lg">
-<span class="material-symbols-outlined text-primary">pie_chart</span>
-</div>
-<div class="text-right">
-<span class="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Alto</span>
-</div>
-</div>
-<h3 class="text-secondary text-label-md uppercase tracking-wider mb-1">Tasa de Ocupacion</h3>
-<div class="flex items-end justify-between">
-<span class="text-headline-md font-bold">76.4%</span>
-<div class="w-24 h-10">
-<svg class="w-full h-full" viewbox="0 0 100 40">
-<path class="sparkline-svg" d="M0,38 C20,38 20,10 40,10 C60,10 60,25 80,25 C100,25 100,5 100,5"></path>
-</svg>
-</div>
-</div>
-</div>
-</section>
-<!-- Filters and Search Bar -->
-<section class="mb-12">
-<div class="glass-panel p-6 rounded-2xl shadow-sm flex flex-col md:flex-row items-center gap-4">
-<div class="flex-1 w-full relative">
-<span class="absolute inset-y-0 left-4 flex items-center text-secondary">
-<span class="material-symbols-outlined">search</span>
+<span class="flex items-center gap-1 text-label-md text-secondary">
+<span class="w-2 h-2 rounded-full bg-emerald-500"></span> 5 Activos
 </span>
-<input class="w-full pl-12 pr-4 py-3 bg-surface-container-low border border-surface-container-highest rounded-xl focus:ring-1 focus:ring-primary focus:border-primary transition-all" placeholder="Filtrar por nombre, aula o software (AutoCAD, SAP...)" type="text"/>
 </div>
-<div class="flex items-center gap-3 w-full md:w-auto">
-<select class="bg-white border border-surface-container-highest rounded-xl px-4 py-3 text-body-md focus:ring-1 focus:ring-primary min-w-[140px]">
-<option>Tipo: Todos</option>
-<option>Laboratorio</option>
-<option>Aula Magna</option>
-<option>Auditorio</option>
-</select>
-<select class="bg-white border border-surface-container-highest rounded-xl px-4 py-3 text-body-md focus:ring-1 focus:ring-primary min-w-[140px]">
-<option>Pabellon</option>
-<option>Pabellon A</option>
-<option>Pabellon B</option>
-<option>Pabellon C</option>
-</select>
-<button class="p-3 bg-surface-container-low hover:bg-surface-container-highest rounded-xl transition-colors">
-<span class="material-symbols-outlined">tune</span>
-</button>
+<div>
+<h3 class="font-title-lg text-title-lg mb-1">Administrador</h3>
+<p class="text-body-md text-secondary mb-4">Acceso total al sistema, configuracion de seguridad y gestion de usuarios.</p>
+</div>
+<button class="w-full py-2 bg-surface-container-low text-on-surface font-label-md text-label-md rounded-lg hover:bg-surface-container-highest transition-colors">Configurar Permisos</button>
+</div>
+<div class="bg-white border border-surface-container-highest rounded-2xl p-6 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+<div class="flex justify-between items-start mb-4">
+<div class="p-3 bg-blue-50 rounded-lg text-blue-600">
+<span class="material-symbols-outlined">history_edu</span>
+</div>
+<span class="flex items-center gap-1 text-label-md text-secondary">
+<span class="w-2 h-2 rounded-full bg-emerald-500"></span> 124 Activos
+</span>
+</div>
+<div>
+<h3 class="font-title-lg text-title-lg mb-1">Docente</h3>
+<p class="text-body-md text-secondary mb-4">Gestion de cursos, calificaciones, asistencia y comunicacion con estudiantes.</p>
+</div>
+<button class="w-full py-2 bg-surface-container-low text-on-surface font-label-md text-label-md rounded-lg hover:bg-surface-container-highest transition-colors">Configurar Permisos</button>
+</div>
+<div class="bg-white border border-surface-container-highest rounded-2xl p-6 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+<div class="flex justify-between items-start mb-4">
+<div class="p-3 bg-amber-50 rounded-lg text-amber-600">
+<span class="material-symbols-outlined">badge</span>
+</div>
+<span class="flex items-center gap-1 text-label-md text-secondary">
+<span class="w-2 h-2 rounded-full bg-emerald-500"></span> 42 Activos
+</span>
+</div>
+<div>
+<h3 class="font-title-lg text-title-lg mb-1">Personal</h3>
+<p class="text-body-md text-secondary mb-4">Acceso a reportes, gestion de infraestructura y servicios administrativos.</p>
+</div>
+<button class="w-full py-2 bg-surface-container-low text-on-surface font-label-md text-label-md rounded-lg hover:bg-surface-container-highest transition-colors">Configurar Permisos</button>
+</div>
+</section>
+<!-- Permissions Matrix -->
+<section class="mb-section-gap">
+<div class="flex items-center gap-3 mb-6">
+<span class="material-symbols-outlined text-primary">key</span>
+<h3 class="font-headline-md text-headline-md text-on-surface">Matriz de Permisos: <span class="font-normal text-secondary italic">Administrador</span></h3>
+</div>
+<div class="bg-white border border-surface-container-highest rounded-2xl overflow-hidden shadow-sm">
+<div class="grid grid-cols-12 border-b border-surface-container-highest bg-surface-container-low p-4">
+<div class="col-span-5 font-label-md text-label-md text-secondary uppercase tracking-wider">Modulo / Funcionalidad</div>
+<div class="col-span-1 text-center font-label-md text-label-md text-secondary uppercase tracking-wider">Ver</div>
+<div class="col-span-1 text-center font-label-md text-label-md text-secondary uppercase tracking-wider">Crear</div>
+<div class="col-span-1 text-center font-label-md text-label-md text-secondary uppercase tracking-wider">Editar</div>
+<div class="col-span-1 text-center font-label-md text-label-md text-secondary uppercase tracking-wider">Borrar</div>
+<div class="col-span-3 text-right font-label-md text-label-md text-secondary uppercase tracking-wider">Acciones Especiales</div>
+</div>
+$FILAS_PERMISOS
+<div class="p-4 bg-white flex justify-end gap-4">
+<button class="px-6 py-2 border border-surface-container-highest rounded-lg text-label-md font-label-md hover:bg-surface-container-low transition-all">Revertir Cambios</button>
+<button class="px-6 py-2 bg-on-background text-white rounded-lg text-label-md font-label-md hover:opacity-90 transition-all">Guardar Configuracion</button>
 </div>
 </div>
 </section>
-<!-- Premium Data Table -->
-<section class="glass-panel rounded-2xl shadow-sm overflow-hidden mb-section-gap">
-<div class="overflow-x-auto">
-<table class="w-full text-left border-collapse">
-<thead>
-<tr class="bg-surface-container-low/50">
-<th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider border-b border-surface-container-highest">Salon / Tipo</th>
-<th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider border-b border-surface-container-highest">Ubicacion</th>
-<th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider border-b border-surface-container-highest">Capacidad</th>
-<th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider border-b border-surface-container-highest">Software</th>
-<th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider border-b border-surface-container-highest">Estado</th>
-<th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider border-b border-surface-container-highest text-right">Acciones</th>
+<!-- Active Users -->
+<section class="mb-section-gap">
+<div class="flex justify-between items-center mb-6">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">group</span>
+<h3 class="font-headline-md text-headline-md text-on-surface">Usuarios Activos</h3>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-label-md text-secondary">Filtrar por:</span>
+<select class="border border-surface-container-highest rounded-lg text-label-md py-1 px-3 focus:ring-primary">
+<option>Todos los Roles</option>
+<option>Admin</option>
+<option>Docente</option>
+<option>Personal</option>
+</select>
+</div>
+</div>
+<div class="bg-white border border-surface-container-highest rounded-2xl overflow-hidden shadow-sm">
+<table class="w-full text-left">
+<thead class="bg-surface-container-low border-b border-surface-container-highest">
+<tr>
+<th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase">Usuario</th>
+<th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase">Rol Asignado</th>
+<th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase">Departamento</th>
+<th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase">Ultimo Acceso</th>
+<th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase">Estado</th>
+<th class="px-6 py-4"></th>
 </tr>
 </thead>
 <tbody class="divide-y divide-surface-container-highest">
-$TABLA_SALONES
+$TABLA_USUARIOS
 </tbody>
 </table>
-</div>
-<!-- Pagination -->
-<div class="px-6 py-4 flex items-center justify-between border-t border-surface-container-highest bg-white">
-<p class="text-secondary text-label-md">Mostrando <span class="font-bold text-on-surface">$TOTAL_SALONES</span> salones</p>
+<div class="px-6 py-4 bg-surface-container-low flex justify-between items-center">
+<span class="text-label-md text-secondary">Mostrando 1-10 de 171 usuarios</span>
 <div class="flex gap-2">
-<button class="p-2 rounded-lg border border-surface-container-highest disabled:opacity-50" disabled>
-<span class="material-symbols-outlined">chevron_left</span>
-</button>
-<button class="p-2 rounded-lg border border-surface-container-highest hover:bg-surface-container-low transition-colors">
-<span class="material-symbols-outlined">chevron_right</span>
-</button>
+<button class="p-1 border border-surface-container-highest rounded hover:bg-white transition-colors disabled:opacity-50" disabled><span class="material-symbols-outlined">chevron_left</span></button>
+<button class="p-1 border border-surface-container-highest rounded hover:bg-white transition-colors"><span class="material-symbols-outlined">chevron_right</span></button>
+</div>
 </div>
 </div>
 </section>
 </div>
-<!-- Footer Shell -->
-<footer class="w-full py-stack-lg mt-section-gap border-t border-surface-container-highest bg-surface">
+<!-- Footer -->
+<footer class="w-full py-stack-lg border-t border-surface-container-highest bg-surface">
 <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center px-container-padding gap-4">
 <span class="font-label-md text-label-md font-medium text-secondary">© 2024 UTP Academic Management. SaaS Elite Tier.</span>
 <div class="flex gap-6 text-secondary text-label-md">
@@ -384,20 +346,16 @@ $TABLA_SALONES
 </footer>
 </main>
 <script>
-        document.querySelectorAll('tr').forEach(row => {
-            row.addEventListener('mouseenter', () => {
-                row.style.cursor = 'pointer';
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', (e) => {
+                const row = e.target.closest('.grid');
+                if(e.target.checked) {
+                    row.classList.add('bg-primary-container/[0.02]');
+                } else {
+                    row.classList.remove('bg-primary-container/[0.02]');
+                }
             });
         });
-        const searchInput = document.querySelector('input[type="text"]');
-        if (searchInput) {
-            searchInput.addEventListener('focus', () => {
-                searchInput.parentElement.classList.add('ring-1', 'ring-primary');
-            });
-            searchInput.addEventListener('blur', () => {
-                searchInput.parentElement.classList.remove('ring-1', 'ring-primary');
-            });
-        }
     </script>
 </body></html>
 """
