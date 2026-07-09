@@ -1,5 +1,6 @@
 from app.models.espacio import EspacioAcademico
 from app.models.reserva import Reserva
+from app.models.gestor_reservas import GestorReservas
 from core.logger import get_logger
 from core.utils import escapar
 
@@ -10,19 +11,27 @@ class ReservaController:
     def __init__(self, db):
         self.espacio_model = EspacioAcademico(db)
         self.reserva_model = Reserva(db)
+        self.gestor = GestorReservas(db)
 
-    def buscar_disponibilidad(self, palabra_clave: str):
+    def buscar_disponibilidad(self, palabra_clave: str) -> list:
         try:
             if not palabra_clave or len(palabra_clave) > 500:
                 return []
             palabra_clave = escapar(palabra_clave.strip().lower())
-            tipo = "COMPUTO" if "computo" in palabra_clave or "cómputo" in palabra_clave else "TEORICA"
+            if "computo" in palabra_clave or "cómputo" in palabra_clave:
+                tipo = "COMPUTO"
+            elif "laboratorio" in palabra_clave or "lab" in palabra_clave:
+                tipo = "LABORATORIO"
+            elif "teorica" in palabra_clave or "teórica" in palabra_clave or "aula" in palabra_clave:
+                tipo = "TEORICA"
+            else:
+                tipo = "COMPUTO"
             return self.espacio_model.buscar_disponibles(tipo)
         except Exception as e:
-            logger.error(f"Error buscando disponibilidad: {str(e)}")
+            logger.error(f"Error buscando disponibilidad: {e}")
             return []
 
-    def procesar_reserva(self, id_usuario: int, curso: str, id_espacio: int, horario: str):
+    def procesar_reserva(self, id_usuario: int, curso: str, id_espacio: int, horario: str, fecha: str = "2026-05-28") -> bool:
         try:
             if not isinstance(id_usuario, int) or id_usuario <= 0:
                 return False
@@ -34,11 +43,7 @@ class ReservaController:
                 return False
             curso = escapar(curso.strip())
             horario = escapar(horario.strip())
-            exito = self.reserva_model.crear(id_usuario, curso, id_espacio, horario)
-            if exito:
-                self.espacio_model.ocupar(id_espacio)
-                logger.info(f"Reserva creada: espacio={id_espacio}, usuario={id_usuario}")
-            return exito
+            return self.gestor.crear_reserva(id_usuario, id_espacio, curso, horario, fecha)
         except Exception as e:
-            logger.error(f"Error al procesar reserva: {str(e)}")
+            logger.error(f"Error al procesar reserva: {e}")
             return False

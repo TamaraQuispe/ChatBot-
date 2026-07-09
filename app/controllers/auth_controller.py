@@ -9,7 +9,7 @@ class AuthController:
     def __init__(self, db):
         self.usuario_model = Usuario(db)
 
-    def login(self, username: str, password: str):
+    def login(self, username: str, password: str) -> dict:
         try:
             if not username or not password:
                 logger.warning("Intento de login con campos vacios")
@@ -23,5 +23,5 @@ class AuthController:
                 logger.info(f"Login fallido para usuario: {username}")
             return usuario
         except Exception as e:
-            logger.error(f"Error en login: {str(e)}")
+            logger.error(f"Error en login: {e}")
             return None
