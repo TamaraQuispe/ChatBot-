@@ -146,7 +146,7 @@ HTML_LOGIN = """
 <!-- Left Panel: Brand & Vision -->
 <section class="relative w-full md:w-[60%] min-h-[40vh] md:min-h-screen overflow-hidden left-panel-image">
 <div class="absolute inset-0 z-0">
-<img alt="UTP Campus Architectural View" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AP1WRLtUW08J5I16wLdtDb0w2hed5a0DxIQlyT5bXuNcvz0SpjZmh1DyplG5t9bfWrg70ccPpRdAO1rXalBRAbu0HDLJMhVQPdvnASNoMy8QSznac3IDwaUD0NFd5rM6Dccsgf85T3OpYYWm3BWVhuxWjIsIecr9zU0IzWL-fZH6hP_ClDP0nEUurktQ5f_nxHXjP-CTCQ01Q8uVq12bRGwPUKTCsjpmemw8oMj7aLyGVs49iwZpSoiaAH1N0w"/>
+<img alt="Frontis Universidad Tecnológica del Perú" class="w-full h-full object-cover" src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Frontis_de_la_Universidad_Tecnol%C3%B3gica_del_Per%C3%BA_1.jpg/960px-Frontis_de_la_Universidad_Tecnol%C3%B3gica_del_Per%C3%BA_1.jpg"/>
 <div class="absolute inset-0 bg-gradient-to-r from-utp-red-muted/80 to-transparent"></div>
 </div>
 <!-- Content Overlay -->
@@ -199,6 +199,10 @@ HTML_LOGIN = """
 </div>
 <h2 class="font-headline-md text-headline-md text-on-surface mb-2">Bienvenido</h2>
 <p class="font-body-sm text-body-sm text-secondary text-center">Ingresa para interactuar con tu asistente academico virtual</p>
+</div>
+<div id="error-msg" class="hidden bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-6 flex items-center gap-3">
+<span class="material-symbols-outlined text-red-500">error</span>
+<span id="error-text">Credenciales incorrectas. Intenta de nuevo.</span>
 </div>
 <!-- Form -->
 <form class="space-y-6" action="/login" method="POST">
@@ -268,6 +272,12 @@ HTML_LOGIN = """
                 passInput.type = isPassword ? 'text' : 'password';
                 togglePass.querySelector('span').textContent = isPassword ? 'visibility_off' : 'visibility';
             });
+        }
+    </script>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('error') === '1') {
+            document.getElementById('error-msg').classList.remove('hidden');
         }
     </script>
 </body></html>
