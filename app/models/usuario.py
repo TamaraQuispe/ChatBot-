@@ -10,7 +10,10 @@ class Usuario:
         conn = self.db.obtener_conexion()
         cursor = conn.cursor()
         cursor.execute(
-            "SELECT * FROM usuarios WHERE username = %s",
+            """SELECT u.*, r.nombre AS rol_nombre
+               FROM usuarios u
+               JOIN roles r ON r.id_rol = u.id_rol
+               WHERE u.username = %s""",
             (username,)
         )
         usuario = cursor.fetchone()
@@ -22,7 +25,7 @@ class Usuario:
             return {
                 "id_usuario": usuario["id_usuario"],
                 "username": usuario["username"],
-                "rol": usuario["rol"],
+                "rol": usuario["rol_nombre"],
                 "nombre": usuario["nombre"],
                 "correo": usuario["correo"]
             }

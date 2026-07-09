@@ -9,7 +9,10 @@ class EspacioAcademico:
         conn = self.db.obtener_conexion()
         cursor = conn.cursor()
         cursor.execute(
-            "SELECT * FROM espacios_academicos WHERE tipo = %s AND estado = 'DISPONIBLE'",
+            """SELECT e.*, t.nombre AS tipo
+               FROM espacios_academicos e
+               JOIN tipos_espacio t ON t.id_tipo = e.id_tipo
+               WHERE t.nombre = %s AND e.estado = 'DISPONIBLE'""",
             (tipo,)
         )
         filas = cursor.fetchall()
@@ -19,7 +22,12 @@ class EspacioAcademico:
     def listar_todos(self):
         conn = self.db.obtener_conexion()
         cursor = conn.cursor()
-        cursor.execute("SELECT * FROM espacios_academicos ORDER BY id_espacio")
+        cursor.execute(
+            """SELECT e.*, t.nombre AS tipo
+               FROM espacios_academicos e
+               JOIN tipos_espacio t ON t.id_tipo = e.id_tipo
+               ORDER BY e.id_espacio"""
+        )
         filas = cursor.fetchall()
         conn.close()
         return [dict(f) for f in filas]
