@@ -277,65 +277,25 @@ $HEADER
 <span class="font-title-lg text-title-lg">22</span>
 </div>
 </div>
-<!-- Scrollable Body -->
-<div class="flex-1 overflow-y-auto custom-scrollbar relative">
-<div class="calendar-grid min-h-[800px]">
-<!-- Time Column -->
-<div class="bg-surface-container-lowest border-r border-surface-container-highest">
-<div class="h-20 flex items-start justify-center pt-2 text-label-md text-secondary">07:00</div>
-<div class="h-20 flex items-start justify-center pt-2 text-label-md text-secondary border-t border-surface-container-highest/30">08:00</div>
-<div class="h-20 flex items-start justify-center pt-2 text-label-md text-secondary border-t border-surface-container-highest/30">09:00</div>
-<div class="h-20 flex items-start justify-center pt-2 text-label-md text-secondary border-t border-surface-container-highest/30">10:00</div>
-<div class="h-20 flex items-start justify-center pt-2 text-label-md text-secondary border-t border-surface-container-highest/30">11:00</div>
-<div class="h-20 flex items-start justify-center pt-2 text-label-md text-secondary border-t border-surface-container-highest/30">12:00</div>
-<div class="h-20 flex items-start justify-center pt-2 text-label-md text-secondary border-t border-surface-container-highest/30">13:00</div>
-<div class="h-20 flex items-start justify-center pt-2 text-label-md text-secondary border-t border-surface-container-highest/30">14:00</div>
-<div class="h-20 flex items-start justify-center pt-2 text-label-md text-secondary border-t border-surface-container-highest/30">15:00</div>
-<div class="h-20 flex items-start justify-center pt-2 text-label-md text-secondary border-t border-surface-container-highest/30">16:00</div>
-</div>
-<!-- Grid Columns (Days) -->
-<div class="border-r border-surface-container-highest/30 relative">
-<div class="absolute top-0 left-0 right-0 m-1 p-2 bg-primary-container text-on-primary-container rounded-lg shadow-sm border-l-4 border-primary z-10 hover:scale-[1.02] transition-transform cursor-pointer overflow-hidden text-ellipsis whitespace-nowrap" style="height: 152px;">
-<div class="flex justify-between items-start">
-<span class="text-label-md font-bold">CALCULO VECTORIAL</span>
-<span class="material-symbols-outlined text-xs">lock</span>
-</div>
-<p class="text-xs opacity-90 mb-2">Pabellon A - Lab 302</p>
-<div class="flex items-center gap-1 mt-auto">
-<div class="w-5 h-5 rounded-full bg-surface-container-highest flex items-center justify-center text-[8px] font-bold text-secondary">RM</div>
-<span class="text-[10px] font-medium">Dr. Mendez, R.</span>
-</div>
-</div>
-</div>
-<div class="border-r border-surface-container-highest/30 bg-primary-fixed/5 relative">
-<div class="absolute top-[160px] left-0 right-0 m-1 p-2 bg-white text-on-surface border border-surface-container-highest rounded-lg shadow-sm z-10 hover:border-primary transition-all cursor-pointer overflow-hidden text-ellipsis whitespace-nowrap" style="height: 76px;">
-<div class="flex justify-between items-start">
-<span class="text-label-md font-bold">REUNION FACULTAD</span>
-<div class="w-2 h-2 rounded-full bg-amber-500"></div>
-</div>
-<p class="text-xs text-secondary">Sala de Juntas 1</p>
-</div>
-</div>
-<div class="border-r border-surface-container-highest/30 relative">
-<div class="absolute top-[80px] left-0 right-0 m-1 p-2 bg-tertiary-container text-on-tertiary-container rounded-lg shadow-sm z-10 overflow-hidden text-ellipsis whitespace-nowrap" style="height: 152px;">
-<span class="text-label-md font-bold">INGENIERIA DE SOFTWARE</span>
-<p class="text-xs opacity-90">Auditorio Principal</p>
-<div class="mt-4 flex -space-x-2">
-<div class="w-6 h-6 rounded-full border-2 border-tertiary-container bg-surface-dim"></div>
-<div class="w-6 h-6 rounded-full border-2 border-tertiary-container bg-surface-dim"></div>
-<div class="w-6 h-6 rounded-full border-2 border-tertiary-container bg-surface-dim"></div>
-</div>
-</div>
-</div>
-<div class="border-r border-surface-container-highest/30 relative"></div>
-<div class="relative">
-<div class="absolute top-[320px] left-0 right-0 m-1 p-2 bg-primary/10 border border-primary/20 text-primary rounded-lg shadow-sm z-10 overflow-hidden text-ellipsis whitespace-nowrap" style="height: 152px;">
-<span class="text-label-md font-bold">TALLER DE ROBOTICA</span>
-<p class="text-xs font-medium">Laboratorio de Manufactura</p>
-</div>
-</div>
-</div>
-</div>
+            <!-- Scrollable Body -->
+            <div class="flex-1 overflow-y-auto custom-scrollbar relative">
+                <div class="calendar-grid min-h-[800px]">
+                    <!-- Time Column -->
+                    <div class="bg-surface-container-lowest border-r border-surface-container-highest">
+                        <div class="h-20 flex items-start justify-center pt-2 text-label-md text-secondary">07:00</div>
+                        <div class="h-20 flex items-start justify-center pt-2 text-label-md text-secondary border-t border-surface-container-highest/30">08:00</div>
+                        <div class="h-20 flex items-start justify-center pt-2 text-label-md text-secondary border-t border-surface-container-highest/30">09:00</div>
+                        <div class="h-20 flex items-start justify-center pt-2 text-label-md text-secondary border-t border-surface-container-highest/30">10:00</div>
+                        <div class="h-20 flex items-start justify-center pt-2 text-label-md text-secondary border-t border-surface-container-highest/30">11:00</div>
+                        <div class="h-20 flex items-start justify-center pt-2 text-label-md text-secondary border-t border-surface-container-highest/30">12:00</div>
+                        <div class="h-20 flex items-start justify-center pt-2 text-label-md text-secondary border-t border-surface-container-highest/30">13:00</div>
+                        <div class="h-20 flex items-start justify-center pt-2 text-label-md text-secondary border-t border-surface-container-highest/30">14:00</div>
+                        <div class="h-20 flex items-start justify-center pt-2 text-label-md text-secondary border-t border-surface-container-highest/30">15:00</div>
+                        <div class="h-20 flex items-start justify-center pt-2 text-label-md text-secondary border-t border-surface-container-highest/30">16:00</div>
+                    </div>
+                    $CONTENIDO_CALENDARIO
+                </div>
+            </div>
 </div>
 </div>
 </section>

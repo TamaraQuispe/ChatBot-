@@ -303,9 +303,9 @@ $HEADER
 <div class="flex items-center gap-3 w-full md:w-auto">
 <select class="bg-white border border-surface-container-highest rounded-xl px-4 py-3 text-body-md focus:ring-1 focus:ring-primary w-full sm:min-w-[140px]">
 <option>Tipo: Todos</option>
-<option>Laboratorio</option>
-<option>Aula Magna</option>
-<option>Auditorio</option>
+<option>SalaComputo</option>
+<option>AulaTeorica</option>
+<option>AulaLaboratorio</option>
 </select>
 <select class="bg-white border border-surface-container-highest rounded-xl px-4 py-3 text-body-md focus:ring-1 focus:ring-primary w-full sm:min-w-[140px]">
 <option>Pabellon</option>
