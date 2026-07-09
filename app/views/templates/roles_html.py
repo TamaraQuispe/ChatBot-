@@ -200,7 +200,7 @@ HTML_ROLES = """
 <span class="absolute inset-y-0 left-3 flex items-center text-secondary">
 <span class="material-symbols-outlined text-[20px]">search</span>
 </span>
-<input class="pl-10 pr-4 py-1.5 bg-surface-container-low border-none rounded-full text-body-md focus:ring-1 focus:ring-primary w-64 transition-all" placeholder="Buscar modulos..." type="text"/>
+<input class="pl-10 pr-4 py-1.5 bg-surface-container-low border-none rounded-full text-body-md focus:ring-1 focus:ring-primary w-full sm:w-64 transition-all" placeholder="Buscar modulos..." type="text"/>
 </div>
 <button class="material-symbols-outlined text-secondary hover:text-primary transition-colors">notifications</button>
 <button class="material-symbols-outlined text-secondary hover:text-primary transition-colors">apps</button>
@@ -279,7 +279,8 @@ HTML_ROLES = """
 <span class="material-symbols-outlined text-primary">key</span>
 <h3 class="font-headline-md text-headline-md text-on-surface">Matriz de Permisos: <span class="font-normal text-secondary italic">Administrador</span></h3>
 </div>
-<div class="bg-white border border-surface-container-highest rounded-2xl overflow-hidden shadow-sm">
+<div class="bg-white border border-surface-container-highest rounded-2xl shadow-sm">
+<div class="overflow-x-auto">
 <div class="grid grid-cols-12 border-b border-surface-container-highest bg-surface-container-low p-4">
 <div class="col-span-5 font-label-md text-label-md text-secondary uppercase tracking-wider">Modulo / Funcionalidad</div>
 <div class="col-span-1 text-center font-label-md text-label-md text-secondary uppercase tracking-wider">Ver</div>
@@ -289,6 +290,7 @@ HTML_ROLES = """
 <div class="col-span-3 text-right font-label-md text-label-md text-secondary uppercase tracking-wider">Acciones Especiales</div>
 </div>
 $FILAS_PERMISOS
+</div>
 <div class="p-4 bg-white flex justify-end gap-4">
 <button class="px-6 py-2 border border-surface-container-highest rounded-lg text-label-md font-label-md hover:bg-surface-container-low transition-all">Revertir Cambios</button>
 <button class="px-6 py-2 bg-on-background text-white rounded-lg text-label-md font-label-md hover:opacity-90 transition-all">Guardar Configuracion</button>
@@ -312,7 +314,7 @@ $FILAS_PERMISOS
 </select>
 </div>
 </div>
-<div class="bg-white border border-surface-container-highest rounded-2xl overflow-hidden shadow-sm">
+<div class="bg-white border border-surface-container-highest rounded-2xl overflow-x-auto shadow-sm">
 <table class="w-full text-left">
 <thead class="bg-surface-container-low border-b border-surface-container-highest">
 <tr>

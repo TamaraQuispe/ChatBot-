@@ -222,7 +222,7 @@ HTML_SOFTWARE = """
 <span class="absolute inset-y-0 left-3 flex items-center text-secondary">
 <span class="material-symbols-outlined text-[20px]">search</span>
 </span>
-<input class="pl-10 pr-4 py-1.5 bg-surface-container-low border-none rounded-full text-body-md focus:ring-1 focus:ring-primary w-64 transition-all" placeholder="Buscar recurso..." type="text"/>
+<input class="pl-10 pr-4 py-1.5 bg-surface-container-low border-none rounded-full text-body-md focus:ring-1 focus:ring-primary w-full sm:w-64 transition-all" placeholder="Buscar recurso..." type="text"/>
 </div>
 <button class="material-symbols-outlined text-secondary hover:text-primary transition-colors">notifications</button>
 <button class="material-symbols-outlined text-secondary hover:text-primary transition-colors">apps</button>
@@ -336,14 +336,14 @@ HTML_SOFTWARE = """
 <input class="w-full pl-12 pr-4 py-3 bg-surface-container-low border border-surface-container-highest rounded-xl focus:ring-1 focus:ring-primary focus:border-primary transition-all" placeholder="Buscar por activo, categoria, software o licencia..." type="text"/>
 </div>
 <div class="flex items-center gap-3 w-full md:w-auto">
-<select class="bg-white border border-surface-container-highest rounded-xl px-4 py-3 text-body-md focus:ring-1 focus:ring-primary min-w-[140px]">
+<select class="bg-white border border-surface-container-highest rounded-xl px-4 py-3 text-body-md focus:ring-1 focus:ring-primary w-full sm:min-w-[140px]">
 <option>Categoria: Todas</option>
 <option>Hardware</option>
 <option>Software</option>
 <option>Licencia</option>
 <option>Equipo</option>
 </select>
-<select class="bg-white border border-surface-container-highest rounded-xl px-4 py-3 text-body-md focus:ring-1 focus:ring-primary min-w-[140px]">
+<select class="bg-white border border-surface-container-highest rounded-xl px-4 py-3 text-body-md focus:ring-1 focus:ring-primary w-full sm:min-w-[140px]">
 <option>Estado: Todos</option>
 <option>Activo</option>
 <option>Inactivo</option>
@@ -357,7 +357,7 @@ HTML_SOFTWARE = """
 </div>
 </section>
 <!-- Premium Data Table -->
-<section class="glass-panel rounded-2xl shadow-sm overflow-hidden mb-section-gap">
+<section class="glass-panel rounded-2xl shadow-sm overflow-x-auto overflow-y-hidden mb-section-gap">
 <div class="overflow-x-auto">
 <table class="w-full text-left border-collapse">
 <thead>

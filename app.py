@@ -244,7 +244,7 @@ class UTPHandler(BaseHTTPRequestHandler):
                 <span class="material-symbols-outlined">{icono}</span>
                 </div>
                 <div>
-                <p class="font-bold text-on-surface">{e["nombre"]}</p>
+                <p class="font-bold text-on-surface truncate max-w-[200px]">{e["nombre"]}</p>
                 <p class="text-secondary text-[12px]">{e["tipo"].capitalize()}</p>
                 </div>
                 </div>

@@ -33,6 +33,8 @@ HTML_HORARIOS = """
         .calendar-grid {
             display: grid;
             grid-template-columns: 80px repeat(5, 1fr);
+            min-width: 600px;
+            overflow-x: auto;
         }
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
@@ -208,7 +210,7 @@ HTML_HORARIOS = """
 <span class="absolute inset-y-0 left-3 flex items-center text-secondary">
 <span class="material-symbols-outlined text-[20px]">search</span>
 </span>
-<input class="pl-10 pr-4 py-1.5 bg-surface-container-low border-none rounded-full text-body-md focus:ring-1 focus:ring-primary w-64 transition-all" placeholder="Buscar horario..." type="text"/>
+<input class="pl-10 pr-4 py-1.5 bg-surface-container-low border-none rounded-full text-body-md focus:ring-1 focus:ring-primary w-full sm:w-64 transition-all" placeholder="Buscar horario..." type="text"/>
 </div>
 <button class="material-symbols-outlined text-secondary hover:text-primary transition-colors">notifications</button>
 <button class="material-symbols-outlined text-secondary hover:text-primary transition-colors">apps</button>
@@ -239,7 +241,7 @@ HTML_HORARIOS = """
 </div>
 </div>
 <!-- Quick Filters (Bento Style) -->
-<div class="grid grid-cols-4 gap-gutter mb-6">
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-gutter mb-6">
 <div class="glass-panel p-stack-md rounded-xl flex flex-col gap-2">
 <span class="text-label-md font-label-md text-secondary uppercase tracking-wider">Edificio</span>
 <select class="bg-transparent border-none p-0 focus:ring-0 font-title-lg text-title-lg text-on-surface">
@@ -277,6 +279,7 @@ HTML_HORARIOS = """
 <!-- Interactive Calendar View -->
 <section class="flex-1 px-container-padding pb-container-padding overflow-hidden flex flex-col">
 <div class="bg-white border border-surface-container-highest rounded-2xl flex-1 flex flex-col overflow-hidden shadow-sm">
+<div class="overflow-x-auto w-full">
 <!-- Days Header -->
 <div class="calendar-grid border-b border-surface-container-highest bg-surface-container-lowest">
 <div class="p-4 border-r border-surface-container-highest"></div>
@@ -319,7 +322,7 @@ HTML_HORARIOS = """
 </div>
 <!-- Grid Columns (Days) -->
 <div class="border-r border-surface-container-highest/30 relative">
-<div class="absolute top-0 left-0 right-0 m-1 p-2 bg-primary-container text-on-primary-container rounded-lg shadow-sm border-l-4 border-primary z-10 hover:scale-[1.02] transition-transform cursor-pointer" style="height: 152px;">
+<div class="absolute top-0 left-0 right-0 m-1 p-2 bg-primary-container text-on-primary-container rounded-lg shadow-sm border-l-4 border-primary z-10 hover:scale-[1.02] transition-transform cursor-pointer overflow-hidden text-ellipsis whitespace-nowrap" style="height: 152px;">
 <div class="flex justify-between items-start">
 <span class="text-label-md font-bold">CALCULO VECTORIAL</span>
 <span class="material-symbols-outlined text-xs">lock</span>
@@ -332,7 +335,7 @@ HTML_HORARIOS = """
 </div>
 </div>
 <div class="border-r border-surface-container-highest/30 bg-primary-fixed/5 relative">
-<div class="absolute top-[160px] left-0 right-0 m-1 p-2 bg-white text-on-surface border border-surface-container-highest rounded-lg shadow-sm z-10 hover:border-primary transition-all cursor-pointer" style="height: 76px;">
+<div class="absolute top-[160px] left-0 right-0 m-1 p-2 bg-white text-on-surface border border-surface-container-highest rounded-lg shadow-sm z-10 hover:border-primary transition-all cursor-pointer overflow-hidden text-ellipsis whitespace-nowrap" style="height: 76px;">
 <div class="flex justify-between items-start">
 <span class="text-label-md font-bold">REUNION FACULTAD</span>
 <div class="w-2 h-2 rounded-full bg-amber-500"></div>
@@ -341,7 +344,7 @@ HTML_HORARIOS = """
 </div>
 </div>
 <div class="border-r border-surface-container-highest/30 relative">
-<div class="absolute top-[80px] left-0 right-0 m-1 p-2 bg-tertiary-container text-on-tertiary-container rounded-lg shadow-sm z-10" style="height: 152px;">
+<div class="absolute top-[80px] left-0 right-0 m-1 p-2 bg-tertiary-container text-on-tertiary-container rounded-lg shadow-sm z-10 overflow-hidden text-ellipsis whitespace-nowrap" style="height: 152px;">
 <span class="text-label-md font-bold">INGENIERIA DE SOFTWARE</span>
 <p class="text-xs opacity-90">Auditorio Principal</p>
 <div class="mt-4 flex -space-x-2">
@@ -353,9 +356,10 @@ HTML_HORARIOS = """
 </div>
 <div class="border-r border-surface-container-highest/30 relative"></div>
 <div class="relative">
-<div class="absolute top-[320px] left-0 right-0 m-1 p-2 bg-primary/10 border border-primary/20 text-primary rounded-lg shadow-sm z-10" style="height: 152px;">
+<div class="absolute top-[320px] left-0 right-0 m-1 p-2 bg-primary/10 border border-primary/20 text-primary rounded-lg shadow-sm z-10 overflow-hidden text-ellipsis whitespace-nowrap" style="height: 152px;">
 <span class="text-label-md font-bold">TALLER DE ROBOTICA</span>
 <p class="text-xs font-medium">Laboratorio de Manufactura</p>
+</div>
 </div>
 </div>
 </div>

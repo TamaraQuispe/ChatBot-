@@ -209,7 +209,7 @@ HTML_ADMIN = """
 </button>
 <div class="relative">
 <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-secondary">search</span>
-<input class="pl-10 pr-4 py-2 bg-surface border-none rounded-full text-label-md w-64 focus:ring-1 focus:ring-primary" placeholder="Buscador global..." type="text"/>
+<input class="pl-10 pr-4 py-2 bg-surface border-none rounded-full text-label-md w-full sm:w-64 focus:ring-1 focus:ring-primary" placeholder="Buscador global..." type="text"/>
 </div>
 <nav class="hidden md:flex space-x-6">
 <a class="text-primary font-semibold border-b-2 border-primary pb-1 font-label-md text-label-md" href="#">Hoy</a>
@@ -351,7 +351,7 @@ HTML_ADMIN = """
 </div>
 <div class="col-span-12 lg:col-span-4 glass-card p-8">
 <h3 class="font-title-lg text-title-lg text-on-surface mb-6">Estado del Sistema</h3>
-<div class="grid grid-cols-2 gap-4">
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
 <div class="bg-surface-container-low p-4 rounded-xl border border-outline-variant">
 <div class="flex items-center space-x-2 mb-2">
 <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
@@ -496,7 +496,7 @@ HTML_ADMIN = """
 </div>
 <div class="glass-card p-6">
 <h3 class="font-label-md text-label-md text-secondary uppercase font-bold mb-4">Accesos Rapidos</h3>
-<div class="grid grid-cols-2 gap-3">
+<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
 <button class="flex flex-col items-center justify-center p-4 bg-surface rounded-xl hover:bg-primary hover:text-white transition-all group">
 <span class="material-symbols-outlined mb-2 group-hover:scale-110 transition-transform">add_task</span>
 <span class="text-[11px] font-bold">Nueva Reserva</span>

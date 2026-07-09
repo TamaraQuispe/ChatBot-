@@ -202,7 +202,7 @@ HTML_REPORTES = """
 <span class="absolute inset-y-0 left-3 flex items-center text-secondary">
 <span class="material-symbols-outlined text-[20px]">search</span>
 </span>
-<input class="pl-10 pr-4 py-1.5 bg-surface-container-low border-none rounded-full text-body-md focus:ring-1 focus:ring-primary w-64 transition-all" placeholder="Buscar metricas..." type="text"/>
+<input class="pl-10 pr-4 py-1.5 bg-surface-container-low border-none rounded-full text-body-md focus:ring-1 focus:ring-primary w-full sm:w-64 transition-all" placeholder="Buscar metricas..." type="text"/>
 </div>
 <button class="material-symbols-outlined text-secondary hover:text-primary transition-colors">notifications</button>
 <button class="material-symbols-outlined text-secondary hover:text-primary transition-colors">apps</button>
@@ -406,7 +406,7 @@ HTML_REPORTES = """
                         <span class="material-symbols-outlined text-[16px]">chevron_right</span>
 </button>
 </div>
-<div class="glass-panel rounded-2xl shadow-sm overflow-hidden">
+<div class="glass-panel rounded-2xl shadow-sm overflow-x-auto">
 <table class="w-full text-left border-collapse">
 <thead>
 <tr class="bg-surface-container-low border-b border-surface-container-highest">

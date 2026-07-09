@@ -210,7 +210,7 @@ HTML_RESERVAS = """
 <span class="absolute inset-y-0 left-3 flex items-center text-secondary">
 <span class="material-symbols-outlined text-[20px]">search</span>
 </span>
-<input class="pl-10 pr-4 py-1.5 bg-surface-container-low border-none rounded-full text-body-md focus:ring-1 focus:ring-primary w-64 transition-all" placeholder="Buscar reservas..." type="text"/>
+<input class="pl-10 pr-4 py-1.5 bg-surface-container-low border-none rounded-full text-body-md focus:ring-1 focus:ring-primary w-full sm:w-64 transition-all" placeholder="Buscar reservas..." type="text"/>
 </div>
 <button class="material-symbols-outlined text-secondary hover:text-primary transition-colors">notifications</button>
 <button class="material-symbols-outlined text-secondary hover:text-primary transition-colors">apps</button>
@@ -271,7 +271,7 @@ $TABLA_RESERVAS
 </div>
 </div>
 <!-- Usage Analytics -->
-<div class="grid grid-cols-2 gap-gutter">
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-gutter">
 <div class="glass-panel p-6 rounded-2xl shadow-sm">
 <div class="flex justify-between items-start mb-2">
 <span class="text-label-md text-secondary font-medium">Tasa de Ocupacion</span>
@@ -361,7 +361,7 @@ $TABLA_RESERVAS
 </div>
 </div>
 <!-- System Alerts -->
-<section class="mt-gutter grid grid-cols-3 gap-gutter mb-section-gap">
+<section class="mt-gutter grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-gutter mb-section-gap">
 <div class="glass-panel p-5 rounded-2xl shadow-sm flex items-center gap-4">
 <div class="w-12 h-12 rounded-xl bg-primary-fixed flex items-center justify-center text-primary">
 <span class="material-symbols-outlined">event_busy</span>
