@@ -13,8 +13,8 @@ pwd_docente = bcrypt.hashpw("utp123".encode("utf-8"), bcrypt.gensalt()).decode("
 pwd_admin = bcrypt.hashpw("admin123".encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
 
 usuarios_data = [
-    ("obaylon", pwd_docente, "Ing. Omara Baylon", "obaylon@utp.edu.pe", 2),
-    ("jpalma", pwd_docente, "Dr. Ricardo Palma", "jpalma@utp.edu.pe", 2),
+    ("mludeña", pwd_docente, "Mg. Carmen Ludeña", "mludeña@utp.edu.pe", 2),
+    ("jquispe", pwd_docente, "Ing. Juan Quispe", "jquispe@utp.edu.pe", 2),
     ("atorres", pwd_admin, "Ing. Luis Torres", "atorres@utp.edu.pe", 1),
 ]
 for u in usuarios_data:
@@ -25,12 +25,12 @@ for u in usuarios_data:
 
 # --- 2. DOCENTES ---
 print("Insertando docentes...")
-cur.execute("SELECT id_usuario, username FROM usuarios WHERE username IN ('obaylon','jpalma')")
+cur.execute("SELECT id_usuario, username FROM usuarios WHERE username IN ('mludeña','jquispe')")
 user_map = {r["username"]: r["id_usuario"] for r in cur.fetchall()}
 
 docentes_data = [
-    (user_map["obaylon"], "DOC001", "Ingenieria de Sistemas", "Maestria en Ingenieria de Software", "999111222", "obaylon@utp.edu.pe"),
-    (user_map["jpalma"], "DOC002", "Ingenieria Civil", "Doctorado en Estructuras", "999333444", "jpalma@utp.edu.pe"),
+    (user_map["mludeña"], "DOC001", "Ingenieria de Sistemas", "Maestria en Ingenieria de Software", "999000111", "mludeña@utp.edu.pe"),
+    (user_map["jquispe"], "DOC002", "Ingenieria de Software", "Maestria en Ciencias de la Computacion", "999000222", "jquispe@utp.edu.pe"),
 ]
 for d in docentes_data:
     cur.execute(
@@ -61,11 +61,14 @@ print("Insertando software...")
 software_data = [
     ("Windows 11 Pro", "23H2"),
     ("Visual Studio Code", "1.98"),
-    ("AutoCAD 2024", "24.3"),
-    ("MATLAB R2024a", "R2024a"),
     ("Python 3.12", "3.12.2"),
-    ("SolidWorks 2024", "SP2"),
-    ("Adobe Creative Cloud", "2024"),
+    ("SQL Server 2022", "16.0"),
+    ("Oracle SQL Developer", "23.1"),
+    ("Android Studio", "2024.2"),
+    ("Docker Desktop", "4.34"),
+    ("PostgreSQL 16", "16.4"),
+    ("Node.js 22", "22.12"),
+    ("Git", "2.47"),
 ]
 for s in software_data:
     cur.execute(
@@ -76,13 +79,13 @@ for s in software_data:
 # --- 5. EQUIPAMIENTOS ---
 print("Insertando equipamientos...")
 equipamiento_data = [
+    ("PC Dell OptiPlex 7090",),
     ("Proyector Epson EB-FH06",),
-    ("PC Dell OptiPlex 7080",),
-    ("Impresora 3D Creality Ender-3",),
     ("Pizarra Digital Smart Board 75",),
     ("Router Cisco RV340",),
-    ("Camara Documental Epson ELPDC30",),
-    ("Microscopio Digital Celestron",),
+    ("Switch Cisco SG350",),
+    ("Servidor Dell PowerEdge T140",),
+    ("Camara Web Logitech C920",),
 ]
 for e in equipamiento_data:
     cur.execute(
@@ -91,16 +94,16 @@ for e in equipamiento_data:
     )
 
 # --- 6. ESPACIOS ACADEMICOS ---
-print("Insertando espacios academicos...")
+print("Insertando espacios academicos (UTP Lima Norte)...")
 espacios_data = [
-    ("Laboratorio de Computo 1", 1, "Pabellon A - Primer Piso", 30),
-    ("Laboratorio de Computo 2", 1, "Pabellon A - Segundo Piso", 25),
-    ("Aula 101", 2, "Pabellon B - Primer Piso", 40),
-    ("Aula 102", 2, "Pabellon B - Primer Piso", 35),
-    ("Auditorio Principal", 3, "Pabellon C", 200),
-    ("Sala de Computo 1", 4, "Pabellon A - Tercer Piso", 20),
-    ("Taller de Electronica", 5, "Pabellon D", 15),
-    ("Laboratorio de Fisica", 1, "Pabellon E", 20),
+    ("Lab. de Computo - Sistemas 1", 1, "Pabellon A - Primer Piso - Sede Lima Norte", 30),
+    ("Lab. de Computo - Sistemas 2", 1, "Pabellon A - Segundo Piso - Sede Lima Norte", 25),
+    ("Lab. de Ingenieria de Software", 1, "Pabellon A - Tercer Piso - Sede Lima Norte", 20),
+    ("Aula 201 - Sistemas", 2, "Pabellon B - Segundo Piso - Sede Lima Norte", 40),
+    ("Aula 202 - Sistemas", 2, "Pabellon B - Segundo Piso - Sede Lima Norte", 35),
+    ("Auditorio de Ingenieria", 3, "Pabellon C - Sede Lima Norte", 200),
+    ("Sala de Computo - Base de Datos", 1, "Pabellon A - Tercer Piso - Sede Lima Norte", 20),
+    ("Lab. de Redes y Telecomunicaciones", 1, "Pabellon D - Sede Lima Norte", 15),
 ]
 for e in espacios_data:
     cur.execute(
@@ -123,17 +126,28 @@ bloq_map = {r["nombre"]: r["id_bloque"] for r in cur.fetchall()}
 # --- 7. ESPACIO_SOFTWARE ---
 print("Insertando espacio_software...")
 esp_sw_data = [
-    (esp_map["Laboratorio de Computo 1"], sw_map["Windows 11 Pro"]),
-    (esp_map["Laboratorio de Computo 1"], sw_map["Visual Studio Code"]),
-    (esp_map["Laboratorio de Computo 1"], sw_map["Python 3.12"]),
-    (esp_map["Laboratorio de Computo 2"], sw_map["Windows 11 Pro"]),
-    (esp_map["Laboratorio de Computo 2"], sw_map["AutoCAD 2024"]),
-    (esp_map["Laboratorio de Computo 2"], sw_map["SolidWorks 2024"]),
-    (esp_map["Sala de Computo 1"], sw_map["Windows 11 Pro"]),
-    (esp_map["Sala de Computo 1"], sw_map["MATLAB R2024a"]),
-    (esp_map["Sala de Computo 1"], sw_map["Visual Studio Code"]),
-    (esp_map["Laboratorio de Fisica"], sw_map["MATLAB R2024a"]),
-    (esp_map["Auditorio Principal"], sw_map["Windows 11 Pro"]),
+    (esp_map["Lab. de Computo - Sistemas 1"], sw_map["Windows 11 Pro"]),
+    (esp_map["Lab. de Computo - Sistemas 1"], sw_map["Visual Studio Code"]),
+    (esp_map["Lab. de Computo - Sistemas 1"], sw_map["Python 3.12"]),
+    (esp_map["Lab. de Computo - Sistemas 1"], sw_map["SQL Server 2022"]),
+    (esp_map["Lab. de Computo - Sistemas 1"], sw_map["Git"]),
+    (esp_map["Lab. de Computo - Sistemas 2"], sw_map["Windows 11 Pro"]),
+    (esp_map["Lab. de Computo - Sistemas 2"], sw_map["Visual Studio Code"]),
+    (esp_map["Lab. de Computo - Sistemas 2"], sw_map["PostgreSQL 16"]),
+    (esp_map["Lab. de Computo - Sistemas 2"], sw_map["Node.js 22"]),
+    (esp_map["Lab. de Computo - Sistemas 2"], sw_map["Git"]),
+    (esp_map["Lab. de Ingenieria de Software"], sw_map["Windows 11 Pro"]),
+    (esp_map["Lab. de Ingenieria de Software"], sw_map["Visual Studio Code"]),
+    (esp_map["Lab. de Ingenieria de Software"], sw_map["Docker Desktop"]),
+    (esp_map["Lab. de Ingenieria de Software"], sw_map["Android Studio"]),
+    (esp_map["Lab. de Ingenieria de Software"], sw_map["Python 3.12"]),
+    (esp_map["Lab. de Ingenieria de Software"], sw_map["Git"]),
+    (esp_map["Sala de Computo - Base de Datos"], sw_map["Windows 11 Pro"]),
+    (esp_map["Sala de Computo - Base de Datos"], sw_map["Oracle SQL Developer"]),
+    (esp_map["Sala de Computo - Base de Datos"], sw_map["SQL Server 2022"]),
+    (esp_map["Sala de Computo - Base de Datos"], sw_map["PostgreSQL 16"]),
+    (esp_map["Lab. de Redes y Telecomunicaciones"], sw_map["Windows 11 Pro"]),
+    (esp_map["Lab. de Redes y Telecomunicaciones"], sw_map["Docker Desktop"]),
 ]
 for es in esp_sw_data:
     cur.execute(
@@ -144,18 +158,22 @@ for es in esp_sw_data:
 # --- 8. ESPACIO_EQUIPAMIENTO ---
 print("Insertando espacio_equipamiento...")
 esp_eq_data = [
-    (esp_map["Laboratorio de Computo 1"], eq_map["PC Dell OptiPlex 7080"]),
-    (esp_map["Laboratorio de Computo 1"], eq_map["Proyector Epson EB-FH06"]),
-    (esp_map["Laboratorio de Computo 2"], eq_map["PC Dell OptiPlex 7080"]),
-    (esp_map["Laboratorio de Computo 2"], eq_map["Proyector Epson EB-FH06"]),
-    (esp_map["Aula 101"], eq_map["Proyector Epson EB-FH06"]),
-    (esp_map["Aula 101"], eq_map["Pizarra Digital Smart Board 75"]),
-    (esp_map["Auditorio Principal"], eq_map["Proyector Epson EB-FH06"]),
-    (esp_map["Auditorio Principal"], eq_map["Camara Documental Epson ELPDC30"]),
-    (esp_map["Taller de Electronica"], eq_map["Impresora 3D Creality Ender-3"]),
-    (esp_map["Taller de Electronica"], eq_map["Microscopio Digital Celestron"]),
-    (esp_map["Sala de Computo 1"], eq_map["PC Dell OptiPlex 7080"]),
-    (esp_map["Sala de Computo 1"], eq_map["Router Cisco RV340"]),
+    (esp_map["Lab. de Computo - Sistemas 1"], eq_map["PC Dell OptiPlex 7090"]),
+    (esp_map["Lab. de Computo - Sistemas 1"], eq_map["Proyector Epson EB-FH06"]),
+    (esp_map["Lab. de Computo - Sistemas 2"], eq_map["PC Dell OptiPlex 7090"]),
+    (esp_map["Lab. de Computo - Sistemas 2"], eq_map["Proyector Epson EB-FH06"]),
+    (esp_map["Lab. de Ingenieria de Software"], eq_map["PC Dell OptiPlex 7090"]),
+    (esp_map["Lab. de Ingenieria de Software"], eq_map["Proyector Epson EB-FH06"]),
+    (esp_map["Aula 201 - Sistemas"], eq_map["Proyector Epson EB-FH06"]),
+    (esp_map["Aula 201 - Sistemas"], eq_map["Pizarra Digital Smart Board 75"]),
+    (esp_map["Aula 202 - Sistemas"], eq_map["Proyector Epson EB-FH06"]),
+    (esp_map["Auditorio de Ingenieria"], eq_map["Proyector Epson EB-FH06"]),
+    (esp_map["Auditorio de Ingenieria"], eq_map["Pizarra Digital Smart Board 75"]),
+    (esp_map["Sala de Computo - Base de Datos"], eq_map["PC Dell OptiPlex 7090"]),
+    (esp_map["Sala de Computo - Base de Datos"], eq_map["Switch Cisco SG350"]),
+    (esp_map["Lab. de Redes y Telecomunicaciones"], eq_map["PC Dell OptiPlex 7090"]),
+    (esp_map["Lab. de Redes y Telecomunicaciones"], eq_map["Router Cisco RV340"]),
+    (esp_map["Lab. de Redes y Telecomunicaciones"], eq_map["Switch Cisco SG350"]),
 ]
 for ee in esp_eq_data:
     cur.execute(
@@ -164,13 +182,16 @@ for ee in esp_eq_data:
     )
 
 # --- 9. CURSOS ---
-print("Insertando cursos...")
+print("Insertando cursos de Ingenieria de Sistemas y Software...")
 cursos_data = [
-    ("CS101", "Programacion I", 4, "III", "A", 4, 2, doc_map["obaylon"], 1),
-    ("CS201", "Base de Datos", 4, "IV", "A", 3, 2, doc_map["obaylon"], 1),
-    ("CS301", "Estructuras de Datos", 4, "IV", "B", 3, 2, doc_map["jpalma"], 1),
-    ("CS401", "Ingenieria de Software", 3, "VI", "A", 3, 2, doc_map["obaylon"], 1),
-    ("CE102", "Resistencia de Materiales", 5, "IV", "A", 3, 4, doc_map["jpalma"], 2),
+    ("SI101", "Programacion I", 4, "III", "A", 4, 2, doc_map["mludeña"], 1),
+    ("SI201", "Base de Datos", 4, "IV", "A", 3, 2, doc_map["jquispe"], 1),
+    ("SI301", "Estructuras de Datos", 4, "IV", "B", 3, 2, doc_map["mludeña"], 1),
+    ("SI401", "Ingenieria de Software", 3, "VI", "A", 3, 2, doc_map["mludeña"], 1),
+    ("SW101", "Fundamentos de Ingenieria de Software", 4, "III", "A", 3, 2, doc_map["jquispe"], 1),
+    ("SW201", "Arquitectura de Software", 4, "V", "A", 3, 2, doc_map["jquispe"], 1),
+    ("SI501", "Redes y Comunicaciones", 3, "V", "A", 2, 2, doc_map["jquispe"], 1),
+    ("SI601", "Inteligencia Artificial", 4, "VII", "A", 3, 2, doc_map["mludeña"], 1),
 ]
 for c in cursos_data:
     cur.execute(
@@ -180,17 +201,18 @@ for c in cursos_data:
 
 # --- 10. RESERVAS ---
 print("Insertando reservas...")
-cur.execute("SELECT id_usuario, username FROM usuarios WHERE username IN ('obaylon','jpalma')")
+cur.execute("SELECT id_usuario, username FROM usuarios WHERE username IN ('mludeña','jquispe')")
 usr_map = {r["username"]: r["id_usuario"] for r in cur.fetchall()}
 cur.execute("SELECT id_curso, codigo FROM cursos")
 cur_map = {r["codigo"]: r["id_curso"] for r in cur.fetchall()}
 
 reservas_data = [
-    (usr_map["obaylon"], cur_map["CS101"], esp_map["Laboratorio de Computo 1"], bloq_map["BLOQUE 2 - MAÑANA"], "2026-07-10", "CONFIRMADA"),
-    (usr_map["obaylon"], cur_map["CS201"], esp_map["Sala de Computo 1"], bloq_map["BLOQUE 4 - TARDE"], "2026-07-10", "CONFIRMADA"),
-    (usr_map["jpalma"], cur_map["CS301"], esp_map["Aula 101"], bloq_map["BLOQUE 3 - MAÑANA"], "2026-07-11", "PENDIENTE"),
-    (usr_map["obaylon"], cur_map["CS401"], esp_map["Laboratorio de Computo 2"], bloq_map["BLOQUE 1 - MAÑANA"], "2026-07-14", "PENDIENTE"),
-    (usr_map["jpalma"], cur_map["CE102"], esp_map["Aula 102"], bloq_map["BLOQUE 7 - NOCHE"], "2026-07-15", "CANCELADA"),
+    (usr_map["mludeña"], cur_map["SI101"], esp_map["Lab. de Computo - Sistemas 1"], bloq_map["BLOQUE 2 - MAÑANA"], "2026-07-10", "CONFIRMADA"),
+    (usr_map["mludeña"], cur_map["SI301"], esp_map["Lab. de Computo - Sistemas 1"], bloq_map["BLOQUE 5 - TARDE"], "2026-07-10", "CONFIRMADA"),
+    (usr_map["jquispe"], cur_map["SW101"], esp_map["Lab. de Ingenieria de Software"], bloq_map["BLOQUE 3 - MAÑANA"], "2026-07-11", "CONFIRMADA"),
+    (usr_map["jquispe"], cur_map["SI501"], esp_map["Lab. de Redes y Telecomunicaciones"], bloq_map["BLOQUE 6 - TARDE"], "2026-07-14", "PENDIENTE"),
+    (usr_map["mludeña"], cur_map["SI601"], esp_map["Sala de Computo - Base de Datos"], bloq_map["BLOQUE 4 - TARDE"], "2026-07-15", "PENDIENTE"),
+    (usr_map["jquispe"], cur_map["SW201"], esp_map["Lab. de Ingenieria de Software"], bloq_map["BLOQUE 1 - MAÑANA"], "2026-07-16", "CONFIRMADA"),
 ]
 for r in reservas_data:
     cur.execute(
@@ -201,9 +223,10 @@ for r in reservas_data:
 # --- 11. PROCESAMIENTO_NLP ---
 print("Insertando procesamiento_nlp...")
 nlp_data = [
-    (usr_map["obaylon"], "Quiero reservar el laboratorio de computo para el lunes", "RESERVAR_ESPACIO", '{"intencion": "reserva", "entidad": "laboratorio"}', '{"accion": "buscar_espacio", "params": {}}', "gpt-4o-mini", 450),
-    (usr_map["obaylon"], "¿Que cursos tengo esta semana?", "CONSULTAR_HORARIO", '{"intencion": "horario", "periodo": "semanal"}', '{"accion": "listar_cursos", "params": {}}', "gpt-4o-mini", 320),
-    (usr_map["jpalma"], "Muestra las reservas del aula 101", "CONSULTAR_RESERVAS", '{"intencion": "reservas", "espacio": "Aula 101"}', '{"accion": "listar_reservas", "params": {"espacio": "Aula 101"}}', "gpt-4o-mini", 510),
+    (usr_map["mludeña"], "Quiero reservar el laboratorio de sistemas para el lunes", "RESERVAR_ESPACIO", '{"intencion": "reserva", "entidad": "laboratorio sistemas"}', '{"accion": "buscar_espacio", "params": {}}', "gpt-4o-mini", 450),
+    (usr_map["mludeña"], "Que cursos tengo esta semana en Ingenieria de Sistemas?", "CONSULTAR_HORARIO", '{"intencion": "horario", "periodo": "semanal", "carrera": "sistemas"}', '{"accion": "listar_cursos", "params": {}}', "gpt-4o-mini", 320),
+    (usr_map["jquispe"], "Muestra las reservas del laboratorio de software", "CONSULTAR_RESERVAS", '{"intencion": "reservas", "espacio": "Lab. de Ingenieria de Software"}', '{"accion": "listar_reservas", "params": {"espacio": "Lab. de Ingenieria de Software"}}', "gpt-4o-mini", 510),
+    (usr_map["jquispe"], "Agenda el aula 201 para la clase de Arquitectura de Software", "RESERVAR_ESPACIO", '{"intencion": "reserva", "espacio": "Aula 201 - Sistemas", "curso": "Arquitectura de Software"}', '{"accion": "crear_reserva", "params": {"espacio": "Aula 201 - Sistemas"}}', "gpt-4o-mini", 380),
 ]
 for n in nlp_data:
     cur.execute(
@@ -214,4 +237,4 @@ for n in nlp_data:
 conn.commit()
 cur.close()
 conn.close()
-print("\nSeed completado exitosamente!")
+print("\nSeed completado exitosamente - UTP Lima Norte | Sistemas y Software!")
