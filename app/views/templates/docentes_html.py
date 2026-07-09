@@ -182,31 +182,7 @@ HTML_DOCENTES = """
 </aside>
 <!-- Main Content Area -->
 <main class="ml-0 md:ml-64 w-full md:w-[calc(100%-16rem)] min-h-screen pb-20">
-<!-- Top Navigation Bar -->
-<header class="fixed top-0 right-0 w-full md:w-[calc(100%-16rem)] z-50 glass-panel h-16 px-container-padding flex justify-between items-center border-b border-surface-container-highest">
-<div class="flex items-center gap-4 md:gap-8">
-<button onclick="toggleSidebar()" class="md:hidden p-2 text-secondary hover:text-primary transition-colors">
-<span class="material-symbols-outlined">menu</span>
-</button>
-<span class="font-title-lg text-title-lg font-black tracking-tight text-on-surface">UTP Academic</span>
-<div class="hidden md:flex gap-6 text-label-md font-label-md">
-<a class="text-on-surface-variant hover:text-on-surface" href="#">Hoy</a>
-<a class="text-on-surface-variant hover:text-on-surface" href="#">Calendario</a>
-<a class="text-on-surface-variant hover:text-on-surface" href="#">Directorio</a>
-</div>
-</div>
-<div class="flex items-center gap-4">
-<div class="relative group">
-<span class="absolute inset-y-0 left-3 flex items-center text-secondary">
-<span class="material-symbols-outlined text-[20px]">search</span>
-</span>
-<input class="pl-10 pr-4 py-1.5 bg-surface-container-low border-none rounded-full text-body-md focus:ring-1 focus:ring-primary w-full sm:w-64 transition-all" placeholder="Buscar docente, curso o ID..." type="text"/>
-</div>
-<button class="material-symbols-outlined text-secondary hover:text-primary transition-colors">notifications</button>
-<button class="material-symbols-outlined text-secondary hover:text-primary transition-colors">apps</button>
-<div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white font-bold text-sm">A</div>
-</div>
-</header>
+$HEADER
 <div class="mt-16 px-container-padding pt-10">
 <!-- Page Header -->
 <section class="flex justify-between items-end mb-12">

@@ -29,6 +29,7 @@ from app.views.templates.docentes_html import HTML_DOCENTES
 from app.views.templates.reservas_html import HTML_RESERVAS
 from app.views.templates.reportes_html import HTML_REPORTES
 from app.views.templates.roles_html import HTML_ROLES
+from app.views.templates.header import HEADER_HTML
 from core.logger import get_logger
 from core.utils import escapar
 
@@ -193,7 +194,8 @@ class UTPHandler(BaseHTTPRequestHandler):
                 self.send_header("Location", "/login")
                 self.end_headers()
                 return
-            page_rendered = HTML_ADMIN.replace("$NOMBRE_ADMIN", SESSION["usuario"]["nombre"])
+            header_rendered = HEADER_HTML.replace("$SEARCH_PLACEHOLDER", "Buscador global...").replace("$AVATAR_LETTER", SESSION["usuario"]["nombre"][0].upper())
+            page_rendered = HTML_ADMIN.replace("$HEADER", header_rendered).replace("$NOMBRE_ADMIN", SESSION["usuario"]["nombre"])
             self.send_response(200)
             self.send_header("Content-type", "text/html; charset=utf-8")
             self.end_headers()
@@ -277,7 +279,8 @@ class UTPHandler(BaseHTTPRequestHandler):
                 </tr>
                 '''
 
-            page_rendered = HTML_SALONES.replace("$NOMBRE_ADMIN", SESSION["usuario"]["nombre"])
+            header_rendered = HEADER_HTML.replace("$SEARCH_PLACEHOLDER", "Buscar recurso...").replace("$AVATAR_LETTER", SESSION["usuario"]["nombre"][0].upper())
+            page_rendered = HTML_SALONES.replace("$HEADER", header_rendered).replace("$NOMBRE_ADMIN", SESSION["usuario"]["nombre"])
             page_rendered = page_rendered.replace("$TABLA_SALONES", filas_html)
             page_rendered = page_rendered.replace("$TOTAL_SALONES", str(len(espacios)))
             self.send_response(200)
@@ -359,7 +362,8 @@ class UTPHandler(BaseHTTPRequestHandler):
                 </tr>
                 '''
 
-            page_rendered = HTML_SOFTWARE.replace("$NOMBRE_ADMIN", SESSION["usuario"]["nombre"])
+            header_rendered = HEADER_HTML.replace("$SEARCH_PLACEHOLDER", "Buscar recurso...").replace("$AVATAR_LETTER", SESSION["usuario"]["nombre"][0].upper())
+            page_rendered = HTML_SOFTWARE.replace("$HEADER", header_rendered).replace("$NOMBRE_ADMIN", SESSION["usuario"]["nombre"])
             page_rendered = page_rendered.replace("$TABLA_SOFTWARE", filas_html)
             page_rendered = page_rendered.replace("$TOTAL_ACTIVOS", str(len(activos)))
             self.send_response(200)
@@ -372,7 +376,8 @@ class UTPHandler(BaseHTTPRequestHandler):
                 self.send_header("Location", "/login")
                 self.end_headers()
                 return
-            page_rendered = HTML_HORARIOS
+            header_rendered = HEADER_HTML.replace("$SEARCH_PLACEHOLDER", "Buscar horario...").replace("$AVATAR_LETTER", SESSION["usuario"]["nombre"][0].upper())
+            page_rendered = HTML_HORARIOS.replace("$HEADER", header_rendered)
             self.send_response(200)
             self.send_header("Content-type", "text/html; charset=utf-8")
             self.end_headers()
@@ -427,7 +432,8 @@ class UTPHandler(BaseHTTPRequestHandler):
                 </td>
                 </tr>
                 '''
-            page_rendered = HTML_DOCENTES.replace("$TABLA_DOCENTES", filas_html)
+            header_rendered = HEADER_HTML.replace("$SEARCH_PLACEHOLDER", "Buscar docente, curso o ID...").replace("$AVATAR_LETTER", SESSION["usuario"]["nombre"][0].upper())
+            page_rendered = HTML_DOCENTES.replace("$HEADER", header_rendered).replace("$TABLA_DOCENTES", filas_html)
             page_rendered = page_rendered.replace("$TOTAL_DOCENTES", str(len(docentes)))
             self.send_response(200)
             self.send_header("Content-type", "text/html; charset=utf-8")
@@ -488,7 +494,8 @@ class UTPHandler(BaseHTTPRequestHandler):
                 <td class="py-4 text-right">{acciones}</td>
                 </tr>
                 '''
-            page_rendered = HTML_RESERVAS.replace("$TABLA_RESERVAS", filas_html)
+            header_rendered = HEADER_HTML.replace("$SEARCH_PLACEHOLDER", "Buscar reserva...").replace("$AVATAR_LETTER", SESSION["usuario"]["nombre"][0].upper())
+            page_rendered = HTML_RESERVAS.replace("$HEADER", header_rendered).replace("$TABLA_RESERVAS", filas_html)
             self.send_response(200)
             self.send_header("Content-type", "text/html; charset=utf-8")
             self.end_headers()
@@ -531,7 +538,8 @@ class UTPHandler(BaseHTTPRequestHandler):
                 </td>
                 </tr>
                 '''
-            page_rendered = HTML_REPORTES.replace("$TABLA_FACULTADES", filas_html)
+            header_rendered = HEADER_HTML.replace("$SEARCH_PLACEHOLDER", "Buscar reporte...").replace("$AVATAR_LETTER", SESSION["usuario"]["nombre"][0].upper())
+            page_rendered = HTML_REPORTES.replace("$HEADER", header_rendered).replace("$TABLA_FACULTADES", filas_html)
             self.send_response(200)
             self.send_header("Content-type", "text/html; charset=utf-8")
             self.end_headers()
@@ -608,7 +616,8 @@ class UTPHandler(BaseHTTPRequestHandler):
                 </td>
                 </tr>
                 '''
-            page_rendered = HTML_ROLES.replace("$FILAS_PERMISOS", filas_permisos)
+            header_rendered = HEADER_HTML.replace("$SEARCH_PLACEHOLDER", "Buscar usuario...").replace("$AVATAR_LETTER", SESSION["usuario"]["nombre"][0].upper())
+            page_rendered = HTML_ROLES.replace("$HEADER", header_rendered).replace("$FILAS_PERMISOS", filas_permisos)
             page_rendered = page_rendered.replace("$TABLA_USUARIOS", filas_usuarios)
             self.send_response(200)
             self.send_header("Content-type", "text/html; charset=utf-8")
