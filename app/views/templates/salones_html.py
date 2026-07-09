@@ -136,8 +136,10 @@ HTML_SALONES = """
     </style>
 </head>
 <body class="font-body-md text-body-md">
+<!-- Mobile Overlay -->
+<div id="sidebarOverlay" class="fixed inset-0 bg-black/40 z-30 hidden md:hidden transition-opacity duration-300" onclick="toggleSidebar()"></div>
 <!-- Side Navigation Shell -->
-<aside class="h-screen w-64 fixed left-0 top-0 flex flex-col border-r border-surface-container-highest bg-white z-[60]">
+<aside id="sidebar" class="h-screen w-64 fixed left-0 top-0 flex flex-col border-r border-surface-container-highest bg-white z-[60] transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
 <div class="flex flex-col h-full py-8 px-6">
 <div class="mb-10">
 <span class="font-headline-md text-headline-md font-bold text-primary">UTP Admin</span>
@@ -190,10 +192,13 @@ HTML_SALONES = """
 </div>
 </aside>
 <!-- Main Content Area -->
-<main class="ml-64 min-h-screen pb-20">
+<main class="ml-0 md:ml-64 w-full md:w-[calc(100%-16rem)] min-h-screen pb-20">
 <!-- Top Navigation Bar -->
-<header class="fixed top-0 right-0 w-[calc(100%-16rem)] z-50 glass-panel h-16 px-container-padding flex justify-between items-center border-b border-surface-container-highest">
-<div class="flex items-center gap-8">
+<header class="fixed top-0 right-0 w-full md:w-[calc(100%-16rem)] z-50 glass-panel h-16 px-container-padding flex justify-between items-center border-b border-surface-container-highest">
+<div class="flex items-center gap-4 md:gap-8">
+<button onclick="toggleSidebar()" class="md:hidden p-2 text-secondary hover:text-primary transition-colors">
+<span class="material-symbols-outlined">menu</span>
+</button>
 <span class="font-title-lg text-title-lg font-black tracking-tight text-on-surface">UTP Academic</span>
 <div class="hidden md:flex gap-6 text-label-md font-label-md">
 <a class="text-on-surface-variant hover:text-on-surface" href="#">Hoy</a>
@@ -397,6 +402,20 @@ $TABLA_SALONES
             searchInput.addEventListener('blur', () => {
                 searchInput.parentElement.classList.remove('ring-1', 'ring-primary');
             });
+        }
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            const isOpen = sidebar.classList.contains('translate-x-0');
+            if (isOpen) {
+                sidebar.classList.remove('translate-x-0');
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('hidden');
+            } else {
+                sidebar.classList.remove('-translate-x-full');
+                sidebar.classList.add('translate-x-0');
+                overlay.classList.remove('hidden');
+            }
         }
     </script>
 </body></html>

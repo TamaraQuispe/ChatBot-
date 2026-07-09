@@ -50,8 +50,11 @@ try{
 </head>
 <body class="overflow-hidden min-h-screen">
 
+<!-- Mobile Overlay -->
+<div id="sidebarOverlay" class="fixed inset-0 bg-black/40 z-30 hidden md:hidden transition-opacity duration-300" onclick="toggleSidebar()"></div>
+
 <!-- Sidebar -->
-<aside class="fixed left-0 top-0 h-screen w-[260px] border-r border-black/5 bg-white/30 backdrop-blur-xl flex flex-col z-50">
+<aside id="sidebar" class="fixed left-0 top-0 h-screen w-[260px] border-r border-black/5 bg-white/30 backdrop-blur-xl flex flex-col z-50 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
     <div class="px-8 py-10">
         <div class="flex items-center gap-3">
             <div class="w-10 h-10 bg-utp-red-institutional rounded-xl flex items-center justify-center shadow-lg shadow-utp-red-institutional/20">
@@ -93,13 +96,18 @@ try{
 </aside>
 
 <!-- Main Content -->
-<main class="ml-[260px] h-screen flex flex-col relative overflow-hidden">
+<main class="ml-0 md:ml-[260px] w-full md:w-[calc(100%-260px)] h-screen flex flex-col relative overflow-hidden">
     <!-- Header -->
-    <header class="h-20 flex justify-between items-center px-10 z-40 bg-white/10">
-        <div class="flex-1 max-w-lg">
-            <div class="relative group">
-                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-secondary/60 text-[20px]">search</span>
-                <input class="w-full bg-white/40 border border-white/60 rounded-2xl py-2.5 pl-12 pr-4 text-sm focus:ring-2 focus:ring-utp-red-institutional/10 focus:bg-white/80 outline-none transition-all placeholder:text-text-secondary/40 shadow-sm" placeholder="Buscar en la conversacion..." type="text"/>
+    <header class="h-20 flex justify-between items-center px-4 md:px-10 z-40 bg-white/10">
+        <div class="flex items-center gap-4 md:gap-6 flex-1">
+            <button onclick="toggleSidebar()" class="md:hidden p-2 text-text-secondary hover:text-utp-red-institutional transition-colors">
+                <span class="material-symbols-outlined">menu</span>
+            </button>
+            <div class="flex-1 max-w-lg">
+                <div class="relative group">
+                    <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-secondary/60 text-[20px]">search</span>
+                    <input class="w-full bg-white/40 border border-white/60 rounded-2xl py-2.5 pl-12 pr-4 text-sm focus:ring-2 focus:ring-utp-red-institutional/10 focus:bg-white/80 outline-none transition-all placeholder:text-text-secondary/40 shadow-sm" placeholder="Buscar en la conversacion..." type="text"/>
+                </div>
             </div>
         </div>
 
@@ -162,6 +170,20 @@ try{
         chatInput.addEventListener('blur', () => {
             chatInput.closest('form').classList.remove('shadow-[0_15px_50px_rgba(0,0,0,0.1)]');
         });
+    }
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        const isOpen = sidebar.classList.contains('translate-x-0');
+        if (isOpen) {
+            sidebar.classList.remove('translate-x-0');
+            sidebar.classList.add('-translate-x-full');
+            overlay.classList.add('hidden');
+        } else {
+            sidebar.classList.remove('-translate-x-full');
+            sidebar.classList.add('translate-x-0');
+            overlay.classList.remove('hidden');
+        }
     }
 </script>
 </body></html>

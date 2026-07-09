@@ -142,9 +142,11 @@ HTML_ADMIN = """
         }
     </style>
 </head>
-<body class="flex">
+<body class="flex min-h-screen">
+<!-- Mobile Overlay -->
+<div id="sidebarOverlay" class="fixed inset-0 bg-black/40 z-30 hidden md:hidden transition-opacity duration-300" onclick="toggleSidebar()"></div>
 <!-- SideNavBar -->
-<aside class="h-screen w-64 fixed left-0 top-0 flex flex-col border-r border-surface-container-highest bg-white z-50">
+<aside id="sidebar" class="h-screen w-64 fixed left-0 top-0 flex flex-col border-r border-surface-container-highest bg-white z-50 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
 <div class="flex flex-col h-full py-8">
 <div class="px-8 mb-10">
 <h1 class="font-headline-md text-headline-md font-bold text-primary">UTP Admin</h1>
@@ -197,11 +199,14 @@ HTML_ADMIN = """
 </div>
 </aside>
 <!-- Main Content Area -->
-<main class="ml-64 w-[calc(100%-16rem)] min-h-screen pb-20">
+<main class="ml-0 md:ml-64 w-full md:w-[calc(100%-16rem)] min-h-screen pb-20">
 <!-- TopNavBar -->
-<header class="fixed top-0 right-0 w-[calc(100%-16rem)] z-40 bg-white/70 backdrop-blur-md border-b border-surface-container-highest">
+<header class="fixed top-0 right-0 w-full md:w-[calc(100%-16rem)] z-40 bg-white/70 backdrop-blur-md border-b border-surface-container-highest">
 <div class="flex justify-between items-center h-16 px-container-padding">
-<div class="flex items-center space-x-8">
+<div class="flex items-center space-x-4 md:space-x-8">
+<button onclick="toggleSidebar()" class="md:hidden p-2 text-secondary hover:text-primary transition-colors">
+<span class="material-symbols-outlined">menu</span>
+</button>
 <div class="relative">
 <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-secondary">search</span>
 <input class="pl-10 pr-4 py-2 bg-surface border-none rounded-full text-label-md w-64 focus:ring-1 focus:ring-primary" placeholder="Buscador global..." type="text"/>
@@ -534,6 +539,20 @@ HTML_ADMIN = """
                 card.style.transform = 'translateY(0px)';
             });
         });
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            const isOpen = sidebar.classList.contains('translate-x-0');
+            if (isOpen) {
+                sidebar.classList.remove('translate-x-0');
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('hidden');
+            } else {
+                sidebar.classList.remove('-translate-x-full');
+                sidebar.classList.add('translate-x-0');
+                overlay.classList.remove('hidden');
+            }
+        }
     </script>
 </body></html>
 """
