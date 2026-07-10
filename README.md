@@ -42,7 +42,7 @@ python3 app.py
 ## Despliegue en Vercel
 
 ```bash
-vercel --prod
+https://chatbot-tau-five-21.vercel.app/
 ```
 
 Requiere variable de entorno `DATABASE_URL` con la conexión a PostgreSQL.
