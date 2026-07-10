@@ -1,0 +1,7 @@
+.vercel
+.env
+logs/
+*.sql
+venv/
+__pycache__/
+*.pyc
