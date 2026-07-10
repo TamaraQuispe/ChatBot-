@@ -20,6 +20,8 @@ class Database:
         try:
             conn = psycopg2.connect(self.database_url)
             conn.cursor_factory = RealDictCursor
+            with conn.cursor() as cur:
+                cur.execute("SET search_path TO public")
             return conn
         except psycopg2.Error as e:
             logger.error(f"Error de conexion PostgreSQL: {e}")
