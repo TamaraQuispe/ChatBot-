@@ -324,3 +324,5 @@ LINE 1: SELECT r.*, e.nombre AS espacio_nombre, e.tipo, u.nombre AS ...
 [2026-07-09 18:51:13] INFO - Base de datos inicializada correctamente
 [2026-07-09 18:51:13] INFO - Servidor UTP iniciado en http://localhost:8000
 [2026-07-09 18:51:13] INFO - Usando PostgreSQL en la nube (Supabase)
+[2026-07-09 19:03:40] INFO - Columnas disponibles en usuarios: ['id_usuario', 'username', 'password_hash', 'nombre', 'correo', 'id_rol', 'estado', 'fecha_creacion', 'fecha_actualizacion', 'estado_int']
+[2026-07-09 19:03:40] INFO - Rol obtenido de tabla roles: Admin
