@@ -1,3 +1,4 @@
+"""Docentes page template."""
 HTML_DOCENTES = """
 <!DOCTYPE html>
 
@@ -147,10 +148,7 @@ HTML_DOCENTES = """
 <span class="material-symbols-outlined">computer</span>
 <span class="font-medium">Software y Equipos</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-secondary hover:bg-surface-container-low transition-colors duration-200" href="/admin/horarios">
-<span class="material-symbols-outlined">calendar_today</span>
-<span class="font-medium">Horarios</span>
-</a>
+
 <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-primary font-bold border-r-4 border-primary bg-surface-container-low" href="/admin/docentes">
 <span class="material-symbols-outlined">person</span>
 <span class="font-bold">Docentes</span>
@@ -159,20 +157,13 @@ HTML_DOCENTES = """
 <span class="material-symbols-outlined">event_seat</span>
 <span class="font-medium">Reservas</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-secondary hover:bg-surface-container-low transition-colors duration-200" href="/admin/reportes">
-<span class="material-symbols-outlined">assessment</span>
-<span class="font-medium">Reportes</span>
-</a>
+
 <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-secondary hover:bg-surface-container-low transition-colors duration-200" href="/admin/roles">
 <span class="material-symbols-outlined">admin_panel_settings</span>
-<span class="font-medium">Roles y Permisos</span>
+<span class="font-medium">Roles</span>
 </a>
 </nav>
 <div class="pt-6 border-t border-surface-container-highest space-y-2">
-<button class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-secondary hover:bg-surface-container-low transition-colors">
-<span class="material-symbols-outlined">account_circle</span>
-<span class="font-medium text-body-md">Perfil</span>
-</button>
 <a class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-error hover:bg-error-container/10 transition-colors" href="/logout">
 <span class="material-symbols-outlined">logout</span>
 <span class="font-medium text-body-md">Cerrar Sesion</span>
@@ -190,19 +181,9 @@ $HEADER
 <h1 class="font-headline-lg text-headline-lg text-on-surface">Directorio de Docentes</h1>
 <p class="text-secondary mt-1">Gestion integral de la plana docente y asignaciones academicas.</p>
 </div>
-<div class="flex gap-3">
-<button class="px-5 py-2.5 rounded-xl border border-surface-container-highest bg-white text-on-surface font-medium hover:bg-surface-container-low transition-all flex items-center gap-2">
-<span class="material-symbols-outlined text-[18px]">ios_share</span>
-                        Exportar
-                    </button>
-<button class="px-5 py-2.5 rounded-xl bg-primary text-white font-bold hover:opacity-90 transition-all flex items-center gap-2 shadow-lg shadow-primary/20">
-<span class="material-symbols-outlined text-[18px]">person_add</span>
-                        Nuevo Docente
-                    </button>
-</div>
 </section>
 <!-- KPI Cards -->
-<section class="grid grid-cols-1 md:grid-cols-3 gap-gutter mb-section-gap">
+<section class="grid grid-cols-1 md:grid-cols-2 gap-gutter mb-section-gap">
 <div class="glass-panel p-6 rounded-2xl shadow-sm hover:shadow-md transition-all">
 <div class="flex justify-between items-start mb-4">
 <div class="p-2 bg-surface-container-low rounded-lg">
@@ -245,23 +226,6 @@ $HEADER
 <div class="w-2 h-2 rounded-full bg-primary/80"></div>
 <div class="w-2 h-2 rounded-full bg-primary"></div>
 </div>
-</div>
-<div class="glass-panel p-6 rounded-2xl shadow-sm hover:shadow-md transition-all">
-<div class="flex justify-between items-start mb-4">
-<div class="p-2 bg-surface-container-low rounded-lg">
-<span class="material-symbols-outlined text-error">pending_actions</span>
-</div>
-<div class="text-right">
-<span class="text-[11px] font-bold text-error bg-error-container/20 px-2 py-0.5 rounded-full flex items-center gap-1">
-<span class="material-symbols-outlined text-[14px]">priority_high</span> Urgente
-</span>
-</div>
-</div>
-<h3 class="text-secondary text-label-md uppercase tracking-wider mb-1">Solicitudes Pendientes</h3>
-<div class="flex items-end justify-between">
-<span class="text-headline-md font-bold">24</span>
-</div>
-<p class="text-label-md text-secondary mt-4 font-mono-sm">Queue ID: UTP-ADM-24-X</p>
 </div>
 </section>
 <!-- Main Filter Bar -->

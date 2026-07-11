@@ -1,3 +1,4 @@
+"""Horarios page template."""
 HTML_HORARIOS = """
 <!DOCTYPE html>
 
@@ -157,10 +158,7 @@ HTML_HORARIOS = """
 <span class="material-symbols-outlined">computer</span>
 <span class="font-medium">Software y Equipos</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-primary font-bold border-r-4 border-primary bg-surface-container-low" href="/admin/horarios">
-<span class="material-symbols-outlined">calendar_today</span>
-<span class="font-bold">Horarios</span>
-</a>
+
 <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-secondary hover:bg-surface-container-low transition-colors duration-200" href="/admin/docentes">
 <span class="material-symbols-outlined">person</span>
 <span class="font-medium">Docentes</span>
@@ -169,13 +167,10 @@ HTML_HORARIOS = """
 <span class="material-symbols-outlined">event_seat</span>
 <span class="font-medium">Reservas</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-secondary hover:bg-surface-container-low transition-colors duration-200" href="/admin/reportes">
-<span class="material-symbols-outlined">assessment</span>
-<span class="font-medium">Reportes</span>
-</a>
+
 <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-secondary hover:bg-surface-container-low transition-colors duration-200" href="/admin/roles">
 <span class="material-symbols-outlined">admin_panel_settings</span>
-<span class="font-medium">Roles y Permisos</span>
+<span class="font-medium">Roles</span>
 </a>
 </nav>
 <div class="pt-6 border-t border-surface-container-highest space-y-2">

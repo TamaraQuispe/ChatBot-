@@ -1,3 +1,4 @@
+"""Login page template."""
 HTML_LOGIN = """
 <!DOCTYPE html>
 
@@ -153,13 +154,13 @@ HTML_LOGIN = """
 <div class="relative z-10 flex flex-col justify-center h-full px-margin-mobile md:px-margin-desktop text-white max-w-2xl py-12">
 <div class="mb-8">
 <span class="inline-block py-1 px-3 bg-white/20 backdrop-blur-md rounded-full font-label-md text-label-md uppercase mb-4 tracking-wider">
-                        UTP Peru • Inteligencia Artificial
+                        UTP Peru • Sede Norte
                     </span>
 <h1 class="font-display-lg text-display-lg leading-tight md:text-5xl lg:text-6xl font-extrabold mb-6">
                         Tu asistente academico, <span class="text-primary-fixed">impulsado por IA</span>
 </h1>
 <p class="font-body-lg text-body-lg opacity-90 mb-10 max-w-lg">
-                        La plataforma inteligente disenada para optimizar la gestion docente y potenciar la experiencia educativa en todo momento.
+                        Reserva tus aulas de forma rapida y sencilla en cualquier momento.
                     </p>
 </div>
 <!-- Benefits Grid -->
@@ -175,12 +176,6 @@ HTML_LOGIN = """
 <span class="material-symbols-outlined text-white">smart_toy</span>
 </div>
 <span class="font-body-md text-body-md font-semibold">Gestion de aulas inteligente</span>
-</div>
-<div class="benefit-card p-4 rounded-xl flex items-center gap-4">
-<div class="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center">
-<span class="material-symbols-outlined text-white">support_agent</span>
-</div>
-<span class="font-body-md text-body-md font-semibold">Soporte docente 24/7</span>
 </div>
 </div>
 </div>
@@ -207,12 +202,12 @@ HTML_LOGIN = """
 <!-- Form -->
 <form class="space-y-6" action="/login" method="POST">
 <div class="space-y-1.5">
-<label class="font-label-md text-label-md text-on-surface-variant block ml-1" for="username">Correo institucional</label>
+<label class="font-label-md text-label-md text-on-surface-variant block ml-1" for="username">Codigo de Docente</label>
 <div class="relative group">
 <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-secondary group-focus-within:text-primary transition-colors">
-<span class="material-symbols-outlined text-body-lg">alternate_email</span>
+<span class="material-symbols-outlined text-body-lg">person</span>
 </div>
-<input class="block w-full pl-11 pr-4 py-3.5 bg-white border border-outline-variant rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none font-body-md text-on-surface" id="username" name="username" placeholder="usuario@utp.edu.pe" required="" type="text"/>
+<input class="block w-full pl-11 pr-4 py-3.5 bg-white border border-outline-variant rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none font-body-md text-on-surface" id="username" name="username" placeholder="C0000000" required="" type="text"/>
 </div>
 </div>
 <div class="space-y-1.5">

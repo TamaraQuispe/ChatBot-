@@ -1,3 +1,4 @@
+"""Software page template."""
 HTML_SOFTWARE = """
 <!DOCTYPE html>
 
@@ -169,10 +170,7 @@ HTML_SOFTWARE = """
 <span class="material-symbols-outlined">computer</span>
 <span class="font-bold">Software y Equipos</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-secondary hover:bg-surface-container-low transition-colors duration-200" href="/admin/horarios">
-<span class="material-symbols-outlined">calendar_today</span>
-<span class="font-medium">Horarios</span>
-</a>
+
 <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-secondary hover:bg-surface-container-low transition-colors duration-200" href="/admin/docentes">
 <span class="material-symbols-outlined">person</span>
 <span class="font-medium">Docentes</span>
@@ -181,20 +179,13 @@ HTML_SOFTWARE = """
 <span class="material-symbols-outlined">event_seat</span>
 <span class="font-medium">Reservas</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-secondary hover:bg-surface-container-low transition-colors duration-200" href="/admin/reportes">
-<span class="material-symbols-outlined">assessment</span>
-<span class="font-medium">Reportes</span>
-</a>
+
 <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-secondary hover:bg-surface-container-low transition-colors duration-200" href="/admin/roles">
 <span class="material-symbols-outlined">admin_panel_settings</span>
-<span class="font-medium">Roles y Permisos</span>
+<span class="font-medium">Roles</span>
 </a>
 </nav>
 <div class="pt-6 border-t border-surface-container-highest space-y-2">
-<button class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-secondary hover:bg-surface-container-low transition-colors">
-<span class="material-symbols-outlined">account_circle</span>
-<span class="font-medium text-body-md">Perfil</span>
-</button>
 <a class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-error hover:bg-error-container/10 transition-colors" href="/logout">
 <span class="material-symbols-outlined">logout</span>
 <span class="font-medium text-body-md">Cerrar Sesion</span>
@@ -210,17 +201,7 @@ $HEADER
 <section class="flex justify-between items-end mb-12">
 <div>
 <h1 class="font-headline-lg text-headline-lg text-on-surface">Software y Equipos</h1>
-<p class="text-secondary mt-1">Inventario tecnologico, licencias, mantenimiento y monitoreo de activos informaticos.</p>
-</div>
-<div class="flex gap-3">
-<button class="px-5 py-2.5 rounded-xl border border-surface-container-highest bg-white text-on-surface font-medium hover:bg-surface-container-low transition-all flex items-center gap-2">
-<span class="material-symbols-outlined text-[18px]">ios_share</span>
-                        Exportar
-                    </button>
-<button class="px-5 py-2.5 rounded-xl bg-primary text-white font-bold hover:opacity-90 transition-all flex items-center gap-2 shadow-lg shadow-primary/20">
-<span class="material-symbols-outlined text-[18px]">add_circle</span>
-                        Agregar Activo
-                    </button>
+
 </div>
 </section>
 <!-- KPI Grid -->
@@ -259,44 +240,6 @@ $HEADER
 <div class="w-24 h-10">
 <svg class="w-full h-full" viewbox="0 0 100 40">
 <path class="sparkline-svg" d="M0,10 Q10,25 20,20 T40,35 T60,15 T80,25 T100,5" style="stroke: #f59e0b;"></path>
-</svg>
-</div>
-</div>
-</div>
-<div class="glass-panel p-6 rounded-2xl shadow-sm hover:shadow-md transition-all">
-<div class="flex justify-between items-start mb-4">
-<div class="p-2 bg-surface-container-low rounded-lg">
-<span class="material-symbols-outlined text-primary">build</span>
-</div>
-<div class="text-right">
-<span class="text-[11px] font-bold text-error bg-error-container/20 px-2 py-0.5 rounded-full">Atencion</span>
-</div>
-</div>
-<h3 class="text-secondary text-label-md uppercase tracking-wider mb-1">En Mantenimiento</h3>
-<div class="flex items-end justify-between">
-<span class="text-headline-md font-bold">5</span>
-<div class="w-24 h-10">
-<svg class="w-full h-full" viewbox="0 0 100 40">
-<path class="sparkline-svg" d="M0,35 L20,32 L40,38 L60,20 L80,25 L100,5" style="stroke: #ba1a1a;"></path>
-</svg>
-</div>
-</div>
-</div>
-<div class="glass-panel p-6 rounded-2xl shadow-sm hover:shadow-md transition-all">
-<div class="flex justify-between items-start mb-4">
-<div class="p-2 bg-surface-container-low rounded-lg">
-<span class="material-symbols-outlined text-primary">pie_chart</span>
-</div>
-<div class="text-right">
-<span class="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">87%</span>
-</div>
-</div>
-<h3 class="text-secondary text-label-md uppercase tracking-wider mb-1">Uso de Software</h3>
-<div class="flex items-end justify-between">
-<span class="text-headline-md font-bold">67.2%</span>
-<div class="w-24 h-10">
-<svg class="w-full h-full" viewbox="0 0 100 40">
-<path class="sparkline-svg" d="M0,38 C20,38 20,10 40,10 C60,10 60,25 80,25 C100,25 100,5 100,5"></path>
 </svg>
 </div>
 </div>
@@ -361,61 +304,6 @@ $TABLA_SOFTWARE
 <button class="p-2 rounded-lg border border-surface-container-highest hover:bg-surface-container-low transition-colors">
 <span class="material-symbols-outlined">chevron_right</span>
 </button>
-</div>
-</div>
-</section>
-<!-- System Health Section -->
-<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter mb-section-gap">
-<div class="glass-panel p-6 rounded-2xl shadow-sm">
-<div class="flex items-center gap-3 mb-4">
-<div class="w-3 h-3 rounded-full bg-green-500"></div>
-<h3 class="font-bold text-on-surface">Servidores</h3>
-</div>
-<div class="health-bar mb-2">
-<div class="health-bar-fill bg-green-500" style="width: 98%"></div>
-</div>
-<div class="flex justify-between text-label-md text-secondary">
-<span>98% Disponibilidad</span>
-<span>Lat: 12ms</span>
-</div>
-</div>
-<div class="glass-panel p-6 rounded-2xl shadow-sm">
-<div class="flex items-center gap-3 mb-4">
-<div class="w-3 h-3 rounded-full bg-green-500"></div>
-<h3 class="font-bold text-on-surface">Base de Datos</h3>
-</div>
-<div class="health-bar mb-2">
-<div class="health-bar-fill bg-green-500" style="width: 95%"></div>
-</div>
-<div class="flex justify-between text-label-md text-secondary">
-<span>95% Rendimiento</span>
-<span>Sincronizada</span>
-</div>
-</div>
-<div class="glass-panel p-6 rounded-2xl shadow-sm">
-<div class="flex items-center gap-3 mb-4">
-<div class="w-3 h-3 rounded-full bg-amber-500"></div>
-<h3 class="font-bold text-on-surface">Red</h3>
-</div>
-<div class="health-bar mb-2">
-<div class="health-bar-fill bg-amber-500" style="width: 72%"></div>
-</div>
-<div class="flex justify-between text-label-md text-secondary">
-<span>72% Capacidad</span>
-<span>Trafico: 850 Mbps</span>
-</div>
-</div>
-<div class="glass-panel p-6 rounded-2xl shadow-sm">
-<div class="flex items-center gap-3 mb-4">
-<div class="w-3 h-3 rounded-full bg-primary"></div>
-<h3 class="font-bold text-on-surface">Licencias</h3>
-</div>
-<div class="health-bar mb-2">
-<div class="health-bar-fill bg-primary" style="width: 88%"></div>
-</div>
-<div class="flex justify-between text-label-md text-secondary">
-<span>88% Vigentes</span>
-<span>12% Prox. Vencer</span>
 </div>
 </div>
 </section>

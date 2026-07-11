@@ -1,3 +1,4 @@
+"""Chat page template."""
 HTML_CHAT = """
 <!DOCTYPE html>
 <html class="light" lang="es"><head>
@@ -68,26 +69,22 @@ try{
     </div>
 
     <nav class="flex-1 px-4 space-y-1">
-        <a class="flex items-center gap-4 px-4 py-3 rounded-2xl text-text-secondary hover:bg-black/5 hover:text-text-primary transition-all duration-200" href="#">
+        <a class="flex items-center gap-4 px-4 py-3 rounded-2xl text-text-secondary hover:bg-black/5 hover:text-text-primary transition-all duration-200" href="#" onclick="showView('chat'); return false;">
             <span class="material-symbols-outlined" data-icon="chat">chat</span>
             <span class="font-body-md font-medium">Chat Actual</span>
         </a>
-        <a class="flex items-center gap-4 px-4 py-3 rounded-2xl text-text-secondary hover:bg-black/5 hover:text-text-primary transition-all duration-200" href="#">
+        <a class="flex items-center gap-4 px-4 py-3 rounded-2xl text-text-secondary hover:bg-black/5 hover:text-text-primary transition-all duration-200" href="#" onclick="showView('historial'); return false;">
             <span class="material-symbols-outlined" data-icon="history">history</span>
             <span class="font-body-md font-medium">Historial</span>
         </a>
-        <a class="flex items-center gap-4 px-4 py-3 rounded-2xl text-text-secondary hover:bg-black/5 hover:text-text-primary transition-all duration-200" href="#">
-            <span class="material-symbols-outlined" data-icon="explore">explore</span>
-            <span class="font-body-md font-medium">Explorar</span>
+        <a class="flex items-center gap-4 px-4 py-3 rounded-2xl text-text-secondary hover:bg-black/5 hover:text-text-primary transition-all duration-200" href="#" onclick="showView('reservas'); return false;">
+            <span class="material-symbols-outlined" data-icon="event_available">event_available</span>
+            <span class="font-body-md font-medium">Mis Reservas</span>
         </a>
     </nav>
 
     <div class="px-4 pb-10 space-y-1">
         <div class="h-px bg-black/5 mx-4 mb-4"></div>
-        <a class="flex items-center gap-4 px-4 py-3 rounded-2xl text-text-secondary hover:bg-black/5 hover:text-text-primary transition-all duration-200" href="#">
-            <span class="material-symbols-outlined" data-icon="settings">settings</span>
-            <span class="font-body-md font-medium">Configuracion</span>
-        </a>
         <a class="flex items-center gap-4 px-4 py-3 rounded-2xl text-error/80 hover:bg-error/5 transition-all duration-200" href="/logout">
             <span class="material-symbols-outlined" data-icon="logout">logout</span>
             <span class="font-body-md font-medium">Cerrar Sesion</span>
@@ -103,12 +100,6 @@ try{
             <button onclick="toggleSidebar()" class="md:hidden p-2 text-text-secondary hover:text-utp-red-institutional transition-colors">
                 <span class="material-symbols-outlined">menu</span>
             </button>
-            <div class="flex-1 max-w-lg">
-                <div class="relative group">
-                    <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-text-secondary/60 text-[20px]">search</span>
-                    <input class="w-full bg-white/40 border border-white/60 rounded-2xl py-2.5 pl-12 pr-4 text-sm focus:ring-2 focus:ring-utp-red-institutional/10 focus:bg-white/80 outline-none transition-all placeholder:text-text-secondary/40 shadow-sm" placeholder="Buscar en la conversacion..." type="text"/>
-                </div>
-            </div>
         </div>
 
         <div class="flex items-center gap-6">
@@ -128,11 +119,83 @@ try{
 
     <!-- Chat Space -->
     <div class="flex-1 flex overflow-hidden">
-        <section class="flex-1 flex flex-col relative overflow-y-auto scrollbar-hide w-full">
+        <section class="flex-1 flex flex-col relative overflow-y-auto scrollbar-hide w-full" id="view-chat">
             <div class="max-w-4xl mx-auto w-full px-12 pt-12 pb-48 space-y-12" id="chat-messages">
 
                 $HISTORIAL_CHAT
 
+            </div>
+        </section>
+
+        <!-- Mis Reservas View -->
+        <section class="hidden flex-1 flex flex-col relative overflow-y-auto scrollbar-hide w-full" id="view-reservas">
+            <div class="max-w-6xl mx-auto w-full px-6 md:px-12 pt-12 pb-12">
+                <div class="mb-8">
+                    <h1 class="font-headline-lg text-2xl font-bold text-text-primary">Historial de Reservas y Reprogramaciones</h1>
+                    <p class="text-sm text-text-secondary mt-1">Gestione sus espacios academicos asignados y solicitudes pendientes.</p>
+                </div>
+                <div class="bg-white rounded-2xl border border-black/5 overflow-hidden shadow-[0_2px_4px_rgba(0,0,0,0.04)]">
+                    <div class="p-4 border-b border-black/5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white">
+                        <div class="relative w-full sm:w-72">
+                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary/60 text-[20px]">search</span>
+                            <input class="w-full pl-10 pr-4 py-2.5 border border-black/10 rounded-xl text-sm text-text-primary focus:border-utp-red-institutional focus:ring-2 focus:ring-utp-red-institutional/10 outline-none transition-all bg-white" placeholder="Buscar por aula o ID..." type="text">
+                        </div>
+                        <button class="flex items-center gap-2 text-sm font-medium text-text-secondary hover:text-text-primary transition-colors border border-black/10 px-4 py-2.5 rounded-xl hover:bg-black/5">
+                            <span class="material-symbols-outlined text-[18px]">filter_list</span> Filtrar
+                        </button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-white border-b border-black/5">
+                                    <th class="py-3 px-4 text-[12px] font-bold text-text-secondary uppercase tracking-wider">ID Reserva</th>
+                                    <th class="py-3 px-4 text-[12px] font-bold text-text-secondary uppercase tracking-wider">Aula / Ambiente</th>
+                                    <th class="py-3 px-4 text-[12px] font-bold text-text-secondary uppercase tracking-wider">Tipo de Espacio</th>
+                                    <th class="py-3 px-4 text-[12px] font-bold text-text-secondary uppercase tracking-wider">Fecha</th>
+                                    <th class="py-3 px-4 text-[12px] font-bold text-text-secondary uppercase tracking-wider">Bloque Horario / Turno</th>
+                                    <th class="py-3 px-4 text-[12px] font-bold text-text-secondary uppercase tracking-wider">Estado</th>
+                                    <th class="py-3 px-4 text-[12px] font-bold text-text-secondary uppercase tracking-wider text-right">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-black/5 text-sm">
+                                <tr class="hover:bg-black/[0.02] transition-colors">
+                                    <td class="py-4 px-4 text-text-primary font-medium">#RES-1024</td>
+                                    <td class="py-4 px-4 text-text-primary">Aula 402</td>
+                                    <td class="py-4 px-4 text-text-secondary">Teorica</td>
+                                    <td class="py-4 px-4 text-text-primary">2023-11-15</td>
+                                    <td class="py-4 px-4 text-text-primary">08:00 - 10:00 / Manana</td>
+                                    <td class="py-4 px-4"><span class="inline-flex items-center px-2 py-0.5 rounded text-[12px] font-semibold bg-emerald-100 text-emerald-800">Confirmada</span></td>
+                                    <td class="py-4 px-4 text-right whitespace-nowrap"><button class="text-sm border border-black/10 text-text-secondary hover:bg-black/5 hover:text-text-primary px-3 py-1.5 rounded-lg transition-colors">Ver Detalles</button></td>
+                                </tr>
+                                <tr class="hover:bg-black/[0.02] transition-colors">
+                                    <td class="py-4 px-4 text-text-primary font-medium">#RES-1025</td>
+                                    <td class="py-4 px-4 text-text-primary">Lab Computo B</td>
+                                    <td class="py-4 px-4 text-text-secondary">Laboratorio</td>
+                                    <td class="py-4 px-4 text-text-primary">2023-11-16</td>
+                                    <td class="py-4 px-4 text-text-primary">14:00 - 16:00 / Tarde</td>
+                                    <td class="py-4 px-4"><span class="inline-flex items-center px-2 py-0.5 rounded text-[12px] font-semibold bg-amber-100 text-amber-800">Pendiente</span></td>
+                                    <td class="py-4 px-4 text-right whitespace-nowrap"><button class="text-sm border border-black/10 text-text-secondary hover:bg-black/5 hover:text-text-primary px-3 py-1.5 rounded-lg transition-colors">Ver Detalles</button></td>
+                                </tr>
+                                <tr class="hover:bg-black/[0.02] transition-colors">
+                                    <td class="py-4 px-4 text-text-primary font-medium">#RES-1028</td>
+                                    <td class="py-4 px-4 text-text-primary">Auditorio Principal</td>
+                                    <td class="py-4 px-4 text-text-secondary">Especial</td>
+                                    <td class="py-4 px-4 text-text-primary">2023-11-20</td>
+                                    <td class="py-4 px-4 text-text-primary">18:00 - 21:00 / Noche</td>
+                                    <td class="py-4 px-4"><span class="inline-flex items-center px-2 py-0.5 rounded text-[12px] font-semibold bg-emerald-100 text-emerald-800">Confirmada</span></td>
+                                    <td class="py-4 px-4 text-right whitespace-nowrap"><button class="text-sm border border-black/10 text-text-secondary hover:bg-black/5 hover:text-text-primary px-3 py-1.5 rounded-lg transition-colors">Ver Detalles</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="p-3 px-4 border-t border-black/5 flex items-center justify-between text-sm text-text-secondary bg-white">
+                        <span>Mostrando 1 a 3 de 12 reservas</span>
+                        <div class="flex gap-1">
+                            <button class="p-1 rounded hover:bg-black/5 disabled:opacity-50"><span class="material-symbols-outlined text-[18px]">chevron_left</span></button>
+                            <button class="p-1 rounded hover:bg-black/5"><span class="material-symbols-outlined text-[18px]">chevron_right</span></button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
     </div>
@@ -141,18 +204,10 @@ try{
     <div class="absolute bottom-0 left-0 w-full px-8 pb-8 pt-12 bg-gradient-to-t from-background via-background/80 to-transparent pointer-events-none">
         <div class="max-w-3xl mx-auto w-full pointer-events-auto">
             <form method="POST" action="/query" class="glass pl-6 pr-2.5 py-2.5 rounded-[28px] flex items-center gap-3 border border-white shadow-[0_10px_40px_rgba(0,0,0,0.06)] focus-within:shadow-[0_15px_50px_rgba(0,0,0,0.1)] focus-within:ring-2 focus-within:ring-utp-red-institutional/5 transition-all bg-white/60 backdrop-blur-2xl">
-                <button class="w-10 h-10 flex items-center justify-center text-text-secondary/60 hover:text-utp-red-institutional transition-colors rounded-full hover:bg-black/5" type="button">
-                    <span class="material-symbols-outlined">add</span>
-                </button>
                 <input class="flex-1 bg-transparent border-none focus:ring-0 text-text-primary text-[16px] placeholder:text-text-secondary/30 py-2.5" name="prompt" placeholder="Escribe tu consulta academica..." type="text"/>
-                <div class="flex items-center gap-1.5">
-                    <button class="w-10 h-10 flex items-center justify-center text-text-secondary/60 hover:text-utp-red-institutional transition-colors rounded-full hover:bg-black/5" type="button">
-                        <span class="material-symbols-outlined">mic</span>
-                    </button>
-                    <button class="w-12 h-12 bg-utp-red-institutional text-white rounded-full flex items-center justify-center shadow-lg shadow-utp-red-institutional/30 hover:scale-105 active:scale-95 transition-all group" type="submit">
-                        <span class="material-symbols-outlined group-hover:translate-x-0.5 transition-transform" style="font-variation-settings: 'FILL' 1;">send</span>
-                    </button>
-                </div>
+                <button class="w-12 h-12 bg-utp-red-institutional text-white rounded-full flex items-center justify-center shadow-lg shadow-utp-red-institutional/30 hover:scale-105 active:scale-95 transition-all group" type="submit">
+                    <span class="material-symbols-outlined group-hover:translate-x-0.5 transition-transform" style="font-variation-settings: 'FILL' 1;">send</span>
+                </button>
             </form>
             <p class="text-center text-[10px] text-text-secondary/40 mt-5 font-bold uppercase tracking-[0.25em]">
                 Inteligencia Artificial UTP &bull; Modelo Optimizado v2.4
@@ -162,6 +217,36 @@ try{
 </main>
 
 <script>
+    function showView(view) {
+        var chatView = document.getElementById('view-chat');
+        var reservasView = document.getElementById('view-reservas');
+        var chatInput = document.querySelector('.absolute.bottom-0');
+        var navItems = document.querySelectorAll('nav.flex-1 a');
+
+        chatView.classList.add('hidden');
+        reservasView.classList.add('hidden');
+        if(chatInput) chatInput.classList.add('hidden');
+        navItems.forEach(function(item) {
+            item.classList.remove('bg-utp-red-institutional/10', 'text-utp-red-institutional');
+            item.classList.add('text-text-secondary');
+        });
+
+        if (view === 'chat') {
+            chatView.classList.remove('hidden');
+            if(chatInput) chatInput.classList.remove('hidden');
+            navItems[0].classList.add('bg-utp-red-institutional/10', 'text-utp-red-institutional');
+            navItems[0].classList.remove('text-text-secondary');
+        } else if (view === 'reservas') {
+            reservasView.classList.remove('hidden');
+            navItems[2].classList.add('bg-utp-red-institutional/10', 'text-utp-red-institutional');
+            navItems[2].classList.remove('text-text-secondary');
+        } else if (view === 'historial') {
+            if(chatInput) chatInput.classList.remove('hidden');
+            navItems[1].classList.add('bg-utp-red-institutional/10', 'text-utp-red-institutional');
+            navItems[1].classList.remove('text-text-secondary');
+        }
+    }
+
     const chatInput = document.querySelector('input[name="prompt"]');
     if(chatInput) {
         chatInput.addEventListener('focus', () => {

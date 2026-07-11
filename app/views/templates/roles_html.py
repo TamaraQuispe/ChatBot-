@@ -1,10 +1,11 @@
+"""Roles page template."""
 HTML_ROLES = """
 <!DOCTYPE html>
 
 <html class="light" lang="es"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>UTP Academic | Roles y Permisos</title>
+<title>UTP Academic | Roles</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@100;300;400;500;600;700;800;900&amp;family=Courier+Prime&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
@@ -147,10 +148,7 @@ HTML_ROLES = """
 <span class="material-symbols-outlined">computer</span>
 <span class="font-medium">Software y Equipos</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-secondary hover:bg-surface-container-low transition-colors duration-200" href="/admin/horarios">
-<span class="material-symbols-outlined">calendar_today</span>
-<span class="font-medium">Horarios</span>
-</a>
+
 <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-secondary hover:bg-surface-container-low transition-colors duration-200" href="/admin/docentes">
 <span class="material-symbols-outlined">person</span>
 <span class="font-medium">Docentes</span>
@@ -159,20 +157,13 @@ HTML_ROLES = """
 <span class="material-symbols-outlined">event_seat</span>
 <span class="font-medium">Reservas</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-secondary hover:bg-surface-container-low transition-colors duration-200" href="/admin/reportes">
-<span class="material-symbols-outlined">assessment</span>
-<span class="font-medium">Reportes</span>
-</a>
+
 <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-primary font-bold border-r-4 border-primary bg-surface-container-low" href="/admin/roles">
 <span class="material-symbols-outlined">admin_panel_settings</span>
-<span class="font-bold">Roles y Permisos</span>
+<span class="font-bold">Roles</span>
 </a>
 </nav>
 <div class="pt-6 border-t border-surface-container-highest space-y-2">
-<button class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-secondary hover:bg-surface-container-low transition-colors">
-<span class="material-symbols-outlined">account_circle</span>
-<span class="font-medium text-body-md">Perfil</span>
-</button>
 <a class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-error hover:bg-error-container/10 transition-colors" href="/logout">
 <span class="material-symbols-outlined">logout</span>
 <span class="font-medium text-body-md">Cerrar Sesion</span>
@@ -187,90 +178,7 @@ $HEADER
 <!-- Page Header -->
 <section class="flex justify-between items-end mb-12">
 <div>
-<h1 class="font-headline-lg text-headline-lg text-on-surface">Roles y Permisos</h1>
-<p class="text-secondary mt-1">Gestiona los niveles de acceso y privilegios del personal academico y administrativo.</p>
-</div>
-<div class="flex gap-3">
-<button class="flex items-center gap-2 border border-surface-container-highest bg-white px-4 py-2 rounded-lg text-label-md font-label-md hover:bg-surface-container-low transition-all">
-<span class="material-symbols-outlined text-[18px]">download</span>
-                        Auditoria de Cambios
-                    </button>
-<button class="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-lg text-label-md font-label-md hover:opacity-90 transition-all">
-<span class="material-symbols-outlined text-[18px]">add</span>
-                        Crear Nuevo Rol
-                    </button>
-</div>
-</section>
-<!-- Role Cards -->
-<section class="grid grid-cols-1 md:grid-cols-3 gap-gutter mb-section-gap">
-<div class="bg-white border border-surface-container-highest rounded-2xl p-6 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
-<div class="flex justify-between items-start mb-4">
-<div class="p-3 bg-primary-container/10 rounded-lg">
-<span class="material-symbols-outlined text-primary">admin_panel_settings</span>
-</div>
-<span class="flex items-center gap-1 text-label-md text-secondary">
-<span class="w-2 h-2 rounded-full bg-emerald-500"></span> 5 Activos
-</span>
-</div>
-<div>
-<h3 class="font-title-lg text-title-lg mb-1">Administrador</h3>
-<p class="text-body-md text-secondary mb-4">Acceso total al sistema, configuracion de seguridad y gestion de usuarios.</p>
-</div>
-<button class="w-full py-2 bg-surface-container-low text-on-surface font-label-md text-label-md rounded-lg hover:bg-surface-container-highest transition-colors">Configurar Permisos</button>
-</div>
-<div class="bg-white border border-surface-container-highest rounded-2xl p-6 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
-<div class="flex justify-between items-start mb-4">
-<div class="p-3 bg-blue-50 rounded-lg text-blue-600">
-<span class="material-symbols-outlined">history_edu</span>
-</div>
-<span class="flex items-center gap-1 text-label-md text-secondary">
-<span class="w-2 h-2 rounded-full bg-emerald-500"></span> 124 Activos
-</span>
-</div>
-<div>
-<h3 class="font-title-lg text-title-lg mb-1">Docente</h3>
-<p class="text-body-md text-secondary mb-4">Gestion de cursos, calificaciones, asistencia y comunicacion con estudiantes.</p>
-</div>
-<button class="w-full py-2 bg-surface-container-low text-on-surface font-label-md text-label-md rounded-lg hover:bg-surface-container-highest transition-colors">Configurar Permisos</button>
-</div>
-<div class="bg-white border border-surface-container-highest rounded-2xl p-6 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
-<div class="flex justify-between items-start mb-4">
-<div class="p-3 bg-amber-50 rounded-lg text-amber-600">
-<span class="material-symbols-outlined">badge</span>
-</div>
-<span class="flex items-center gap-1 text-label-md text-secondary">
-<span class="w-2 h-2 rounded-full bg-emerald-500"></span> 42 Activos
-</span>
-</div>
-<div>
-<h3 class="font-title-lg text-title-lg mb-1">Personal</h3>
-<p class="text-body-md text-secondary mb-4">Acceso a reportes, gestion de infraestructura y servicios administrativos.</p>
-</div>
-<button class="w-full py-2 bg-surface-container-low text-on-surface font-label-md text-label-md rounded-lg hover:bg-surface-container-highest transition-colors">Configurar Permisos</button>
-</div>
-</section>
-<!-- Permissions Matrix -->
-<section class="mb-section-gap">
-<div class="flex items-center gap-3 mb-6">
-<span class="material-symbols-outlined text-primary">key</span>
-<h3 class="font-headline-md text-headline-md text-on-surface">Matriz de Permisos: <span class="font-normal text-secondary italic">Administrador</span></h3>
-</div>
-<div class="bg-white border border-surface-container-highest rounded-2xl shadow-sm">
-<div class="overflow-x-auto">
-<div class="grid grid-cols-12 border-b border-surface-container-highest bg-surface-container-low p-4">
-<div class="col-span-5 font-label-md text-label-md text-secondary uppercase tracking-wider">Modulo / Funcionalidad</div>
-<div class="col-span-1 text-center font-label-md text-label-md text-secondary uppercase tracking-wider">Ver</div>
-<div class="col-span-1 text-center font-label-md text-label-md text-secondary uppercase tracking-wider">Crear</div>
-<div class="col-span-1 text-center font-label-md text-label-md text-secondary uppercase tracking-wider">Editar</div>
-<div class="col-span-1 text-center font-label-md text-label-md text-secondary uppercase tracking-wider">Borrar</div>
-<div class="col-span-3 text-right font-label-md text-label-md text-secondary uppercase tracking-wider">Acciones Especiales</div>
-</div>
-$FILAS_PERMISOS
-</div>
-<div class="p-4 bg-white flex justify-end gap-4">
-<button class="px-6 py-2 border border-surface-container-highest rounded-lg text-label-md font-label-md hover:bg-surface-container-low transition-all">Revertir Cambios</button>
-<button class="px-6 py-2 bg-on-background text-white rounded-lg text-label-md font-label-md hover:opacity-90 transition-all">Guardar Configuracion</button>
-</div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface">Roles</h1>
 </div>
 </section>
 <!-- Active Users -->
