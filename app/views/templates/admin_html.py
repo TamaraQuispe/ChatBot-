@@ -1,3 +1,4 @@
+"""Admin dashboard template."""
 HTML_ADMIN = """
 <!DOCTYPE html>
 
@@ -165,10 +166,7 @@ HTML_ADMIN = """
 <span class="material-symbols-outlined mr-3">computer</span>
 <span class="font-body-md text-body-md">Software y Equipos</span>
 </a>
-<a class="flex items-center px-4 py-3 rounded-xl text-secondary hover:bg-surface-container-low transition-colors duration-200" href="/admin/horarios">
-<span class="material-symbols-outlined mr-3">calendar_today</span>
-<span class="font-body-md text-body-md">Horarios</span>
-</a>
+
 <a class="flex items-center px-4 py-3 rounded-xl text-secondary hover:bg-surface-container-low transition-colors duration-200" href="/admin/docentes">
 <span class="material-symbols-outlined mr-3">person</span>
 <span class="font-body-md text-body-md">Docentes</span>
@@ -177,20 +175,13 @@ HTML_ADMIN = """
 <span class="material-symbols-outlined mr-3">event_seat</span>
 <span class="font-body-md text-body-md">Reservas</span>
 </a>
-<a class="flex items-center px-4 py-3 rounded-xl text-secondary hover:bg-surface-container-low transition-colors duration-200" href="/admin/reportes">
-<span class="material-symbols-outlined mr-3">assessment</span>
-<span class="font-body-md text-body-md">Reportes</span>
-</a>
+
 <a class="flex items-center px-4 py-3 rounded-xl text-secondary hover:bg-surface-container-low transition-colors duration-200" href="/admin/roles">
 <span class="material-symbols-outlined mr-3">admin_panel_settings</span>
-<span class="font-body-md text-body-md">Roles y Permisos</span>
+<span class="font-body-md text-body-md">Roles</span>
 </a>
 </nav>
 <div class="px-4 pt-10 border-t border-surface-container-highest space-y-2">
-<button class="w-full flex items-center px-4 py-3 rounded-xl text-secondary hover:bg-surface-container-low transition-colors">
-<span class="material-symbols-outlined mr-3">account_circle</span>
-<span class="font-body-md text-body-md">Perfil</span>
-</button>
 <a class="w-full flex items-center px-4 py-3 rounded-xl text-error hover:bg-error-container/10 transition-colors" href="/logout">
 <span class="material-symbols-outlined mr-3">logout</span>
 <span class="font-body-md text-body-md">Cerrar Sesion</span>
@@ -215,14 +206,6 @@ $HEADER
 <h2 class="font-headline-lg text-headline-lg text-on-surface">Panel de Control</h2>
 <p class="text-body-lg text-secondary mt-1">Supervision en tiempo real de recursos academicos y operativos.</p>
 </div>
-<div class="flex space-x-3">
-<button class="flex items-center px-4 py-2 glass-card font-label-md text-label-md hover:bg-surface transition-colors">
-<span class="material-symbols-outlined mr-2">filter_list</span> Filtrar Vista
-                        </button>
-<button class="flex items-center px-4 py-2 bg-white border border-outline-variant rounded-lg font-label-md text-label-md hover:bg-surface transition-colors">
-<span class="material-symbols-outlined mr-2">download</span> Descargar Reporte
-                        </button>
-</div>
 </div>
 </section>
 <!-- KPI Row -->
@@ -245,7 +228,7 @@ $HEADER
 <span class="material-symbols-outlined text-tertiary p-2 bg-surface-container-high rounded-lg">group</span>
 <span class="bg-green-100 text-green-700 px-2 py-1 rounded text-label-md font-bold">98%</span>
 </div>
-<p class="text-label-md text-secondary uppercase font-medium">Docentes en Linea</p>
+<p class="text-label-md text-secondary uppercase font-medium">Cantidad de Docentes</p>
 <div class="flex items-end justify-between">
 <h3 class="text-display-lg font-display-lg leading-none mt-2">84</h3>
 <svg class="w-20 h-10 sparkline" viewbox="0 0 100 40">
@@ -264,96 +247,6 @@ $HEADER
 <svg class="w-20 h-10 sparkline" style="stroke: #f59e0b;" viewbox="0 0 100 40">
 <path d="M0 10 Q 30 40, 60 20 T 100 30" fill="none"></path>
 </svg>
-</div>
-</div>
-<div class="glass-card p-6">
-<div class="flex justify-between items-start mb-4">
-<span class="material-symbols-outlined text-error p-2 bg-error-container rounded-lg">warning</span>
-<span class="bg-red-100 text-red-700 px-2 py-1 rounded text-label-md font-bold">Critico</span>
-</div>
-<p class="text-label-md text-secondary uppercase font-medium">Incidencias</p>
-<div class="flex items-end justify-between">
-<h3 class="text-display-lg font-display-lg leading-none mt-2">03</h3>
-<svg class="w-20 h-10 sparkline" style="stroke: #ba1a1a;" viewbox="0 0 100 40">
-<path d="M0 35 L 20 25 L 40 35 L 60 5 L 80 15 L 100 0" fill="none"></path>
-</svg>
-</div>
-</div>
-</section>
-<!-- Data Visualization Section -->
-<section class="grid grid-cols-12 gap-gutter mb-section-gap">
-<div class="col-span-12 lg:col-span-8 glass-card p-8">
-<div class="flex justify-between items-center mb-8">
-<div>
-<h3 class="font-title-lg text-title-lg text-on-surface">Ocupacion de Laboratorios</h3>
-<p class="text-body-md text-secondary">Comparativa de uso semanal vs proyectado.</p>
-</div>
-<div class="flex bg-surface-container-low p-1 rounded-lg">
-<button class="px-3 py-1 bg-white rounded-md text-label-md shadow-sm font-bold">Semana</button>
-<button class="px-3 py-1 text-label-md text-secondary">Mes</button>
-</div>
-</div>
-<div class="relative h-64 w-full bg-surface-container-lowest rounded-xl flex items-end p-4">
-<div class="absolute inset-0 flex items-center justify-center opacity-10">
-<span class="material-symbols-outlined scale-[5]">stacked_line_chart</span>
-</div>
-<div class="flex-1 flex items-end justify-around h-full space-x-4">
-<div class="w-12 bg-primary/10 hover:bg-primary/20 transition-all rounded-t-lg h-[40%] relative group">
-<div class="absolute -top-10 left-1/2 -translate-x-1/2 bg-inverse-surface text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">40%</div>
-</div>
-<div class="w-12 bg-primary/20 hover:bg-primary/30 transition-all rounded-t-lg h-[65%] relative group">
-<div class="absolute -top-10 left-1/2 -translate-x-1/2 bg-inverse-surface text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">65%</div>
-</div>
-<div class="w-12 bg-primary rounded-t-lg h-[92%] relative group">
-<div class="absolute -top-10 left-1/2 -translate-x-1/2 bg-inverse-surface text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">92%</div>
-</div>
-<div class="w-12 bg-primary/40 hover:bg-primary/50 transition-all rounded-t-lg h-[50%] relative group">
-<div class="absolute -top-10 left-1/2 -translate-x-1/2 bg-inverse-surface text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">50%</div>
-</div>
-<div class="w-12 bg-primary/30 hover:bg-primary/40 transition-all rounded-t-lg h-[75%] relative group">
-<div class="absolute -top-10 left-1/2 -translate-x-1/2 bg-inverse-surface text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">75%</div>
-</div>
-<div class="w-12 bg-primary/15 hover:bg-primary/25 transition-all rounded-t-lg h-[35%] relative group">
-<div class="absolute -top-10 left-1/2 -translate-x-1/2 bg-inverse-surface text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">35%</div>
-</div>
-</div>
-</div>
-</div>
-<div class="col-span-12 lg:col-span-4 glass-card p-8">
-<h3 class="font-title-lg text-title-lg text-on-surface mb-6">Estado del Sistema</h3>
-<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-<div class="bg-surface-container-low p-4 rounded-xl border border-outline-variant">
-<div class="flex items-center space-x-2 mb-2">
-<span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-<span class="text-label-md font-bold">API Central</span>
-</div>
-<p class="text-[10px] text-secondary font-mono-sm">99.9% Uptime</p>
-</div>
-<div class="bg-surface-container-low p-4 rounded-xl border border-outline-variant">
-<div class="flex items-center space-x-2 mb-2">
-<span class="w-2 h-2 rounded-full bg-green-500"></span>
-<span class="text-label-md font-bold">Servidores</span>
-</div>
-<p class="text-[10px] text-secondary font-mono-sm">Lat: 12ms</p>
-</div>
-<div class="bg-surface-container-low p-4 rounded-xl border border-outline-variant">
-<div class="flex items-center space-x-2 mb-2">
-<span class="w-2 h-2 rounded-full bg-amber-500"></span>
-<span class="text-label-md font-bold">Red</span>
-</div>
-<p class="text-[10px] text-secondary font-mono-sm">Trafico: 85%</p>
-</div>
-<div class="bg-surface-container-low p-4 rounded-xl border border-outline-variant">
-<div class="flex items-center space-x-2 mb-2">
-<span class="w-2 h-2 rounded-full bg-green-500"></span>
-<span class="text-label-md font-bold">Base Datos</span>
-</div>
-<p class="text-[10px] text-secondary font-mono-sm">Sincronizada</p>
-</div>
-</div>
-<div class="mt-8 p-4 bg-primary-fixed text-on-primary-fixed-variant rounded-xl flex items-center">
-<span class="material-symbols-outlined mr-3">info</span>
-<p class="text-label-md leading-snug">Proximo mantenimiento programado: 24/05/2025 - 02:00 AM</p>
 </div>
 </div>
 </section>
@@ -432,57 +325,6 @@ $HEADER
 </tr>
 </tbody>
 </table>
-</div>
-</div>
-<div class="col-span-12 lg:col-span-4 space-y-gutter">
-<div class="glass-card p-8">
-<h3 class="font-title-lg text-title-lg text-on-surface mb-6">Actividad Reciente</h3>
-<div class="space-y-6 relative before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[2px] before:bg-surface-container-high">
-<div class="relative pl-10">
-<div class="absolute left-0 top-1.5 w-[24px] h-[24px] rounded-full bg-primary-fixed border-2 border-white flex items-center justify-center">
-<span class="material-symbols-outlined text-[14px] text-primary">edit</span>
-</div>
-<p class="text-body-md font-bold">Cambio en Horario AUL-105</p>
-<p class="text-label-md text-secondary">Hace 15 min • Admin Garcia</p>
-</div>
-<div class="relative pl-10">
-<div class="absolute left-0 top-1.5 w-[24px] h-[24px] rounded-full bg-green-100 border-2 border-white flex items-center justify-center">
-<span class="material-symbols-outlined text-[14px] text-green-700">check_circle</span>
-</div>
-<p class="text-body-md font-bold">Sistema Back-up Completado</p>
-<p class="text-label-md text-secondary">Hace 2 horas • Automatico</p>
-</div>
-<div class="relative pl-10">
-<div class="absolute left-0 top-1.5 w-[24px] h-[24px] rounded-full bg-error-container border-2 border-white flex items-center justify-center">
-<span class="material-symbols-outlined text-[14px] text-error">warning</span>
-</div>
-<p class="text-body-md font-bold">Falla Aire Acond. LAB-302</p>
-<p class="text-label-md text-secondary">Hace 3 horas • Reporte Docente</p>
-</div>
-</div>
-<button class="w-full mt-8 py-2 text-label-md font-bold text-primary border border-primary/20 rounded-lg hover:bg-primary-fixed transition-colors">
-                            Ver historial completo
-                        </button>
-</div>
-<div class="glass-card p-6">
-<h3 class="font-label-md text-label-md text-secondary uppercase font-bold mb-4">Accesos Rapidos</h3>
-<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-<button class="flex flex-col items-center justify-center p-4 bg-surface rounded-xl hover:bg-primary hover:text-white transition-all group">
-<span class="material-symbols-outlined mb-2 group-hover:scale-110 transition-transform">add_task</span>
-<span class="text-[11px] font-bold">Nueva Reserva</span>
-</button>
-<button class="flex flex-col items-center justify-center p-4 bg-surface rounded-xl hover:bg-primary hover:text-white transition-all group">
-<span class="material-symbols-outlined mb-2 group-hover:scale-110 transition-transform">terminal</span>
-<span class="text-[11px] font-bold">Gestion SW</span>
-</button>
-<button class="flex flex-col items-center justify-center p-4 bg-surface rounded-xl hover:bg-primary hover:text-white transition-all group">
-<span class="material-symbols-outlined mb-2 group-hover:scale-110 transition-transform">description</span>
-<span class="text-[11px] font-bold">Reportes PDF</span>
-</button>
-<button class="flex flex-col items-center justify-center p-4 bg-surface rounded-xl hover:bg-primary hover:text-white transition-all group">
-<span class="material-symbols-outlined mb-2 group-hover:scale-110 transition-transform">broadcast_on_home</span>
-<span class="text-[11px] font-bold">Aviso Global</span>
-</button>
 </div>
 </div>
 </div>

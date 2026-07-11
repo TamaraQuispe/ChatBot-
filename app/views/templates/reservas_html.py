@@ -1,3 +1,4 @@
+"""Reservas page template."""
 HTML_RESERVAS = """
 <!DOCTYPE html>
 
@@ -157,10 +158,7 @@ HTML_RESERVAS = """
 <span class="material-symbols-outlined">computer</span>
 <span class="font-medium">Software y Equipos</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-secondary hover:bg-surface-container-low transition-colors duration-200" href="/admin/horarios">
-<span class="material-symbols-outlined">calendar_today</span>
-<span class="font-medium">Horarios</span>
-</a>
+
 <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-secondary hover:bg-surface-container-low transition-colors duration-200" href="/admin/docentes">
 <span class="material-symbols-outlined">person</span>
 <span class="font-medium">Docentes</span>
@@ -169,20 +167,13 @@ HTML_RESERVAS = """
 <span class="material-symbols-outlined">event_seat</span>
 <span class="font-bold">Reservas</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-secondary hover:bg-surface-container-low transition-colors duration-200" href="/admin/reportes">
-<span class="material-symbols-outlined">assessment</span>
-<span class="font-medium">Reportes</span>
-</a>
+
 <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-secondary hover:bg-surface-container-low transition-colors duration-200" href="/admin/roles">
 <span class="material-symbols-outlined">admin_panel_settings</span>
-<span class="font-medium">Roles y Permisos</span>
+<span class="font-medium">Roles</span>
 </a>
 </nav>
 <div class="pt-6 border-t border-surface-container-highest space-y-2">
-<button class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-secondary hover:bg-surface-container-low transition-colors">
-<span class="material-symbols-outlined">account_circle</span>
-<span class="font-medium text-body-md">Perfil</span>
-</button>
 <a class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-error hover:bg-error-container/10 transition-colors" href="/logout">
 <span class="material-symbols-outlined">logout</span>
 <span class="font-medium text-body-md">Cerrar Sesion</span>
@@ -206,14 +197,6 @@ $HEADER
 <span class="text-surface-container-highest">|</span>
 <span class="text-body-md text-secondary">24 Solicitudes pendientes de revision</span>
 </div>
-</div>
-<div class="flex gap-3">
-<button class="flex items-center gap-2 border border-surface-container-highest bg-white px-4 py-2 rounded-lg font-label-md text-label-md text-on-surface hover:bg-surface-container-low transition-all">
-<span class="material-symbols-outlined text-sm">filter_list</span> Filtrar
-                </button>
-<button class="flex items-center gap-2 border border-surface-container-highest bg-white px-4 py-2 rounded-lg font-label-md text-label-md text-on-surface hover:bg-surface-container-low transition-all">
-<span class="material-symbols-outlined text-sm">download</span> Descargar Reporte
-                </button>
 </div>
 </section>
 <!-- Bento Layout -->
@@ -274,94 +257,6 @@ $TABLA_RESERVAS
 </div>
 </div>
 </div>
-</div>
-</div>
-<!-- Timeline -->
-<div class="col-span-12 lg:col-span-4 space-y-stack-lg">
-<div class="glass-panel p-6 rounded-2xl shadow-sm h-full">
-<div class="flex justify-between items-center mb-8">
-<h3 class="font-title-lg text-title-lg">Timeline Proximo</h3>
-<button class="material-symbols-outlined text-secondary hover:text-on-surface">more_vert</button>
-</div>
-<div class="relative timeline-line space-y-8 pl-10">
-<div class="relative">
-<div class="absolute -left-10 top-0 w-6 h-6 rounded-full bg-white border-4 border-primary z-10"></div>
-<div class="flex flex-col">
-<span class="text-label-md font-bold text-primary mb-1">HOY - 14:00</span>
-<h4 class="font-body-md text-body-md font-semibold">Consejo Universitario</h4>
-<p class="text-label-md text-secondary">Sala de Juntas B</p>
-<div class="mt-2 flex -space-x-2">
-<div class="w-6 h-6 rounded-full border-2 border-white bg-surface-container-highest"></div>
-<div class="w-6 h-6 rounded-full border-2 border-white bg-surface-container-high"></div>
-<div class="w-6 h-6 rounded-full border-2 border-white bg-surface-container"></div>
-<div class="w-6 h-6 rounded-full border-2 border-white bg-surface-container-highest flex items-center justify-center text-[8px] font-bold">+8</div>
-</div>
-</div>
-</div>
-<div class="relative">
-<div class="absolute -left-10 top-0 w-6 h-6 rounded-full bg-white border-4 border-surface-container-highest z-10"></div>
-<div class="flex flex-col">
-<span class="text-label-md font-bold text-secondary mb-1">HOY - 16:30</span>
-<h4 class="font-body-md text-body-md font-semibold">Taller de Innovacion</h4>
-<p class="text-label-md text-secondary">Laboratorio 102</p>
-</div>
-</div>
-<div class="relative">
-<div class="absolute -left-10 top-0 w-6 h-6 rounded-full bg-white border-4 border-surface-container-highest z-10"></div>
-<div class="flex flex-col">
-<span class="text-label-md font-bold text-secondary mb-1">MANANA - 08:00</span>
-<h4 class="font-body-md text-body-md font-semibold">Examen Parcial de Fisica</h4>
-<p class="text-label-md text-secondary">Auditorio Sur</p>
-<div class="mt-3 p-3 bg-surface-container-low rounded-lg border border-surface-container-highest">
-<div class="flex items-center gap-2 text-label-md text-primary font-bold">
-<span class="material-symbols-outlined text-sm">warning</span>
-                                        Requiere Proyector 4K
-                                    </div>
-</div>
-</div>
-</div>
-<div class="relative">
-<div class="absolute -left-10 top-0 w-6 h-6 rounded-full bg-white border-4 border-surface-container-highest z-10"></div>
-<div class="flex flex-col">
-<span class="text-label-md font-bold text-secondary mb-1">MANANA - 11:30</span>
-<h4 class="font-body-md text-body-md font-semibold">Entrevista Docente</h4>
-<p class="text-label-md text-secondary">Oficina Administrativa 3</p>
-</div>
-</div>
-</div>
-<button class="w-full mt-10 py-3 border border-dashed border-surface-container-highest rounded-xl text-label-md text-secondary hover:border-primary hover:text-primary transition-all">
-                        Ver calendario completo
-                    </button>
-</div>
-</div>
-</div>
-<!-- System Alerts -->
-<section class="mt-gutter grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-gutter mb-section-gap">
-<div class="glass-panel p-5 rounded-2xl shadow-sm flex items-center gap-4">
-<div class="w-12 h-12 rounded-xl bg-primary-fixed flex items-center justify-center text-primary">
-<span class="material-symbols-outlined">event_busy</span>
-</div>
-<div>
-<div class="text-label-md text-secondary">Conflictos detectados</div>
-<div class="font-title-lg text-title-lg">03 Salas</div>
-</div>
-</div>
-<div class="glass-panel p-5 rounded-2xl shadow-sm flex items-center gap-4">
-<div class="w-12 h-12 rounded-xl bg-secondary-fixed flex items-center justify-center text-on-secondary-fixed-variant">
-<span class="material-symbols-outlined">cleaning_services</span>
-</div>
-<div>
-<div class="text-label-md text-secondary">Tareas de Mantenimiento</div>
-<div class="font-title-lg text-title-lg">12 Pendientes</div>
-</div>
-</div>
-<div class="glass-panel p-5 rounded-2xl shadow-sm flex items-center gap-4">
-<div class="w-12 h-12 rounded-xl bg-tertiary-fixed flex items-center justify-center text-tertiary">
-<span class="material-symbols-outlined">energy_savings_leaf</span>
-</div>
-<div>
-<div class="text-label-md text-secondary">Ahorro Energetico (Aulas)</div>
-<div class="font-title-lg text-title-lg">Optimizado</div>
 </div>
 </div>
 </section>
