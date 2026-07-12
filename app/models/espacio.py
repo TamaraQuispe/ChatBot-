@@ -18,7 +18,9 @@ class EspacioAcademico:
             conn = self.db.obtener_conexion()
             cursor = conn.cursor()
             cursor.execute(
-                "SELECT * FROM espacios_academicos WHERE tipo = %s AND estado = 1",
+                "SELECT e.*, t.nombre AS tipo FROM espacios_academicos e "
+                "JOIN tipos_espacio t ON e.id_tipo = t.id_tipo "
+                "WHERE t.nombre = %s AND e.estado = 'DISPONIBLE'",
                 (tipo,)
             )
             filas = cursor.fetchall()
@@ -53,7 +55,7 @@ class EspacioAcademico:
             conn = self.db.obtener_conexion()
             cursor = conn.cursor()
             cursor.execute(
-                "UPDATE espacios_academicos SET estado = 2 WHERE id_espacio = %s",
+                "UPDATE espacios_academicos SET estado = 'OCUPADO' WHERE id_espacio = %s",
                 (id_espacio,)
             )
             conn.commit()
@@ -68,7 +70,7 @@ class EspacioAcademico:
             conn = self.db.obtener_conexion()
             cursor = conn.cursor()
             cursor.execute(
-                "UPDATE espacios_academicos SET estado = 1 WHERE id_espacio = %s",
+                "UPDATE espacios_academicos SET estado = 'DISPONIBLE' WHERE id_espacio = %s",
                 (id_espacio,)
             )
             conn.commit()

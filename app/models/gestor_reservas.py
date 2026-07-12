@@ -14,9 +14,9 @@ class GestorReservas(IGestorReservas):
         self.reserva_model = Reserva(db)
         self.espacio_model = EspacioAcademico(db)
 
-    def crear_reserva(self, id_usuario: int, id_espacio: int, curso_nombre: str, horario: str, fecha: str = "2026-05-28") -> bool:
+    def crear_reserva(self, id_usuario: int, id_espacio: int, fecha: str = "2026-05-28") -> bool:
         try:
-            exito = self.reserva_model.crear(id_usuario, curso_nombre, id_espacio, horario, fecha)
+            exito = self.reserva_model.crear(id_usuario, id_espacio, fecha)
             if exito:
                 self.espacio_model.ocupar(id_espacio)
                 logger.info(f"Reserva creada: espacio={id_espacio}, usuario={id_usuario}")
@@ -30,7 +30,7 @@ class GestorReservas(IGestorReservas):
             conn = self.db.obtener_conexion()
             cursor = conn.cursor()
             cursor.execute(
-                "UPDATE reservas SET estado = 'Cancelada' WHERE id_reserva = %s",
+                "UPDATE reservas SET estado = 'CANCELADA' WHERE id_reserva = %s",
                 (id_reserva,)
             )
             conn.commit()
@@ -46,11 +46,12 @@ class GestorReservas(IGestorReservas):
             conn = self.db.obtener_conexion()
             cursor = conn.cursor()
             cursor.execute(
-                "SELECT r.*, e.nombre AS espacio_nombre, e.tipo, u.nombre AS usuario_nombre "
+                "SELECT r.*, e.nombre AS espacio_nombre, t.nombre AS tipo, u.nombre AS usuario_nombre "
                 "FROM reservas r "
                 "JOIN espacios_academicos e ON r.id_espacio = e.id_espacio "
+                "JOIN tipos_espacio t ON e.id_tipo = t.id_tipo "
                 "JOIN usuarios u ON r.id_usuario = u.id_usuario "
-                "WHERE r.estado = 'Confirmada' ORDER BY r.fecha DESC"
+                "WHERE r.estado = 'CONFIRMADA' ORDER BY r.fecha DESC"
             )
             filas = cursor.fetchall()
             conn.close()

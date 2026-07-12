@@ -208,6 +208,36 @@ class AdminController:
             logger.error(f"Error obteniendo activos: {e}")
             return []
 
+    def eliminar_espacio(self, id_espacio: int) -> bool:
+        try:
+            conn = self.db.obtener_conexion()
+            cursor = conn.cursor()
+            cursor.execute("DELETE FROM reservas WHERE id_espacio = %s", (id_espacio,))
+            cursor.execute("DELETE FROM espacio_equipamiento WHERE id_espacio = %s", (id_espacio,))
+            cursor.execute("DELETE FROM espacio_software WHERE id_espacio = %s", (id_espacio,))
+            cursor.execute("DELETE FROM espacios_academicos WHERE id_espacio = %s", (id_espacio,))
+            conn.commit()
+            conn.close()
+            return True
+        except Exception as e:
+            logger.error(f"Error eliminando espacio: {e}")
+            return False
+
+    def cambiar_estado_espacio(self, id_espacio: int, estado: str) -> bool:
+        try:
+            conn = self.db.obtener_conexion()
+            cursor = conn.cursor()
+            cursor.execute(
+                "UPDATE espacios_academicos SET estado = %s WHERE id_espacio = %s",
+                (estado, id_espacio)
+            )
+            conn.commit()
+            conn.close()
+            return True
+        except Exception as e:
+            logger.error(f"Error cambiando estado espacio: {e}")
+            return False
+
     def obtener_usuarios(self) -> list:
         try:
             conn = self.db.obtener_conexion()

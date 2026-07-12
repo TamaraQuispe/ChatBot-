@@ -81,5 +81,6 @@ def make_set_cookie_header(usuario: dict) -> str:
     )
 
 
-def make_clear_cookie_header() -> str:
-    return f"{_COOKIE_NAME}=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0"
+def make_clear_cookie_header(cookie_name: str = None) -> str:
+    name = cookie_name or _COOKIE_NAME
+    return f"{name}=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0"
