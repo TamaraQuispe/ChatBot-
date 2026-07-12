@@ -1,6 +1,5 @@
 """Adapter: AdminController legacy → nueva arquitectura."""
 
-from typing import Optional
 from config.database import Database
 from app.services.admin_service import AdminService
 from app.services.espacio_service import EspacioService

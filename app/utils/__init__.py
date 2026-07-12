@@ -3,7 +3,6 @@
 import html
 import re
 from datetime import datetime, timedelta
-from typing import Optional
 from app.database.connection import get_connection
 from app.logger import get_logger
 
