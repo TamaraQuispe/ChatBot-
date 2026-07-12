@@ -32,8 +32,8 @@ cur.execute("SELECT id_usuario, username FROM usuarios WHERE username IN ('C2320
 user_map = {r["username"]: r["id_usuario"] for r in cur.fetchall()}
 
 docentes_data = [
-    (user_map["C23204737"], "DOC001", "Ingenieria de Sistemas", "Maestria en Ingenieria de Software", "999000111", "c.ludena@utp.edu.pe"),
-    (user_map["C23204738"], "DOC002", "Ingenieria de Software", "Maestria en Ciencias de la Computacion", "999000222", "j.quispe@utp.edu.pe"),
+    (user_map["C23204737"], "DOC003", "Ingenieria de Sistemas", "Maestria en Ingenieria de Software", "999000111", "c.ludena@utp.edu.pe"),
+    (user_map["C23204738"], "DOC004", "Ingenieria de Software", "Maestria en Ciencias de la Computacion", "999000222", "j.quispe@utp.edu.pe"),
 ]
 for d in docentes_data:
     cur.execute(
