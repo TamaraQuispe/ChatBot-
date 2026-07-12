@@ -13,9 +13,7 @@ from app.models import inicializar_bd
 from app.controllers.auth_controller import AuthController
 from app.controllers.reserva_controller import ReservaController
 from app.controllers.admin_controller import AdminController
-from app.models.espacio import EspacioAcademico
 from app.models.docente import Docente
-from app.models.reserva import Reserva
 from app.models.sesion_chat import SesionChat
 from app.models.notificacion import Notificacion
 from app.services.openrouter_service import OpenRouterService
@@ -30,9 +28,11 @@ from app.views.templates.reservas_html import HTML_RESERVAS
 from app.views.templates.reportes_html import HTML_REPORTES
 from app.views.templates.roles_html import HTML_ROLES
 from app.views.templates.header import HEADER_HTML
+from app.docs.swagger_html import HTML_DOCS
 from core.logger import get_logger
 from core.utils import escapar, liberar_espacios_vencidos
 from core.session import create_session, get_session, make_set_cookie_header, make_clear_cookie_header
+from app.response import send_json
 
 logger = get_logger("app")
 
@@ -62,6 +62,9 @@ class UTPHandler(BaseHTTPRequestHandler):
         self.send_header("Content-type", "text/html; charset=utf-8")
         self.end_headers()
         self.wfile.write(html.encode("utf-8"))
+
+    def _responder_json(self, data, status: int = 200):
+        send_json(self, data, status)
 
     def _redirect(self, path: str, extra_headers: list = None):
         self.send_response(303)
@@ -99,6 +102,19 @@ class UTPHandler(BaseHTTPRequestHandler):
                     self._redirect("/chat")
                 return
             self._responder_html(HTML_LOGIN)
+
+        elif parsed_path == "/docs":
+            self._responder_html(HTML_DOCS)
+            return
+        elif parsed_path == "/openapi.json":
+            from app.docs.openapi_spec import OPENAPI_SPEC
+            raw = json.dumps(OPENAPI_SPEC, ensure_ascii=False, indent=2)
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json; charset=utf-8")
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.end_headers()
+            self.wfile.write(raw.encode("utf-8"))
+            return
 
         elif parsed_path == "/chat":
             if not usuario:
@@ -1077,7 +1093,6 @@ class UTPHandler(BaseHTTPRequestHandler):
 
     def _get_historial(self):
         from http.cookies import SimpleCookie
-        import json
         cookie = self.headers.get("Cookie", "")
         try:
             c = SimpleCookie()
@@ -1090,7 +1105,6 @@ class UTPHandler(BaseHTTPRequestHandler):
         return []
 
     def _set_historial(self, historial: list):
-        import json
         raw = json.dumps(historial, default=str)
         encoded = urllib.parse.quote(raw)
         return f"utp_historial={encoded}; Path=/; Max-Age=86400"
