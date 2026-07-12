@@ -4,9 +4,9 @@ Sistema de gestión de reservas de espacios académicos con chatbot para la Univ
 
 ## Stack
 
-- **Backend**: Python 3 (http.server, WSGI)
+- **Backend**: Python 3 (http.server)
 - **Base de datos**: PostgreSQL (Neon)
-- **Despliegue**: Vercel (serverless)
+- **Despliegue**: Render
 - **Autenticación**: bcrypt + cookies con HMAC
 
 ## Credenciales
@@ -20,7 +20,6 @@ Sistema de gestión de reservas de espacios académicos con chatbot para la Univ
 ## Estructura
 
 ```
-api/index.py       → WSGI wrapper para Vercel
 server.py          → Servidor HTTP principal
 app/
 ├── controllers/   → Lógica de negocio
@@ -32,6 +31,26 @@ core/
 └── utils.py       → Utilidades varias
 ```
 
+## Seed
+
+Puebla la base de datos con datos iniciales:
+
+```bash
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+DATABASE_URL="postgresql://..." python3 seed.py
+```
+
+## Despliegue en Render
+
+1. Conecta el repo en https://dashboard.render.com
+2. Crea un **Web Service** con:
+   - **Build Command**: `pip install -r requirements.txt`
+   - **Start Command**: `python app.py`
+3. Agrega `DATABASE_URL` en Environment Variables
+4. La app escucha el puerto `$PORT` automáticamente
+
 ## Desarrollo local
 
 ```bash
@@ -39,10 +58,9 @@ python3 app.py
 # Servidor en http://localhost:8000
 ```
 
-## Despliegue en Vercel
-
 ```bash
-https://chatbot-tau-five-21.vercel.app/
+python3 app.py
+# Servidor en http://localhost:8000
 ```
 
 Requiere variable de entorno `DATABASE_URL` con la conexión a PostgreSQL.
