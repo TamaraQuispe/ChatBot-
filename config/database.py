@@ -1,28 +1,35 @@
-import os
-import psycopg2
-from psycopg2.extras import RealDictCursor
-from core.logger import get_logger
+"""Adapter: Configuración de base de datos (legado → nueva arquitectura)."""
 
-logger = get_logger("database")
+# Re-exporta la clase Database original para compatibilidad
+# La nueva implementación está en app.database.connection
+from app.database.connection import (
+    get_connection,
+    get_cursor,
+    fetch_one,
+    fetch_all,
+    execute,
+    execute_returning,
+    init_pool,
+    close_pool,
+    get_database_url,
+)
 
 
 class Database:
+    """Wrapper legacy para mantener compatibilidad con código existente."""
+
     def __init__(self, database_url=None):
-        self.database_url = database_url or os.environ.get("DATABASE_URL")
-        if not self.database_url:
-            logger.error("DATABASE_URL no definida")
-            raise ValueError(
-                "Define DATABASE_URL en .env o como variable de entorno. "
-                "Ej: DATABASE_URL=postgresql://user:pass@host:5432/dbname"
-            )
+        from app.database.connection import get_database_url
+        self.database_url = database_url or get_database_url()
 
     def obtener_conexion(self):
-        try:
-            conn = psycopg2.connect(self.database_url)
-            conn.cursor_factory = RealDictCursor
-            with conn.cursor() as cur:
-                cur.execute("SET search_path TO public")
-            return conn
-        except psycopg2.Error as e:
-            logger.error(f"Error de conexion PostgreSQL: {e}")
-            raise
+        conn = get_connection().__enter__()
+        # get_connection es un context manager; extraemos la conexión raw
+        import psycopg2
+        from psycopg2.extras import RealDictCursor
+        # Recreamos una conexión directa para compatibilidad
+        conn = psycopg2.connect(self.database_url)
+        conn.cursor_factory = RealDictCursor
+        with conn.cursor() as cur:
+            cur.execute("SET search_path TO public")
+        return conn

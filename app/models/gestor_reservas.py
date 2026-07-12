@@ -1,64 +1,34 @@
+"""Adapter: GestorReservas legacy → nueva arquitectura."""
+
 from typing import Optional
-from config.database import Database
-from .interfaces import IGestorReservas
-from .reserva import Reserva
-from .espacio import EspacioAcademico
-from core.logger import get_logger
+from app.services.reserva_service import ReservaService
+from app.logger import get_logger
 
 logger = get_logger("gestor_reservas")
 
 
-class GestorReservas(IGestorReservas):
-    def __init__(self, db: Database):
-        self.db = db
-        self.reserva_model = Reserva(db)
-        self.espacio_model = EspacioAcademico(db)
+class GestorReservas:
+    def __init__(self, db=None):
+        self.service = ReservaService()
 
-    def crear_reserva(self, id_usuario: int, id_espacio: int, fecha: str = "2026-05-28") -> bool:
+    def crear_reserva(self, id_usuario: int, id_espacio: int,
+                      fecha: str = "2026-05-28") -> bool:
         try:
-            exito = self.reserva_model.crear(id_usuario, id_espacio, fecha)
-            if exito:
-                self.espacio_model.ocupar(id_espacio)
-                logger.info(f"Reserva creada: espacio={id_espacio}, usuario={id_usuario}")
-            return exito
+            result = self.service.crear(id_usuario, id_espacio, fecha)
+            return result is not None
         except Exception as e:
             logger.error(f"Error al crear reserva: {e}")
             return False
 
     def cancelar_reserva(self, id_reserva: int) -> bool:
         try:
-            conn = self.db.obtener_conexion()
-            cursor = conn.cursor()
-            cursor.execute(
-                "UPDATE reservas SET estado = 'CANCELADA' WHERE id_reserva = %s",
-                (id_reserva,)
-            )
-            conn.commit()
-            conn.close()
-            logger.info(f"Reserva cancelada: id={id_reserva}")
-            return True
+            return self.service.cancelar(id_reserva)
         except Exception as e:
             logger.error(f"Error al cancelar reserva: {e}")
             return False
 
     def listar_reservas_activas(self) -> list:
-        try:
-            conn = self.db.obtener_conexion()
-            cursor = conn.cursor()
-            cursor.execute(
-                "SELECT r.*, e.nombre AS espacio_nombre, t.nombre AS tipo, u.nombre AS usuario_nombre "
-                "FROM reservas r "
-                "JOIN espacios_academicos e ON r.id_espacio = e.id_espacio "
-                "JOIN tipos_espacio t ON e.id_tipo = t.id_tipo "
-                "JOIN usuarios u ON r.id_usuario = u.id_usuario "
-                "WHERE r.estado = 'CONFIRMADA' ORDER BY r.fecha DESC"
-            )
-            filas = cursor.fetchall()
-            conn.close()
-            return [dict(f) for f in filas]
-        except Exception as e:
-            logger.error(f"Error listando reservas activas: {e}")
-            return []
+        return self.service.listar_activas()
 
     def reservas_por_usuario(self, id_usuario: int) -> list:
-        return self.reserva_model.listar_por_usuario(id_usuario)
+        return self.service.listar_por_usuario(id_usuario)
