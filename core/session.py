@@ -1,29 +1,30 @@
-import os
-import json
-import hashlib
-import hmac
-import secrets
-import base64
-from typing import Optional
-from http.cookies import SimpleCookie
-from core.logger import get_logger
+"""Adapter: Sesiones legacy → nueva arquitectura JWT."""
 
-logger = get_logger("session")
+from app.auth.jwt import (
+    verify_token as _verify,
+    create_access_token as _create,
+    get_session_from_cookie as _from_cookie,
+    make_set_cookie_header as _make_set,
+    make_clear_cookie_header as _make_clear,
+)
 
-_SECRET = os.environ.get("SESSION_SECRET", "utp-chatbot-secret-dev-key-2024")
 _COOKIE_NAME = "utp_session"
 
 
 def _sign(data: str) -> str:
-    return hmac.new(_SECRET.encode(), data.encode(), hashlib.sha256).hexdigest()[:16]
+    import hashlib, hmac, os
+    secret = os.environ.get("SESSION_SECRET", "utp-chatbot-secret-dev-key-2024")
+    return hmac.new(secret.encode(), data.encode(), hashlib.sha256).hexdigest()[:16]
 
 
 def _encode(payload: dict) -> str:
+    import json, base64
     raw = json.dumps(payload, separators=(",", ":"), ensure_ascii=False, default=str)
     return base64.urlsafe_b64encode(raw.encode()).decode().rstrip("=")
 
 
-def _decode(data: str) -> Optional[dict]:
+def _decode(data: str):
+    import json, base64
     try:
         padded = data + "=" * (4 - len(data) % 4) if len(data) % 4 else data
         raw = base64.urlsafe_b64decode(padded.encode()).decode()
@@ -38,7 +39,8 @@ def _make_token(payload: dict) -> str:
     return f"{sig}.{b64}"
 
 
-def _parse_token(token: str) -> Optional[dict]:
+def _parse_token(token: str):
+    import hmac
     try:
         sig, b64 = token.split(".", 1)
         expected = _sign(b64)
@@ -60,27 +62,15 @@ def create_session(usuario: dict) -> str:
     return _make_token(payload)
 
 
-def get_session(cookie_header: Optional[str]) -> Optional[dict]:
-    if not cookie_header:
-        return None
-    try:
-        c = SimpleCookie()
-        c.load(cookie_header)
-        if _COOKIE_NAME not in c:
-            return None
-        return _parse_token(c[_COOKIE_NAME].value)
-    except Exception as e:
-        logger.warning(f"Error al parsear cookie: {e}")
-        return None
+def get_session(cookie_header):
+    return _from_cookie(cookie_header)
 
 
 def make_set_cookie_header(usuario: dict) -> str:
-    token = create_session(usuario)
-    return (
-        f"{_COOKIE_NAME}={token}; HttpOnly; SameSite=Lax; Path=/; Max-Age=86400"
-    )
+    from app.auth.jwt import make_set_cookie_header as msc
+    return msc(usuario)
 
 
-def make_clear_cookie_header(cookie_name: str = None) -> str:
+def make_clear_cookie_header(cookie_name=None):
     name = cookie_name or _COOKIE_NAME
     return f"{name}=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0"
