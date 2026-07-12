@@ -6,7 +6,7 @@ logger = get_logger("openrouter")
 
 
 class OpenRouterService:
-    def __init__(self, model="meta-llama/llama-3.3-70b-instruct:free"):
+    def __init__(self, model="openrouter/free"):
         self.api_key = os.environ.get("OPENROUTER_API_KEY")
         if not self.api_key:
             raise ValueError("OPENROUTER_API_KEY no definida.")
@@ -39,8 +39,33 @@ Responde en espanol, se conciso."""
         response = requests.post(self.api_url, headers=headers, json=payload, timeout=60)
         result = response.json()
 
+        logger.info(f"OpenRouter HTTP {response.status_code}, model: {result.get('model')}")
+
+        if response.status_code != 200:
+            err = result.get("error", {})
+            msg = err.get("message", str(result))
+            logger.error(f"Error OpenRouter ({response.status_code}): {msg}")
+            raise Exception(f"Error OpenRouter ({response.status_code}): {msg}")
+
         if "choices" in result and len(result["choices"]) > 0:
-            return result["choices"][0]["message"]["content"]
+            msg = result["choices"][0].get("message", {})
+            content = msg.get("content")
+            if content:
+                return content
+
+            reasoning = msg.get("reasoning")
+            if reasoning:
+                import re
+                quoted = re.findall(r'"([^"]*)"', reasoning)
+                if quoted:
+                    return quoted[-1]
+                segments = reasoning.rsplit(":", 1)
+                if len(segments) > 1:
+                    return segments[-1].strip().strip('"\'.,!?')
+                return reasoning.strip()
+
+            if msg.get("refusal"):
+                raise Exception(f"OpenRouter rechazo: {msg['refusal']}")
 
         logger.error(f"Respuesta inesperada de OpenRouter: {result}")
-        raise Exception(f"Error OpenRouter: {result}")
+        raise Exception(f"Error OpenRouter: respuesta sin choices: {result}")
