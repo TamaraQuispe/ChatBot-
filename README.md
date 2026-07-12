@@ -14,8 +14,8 @@ Sistema de gestión de reservas de espacios académicos con chatbot para la Univ
 | Usuario   | Contraseña | Rol     |
 |-----------|-----------|---------|
 | atorres   | admin123  | Admin   |
-| mludeña   | utp123    | Docente |
-| jquispe   | utp123    | Docente |
+| C23204737 | utp123    | Docente |
+| C23204738 | utp123    | Docente |
 
 ## Estructura
 

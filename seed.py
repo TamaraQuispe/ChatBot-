@@ -16,8 +16,8 @@ pwd_docente = bcrypt.hashpw("utp123".encode("utf-8"), bcrypt.gensalt()).decode("
 pwd_admin = bcrypt.hashpw("admin123".encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
 
 usuarios_data = [
-    ("mludeña", pwd_docente, "Mg. Carmen Ludeña", "mludeña@utp.edu.pe", 2),
-    ("jquispe", pwd_docente, "Ing. Juan Quispe", "jquispe@utp.edu.pe", 2),
+    ("C23204737", pwd_docente, "Mg. Carmen Ludeña", "c.ludena@utp.edu.pe", 2),
+    ("C23204738", pwd_docente, "Ing. Juan Quispe", "j.quispe@utp.edu.pe", 2),
     ("atorres", pwd_admin, "Ing. Luis Torres", "atorres@utp.edu.pe", 1),
 ]
 for u in usuarios_data:
@@ -28,12 +28,12 @@ for u in usuarios_data:
 
 # --- 2. DOCENTES ---
 logger.info("Insertando docentes...")
-cur.execute("SELECT id_usuario, username FROM usuarios WHERE username IN ('mludeña','jquispe')")
+cur.execute("SELECT id_usuario, username FROM usuarios WHERE username IN ('C23204737','C23204738')")
 user_map = {r["username"]: r["id_usuario"] for r in cur.fetchall()}
 
 docentes_data = [
-    (user_map["mludeña"], "DOC001", "Ingenieria de Sistemas", "Maestria en Ingenieria de Software", "999000111", "mludeña@utp.edu.pe"),
-    (user_map["jquispe"], "DOC002", "Ingenieria de Software", "Maestria en Ciencias de la Computacion", "999000222", "jquispe@utp.edu.pe"),
+    (user_map["C23204737"], "DOC001", "Ingenieria de Sistemas", "Maestria en Ingenieria de Software", "999000111", "c.ludena@utp.edu.pe"),
+    (user_map["C23204738"], "DOC002", "Ingenieria de Software", "Maestria en Ciencias de la Computacion", "999000222", "j.quispe@utp.edu.pe"),
 ]
 for d in docentes_data:
     cur.execute(
@@ -187,14 +187,14 @@ for ee in esp_eq_data:
 # --- 9. CURSOS ---
 logger.info("Insertando cursos de Ingenieria de Sistemas y Software...")
 cursos_data = [
-    ("SI101", "Programacion I", 4, "III", "A", 4, 2, doc_map["mludeña"], 1),
-    ("SI201", "Base de Datos", 4, "IV", "A", 3, 2, doc_map["jquispe"], 1),
-    ("SI301", "Estructuras de Datos", 4, "IV", "B", 3, 2, doc_map["mludeña"], 1),
-    ("SI401", "Ingenieria de Software", 3, "VI", "A", 3, 2, doc_map["mludeña"], 1),
-    ("SW101", "Fundamentos de Ingenieria de Software", 4, "III", "A", 3, 2, doc_map["jquispe"], 1),
-    ("SW201", "Arquitectura de Software", 4, "V", "A", 3, 2, doc_map["jquispe"], 1),
-    ("SI501", "Redes y Comunicaciones", 3, "V", "A", 2, 2, doc_map["jquispe"], 1),
-    ("SI601", "Inteligencia Artificial", 4, "VII", "A", 3, 2, doc_map["mludeña"], 1),
+    ("SI101", "Programacion I", 4, "III", "A", 4, 2, doc_map["C23204737"], 1),
+    ("SI201", "Base de Datos", 4, "IV", "A", 3, 2, doc_map["C23204738"], 1),
+    ("SI301", "Estructuras de Datos", 4, "IV", "B", 3, 2, doc_map["C23204737"], 1),
+    ("SI401", "Ingenieria de Software", 3, "VI", "A", 3, 2, doc_map["C23204737"], 1),
+    ("SW101", "Fundamentos de Ingenieria de Software", 4, "III", "A", 3, 2, doc_map["C23204738"], 1),
+    ("SW201", "Arquitectura de Software", 4, "V", "A", 3, 2, doc_map["C23204738"], 1),
+    ("SI501", "Redes y Comunicaciones", 3, "V", "A", 2, 2, doc_map["C23204738"], 1),
+    ("SI601", "Inteligencia Artificial", 4, "VII", "A", 3, 2, doc_map["C23204737"], 1),
 ]
 for c in cursos_data:
     cur.execute(
@@ -204,18 +204,18 @@ for c in cursos_data:
 
 # --- 10. RESERVAS ---
 logger.info("Insertando reservas...")
-cur.execute("SELECT id_usuario, username FROM usuarios WHERE username IN ('mludeña','jquispe')")
+cur.execute("SELECT id_usuario, username FROM usuarios WHERE username IN ('C23204737','C23204738')")
 usr_map = {r["username"]: r["id_usuario"] for r in cur.fetchall()}
 cur.execute("SELECT id_curso, codigo FROM cursos")
 cur_map = {r["codigo"]: r["id_curso"] for r in cur.fetchall()}
 
 reservas_data = [
-    (usr_map["mludeña"], cur_map["SI101"], esp_map["Lab. de Computo - Sistemas 1"], bloq_map["BLOQUE 2 - MAÑANA"], "2026-07-10", "CONFIRMADA"),
-    (usr_map["mludeña"], cur_map["SI301"], esp_map["Lab. de Computo - Sistemas 1"], bloq_map["BLOQUE 5 - TARDE"], "2026-07-10", "CONFIRMADA"),
-    (usr_map["jquispe"], cur_map["SW101"], esp_map["Lab. de Ingenieria de Software"], bloq_map["BLOQUE 3 - MAÑANA"], "2026-07-11", "CONFIRMADA"),
-    (usr_map["jquispe"], cur_map["SI501"], esp_map["Lab. de Redes y Telecomunicaciones"], bloq_map["BLOQUE 6 - TARDE"], "2026-07-14", "PENDIENTE"),
-    (usr_map["mludeña"], cur_map["SI601"], esp_map["Sala de Computo - Base de Datos"], bloq_map["BLOQUE 4 - TARDE"], "2026-07-15", "PENDIENTE"),
-    (usr_map["jquispe"], cur_map["SW201"], esp_map["Lab. de Ingenieria de Software"], bloq_map["BLOQUE 1 - MAÑANA"], "2026-07-16", "CONFIRMADA"),
+    (usr_map["C23204737"], cur_map["SI101"], esp_map["Lab. de Computo - Sistemas 1"], bloq_map["BLOQUE 2 - MAÑANA"], "2026-07-10", "CONFIRMADA"),
+    (usr_map["C23204737"], cur_map["SI301"], esp_map["Lab. de Computo - Sistemas 1"], bloq_map["BLOQUE 5 - TARDE"], "2026-07-10", "CONFIRMADA"),
+    (usr_map["C23204738"], cur_map["SW101"], esp_map["Lab. de Ingenieria de Software"], bloq_map["BLOQUE 3 - MAÑANA"], "2026-07-11", "CONFIRMADA"),
+    (usr_map["C23204738"], cur_map["SI501"], esp_map["Lab. de Redes y Telecomunicaciones"], bloq_map["BLOQUE 6 - TARDE"], "2026-07-14", "PENDIENTE"),
+    (usr_map["C23204737"], cur_map["SI601"], esp_map["Sala de Computo - Base de Datos"], bloq_map["BLOQUE 4 - TARDE"], "2026-07-15", "PENDIENTE"),
+    (usr_map["C23204738"], cur_map["SW201"], esp_map["Lab. de Ingenieria de Software"], bloq_map["BLOQUE 1 - MAÑANA"], "2026-07-16", "CONFIRMADA"),
 ]
 for r in reservas_data:
     cur.execute(
@@ -226,10 +226,10 @@ for r in reservas_data:
 # --- 11. PROCESAMIENTO_NLP ---
 logger.info("Insertando procesamiento_nlp...")
 nlp_data = [
-    (usr_map["mludeña"], "Quiero reservar el laboratorio de sistemas para el lunes", "RESERVAR_ESPACIO", '{"intencion": "reserva", "entidad": "laboratorio sistemas"}', '{"accion": "buscar_espacio", "params": {}}', "gpt-4o-mini", 450),
-    (usr_map["mludeña"], "Que cursos tengo esta semana en Ingenieria de Sistemas?", "CONSULTAR_HORARIO", '{"intencion": "horario", "periodo": "semanal", "carrera": "sistemas"}', '{"accion": "listar_cursos", "params": {}}', "gpt-4o-mini", 320),
-    (usr_map["jquispe"], "Muestra las reservas del laboratorio de software", "CONSULTAR_RESERVAS", '{"intencion": "reservas", "espacio": "Lab. de Ingenieria de Software"}', '{"accion": "listar_reservas", "params": {"espacio": "Lab. de Ingenieria de Software"}}', "gpt-4o-mini", 510),
-    (usr_map["jquispe"], "Agenda el aula 201 para la clase de Arquitectura de Software", "RESERVAR_ESPACIO", '{"intencion": "reserva", "espacio": "Aula 201 - Sistemas", "curso": "Arquitectura de Software"}', '{"accion": "crear_reserva", "params": {"espacio": "Aula 201 - Sistemas"}}', "gpt-4o-mini", 380),
+    (usr_map["C23204737"], "Quiero reservar el laboratorio de sistemas para el lunes", "RESERVAR_ESPACIO", '{"intencion": "reserva", "entidad": "laboratorio sistemas"}', '{"accion": "buscar_espacio", "params": {}}', "gpt-4o-mini", 450),
+    (usr_map["C23204737"], "Que cursos tengo esta semana en Ingenieria de Sistemas?", "CONSULTAR_HORARIO", '{"intencion": "horario", "periodo": "semanal", "carrera": "sistemas"}', '{"accion": "listar_cursos", "params": {}}', "gpt-4o-mini", 320),
+    (usr_map["C23204738"], "Muestra las reservas del laboratorio de software", "CONSULTAR_RESERVAS", '{"intencion": "reservas", "espacio": "Lab. de Ingenieria de Software"}', '{"accion": "listar_reservas", "params": {"espacio": "Lab. de Ingenieria de Software"}}', "gpt-4o-mini", 510),
+    (usr_map["C23204738"], "Agenda el aula 201 para la clase de Arquitectura de Software", "RESERVAR_ESPACIO", '{"intencion": "reserva", "espacio": "Aula 201 - Sistemas", "curso": "Arquitectura de Software"}', '{"accion": "crear_reserva", "params": {"espacio": "Aula 201 - Sistemas"}}', "gpt-4o-mini", 380),
 ]
 for n in nlp_data:
     cur.execute(
