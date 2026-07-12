@@ -1,7 +1,7 @@
 """Formato de respuesta estándar para todas las API."""
 
 import json
-from typing import Any, Optional
+from typing import Any
 from http.server import BaseHTTPRequestHandler
 from app.logger import get_logger
 

@@ -5,8 +5,9 @@ from app.repositories.reserva_repository import ReservaRepository
 from app.repositories.espacio_repository import EspacioRepository
 from app.repositories.notificacion_repository import NotificacionRepository
 from app.logger import get_logger
-from app.exceptions import NotFoundError, ValidationError, ConflictError
+from app.exceptions import NotFoundError, ValidationError
 from app.utils import escapar
+from app.schemas.reserva_schema import CrearReservaSchema
 
 logger = get_logger("reserva_service")
 
@@ -36,12 +37,18 @@ class ReservaService:
 
     def crear(self, id_usuario: int, id_espacio: int, fecha: str = "2026-05-28",
               curso_nombre: str = "", horario: str = "") -> Optional[dict]:
-        if not isinstance(id_usuario, int) or id_usuario <= 0:
-            raise ValidationError("ID de usuario inválido")
-        if not isinstance(id_espacio, int) or id_espacio <= 0:
-            raise ValidationError("ID de espacio inválido")
+        schema = CrearReservaSchema.from_dict({
+            "id_espacio": id_espacio,
+            "id_usuario": id_usuario,
+            "curso_nombre": curso_nombre,
+            "horario": horario,
+            "fecha": fecha,
+        })
+        errors = schema.validate()
+        if errors:
+            raise ValidationError("; ".join(errors))
 
-        espacio = self.espacio_repo.get_by_id(id_espacio)
+        espacio = self.espacio_repo.get_by_id(schema.id_espacio)
         if not espacio:
             raise NotFoundError("Espacio")
 

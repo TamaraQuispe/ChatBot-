@@ -5,8 +5,6 @@ import logging
 import sys
 from datetime import datetime
 from logging.handlers import RotatingFileHandler
-from typing import Optional
-
 _LOG_DIR = os.environ.get("LOG_DIR", "logs")
 _LOG_LEVEL = os.environ.get("LOG_LEVEL", "DEBUG").upper()
 _MAX_BYTES = 5 * 1024 * 1024

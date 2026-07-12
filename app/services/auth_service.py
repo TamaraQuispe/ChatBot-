@@ -5,6 +5,7 @@ from typing import Optional
 from app.repositories.usuario_repository import UsuarioRepository
 from app.logger import get_logger
 from app.exceptions import UnauthorizedError, ValidationError, NotFoundError
+from app.schemas.auth_schema import LoginSchema, RegisterSchema
 
 logger = get_logger("auth_service")
 
@@ -14,11 +15,10 @@ class AuthService:
         self.usuario_repo = UsuarioRepository()
 
     def login(self, username: str, password: str) -> Optional[dict]:
-        if not username or not password:
-            raise ValidationError("Usuario y contraseña son requeridos")
-
-        if len(username) > 100 or len(password) > 255:
-            raise ValidationError("Credenciales inválidas")
+        schema = LoginSchema.from_dict({"username": username, "password": password})
+        errors = schema.validate()
+        if errors:
+            raise ValidationError("; ".join(errors))
 
         username = username.strip()
         usuario = self.usuario_repo.get_by_username(username)
@@ -51,6 +51,10 @@ class AuthService:
         }
 
     def register(self, data: dict) -> dict:
+        schema = RegisterSchema.from_dict(data)
+        errors = schema.validate()
+        if errors:
+            raise ValidationError("; ".join(errors))
         existing = self.usuario_repo.get_by_username(data["username"])
         if existing:
             raise ValidationError("El nombre de usuario ya existe")

@@ -1,10 +1,10 @@
 """Servicio de espacios académicos."""
 
-from typing import Optional
 from app.repositories.espacio_repository import EspacioRepository
 from app.repositories.reserva_repository import ReservaRepository
 from app.logger import get_logger
-from app.exceptions import NotFoundError
+from app.exceptions import NotFoundError, ValidationError
+from app.schemas.admin_schema import CrearEspacioSchema, CambiarEstadoSchema, ActualizarEspacioSchema
 
 logger = get_logger("espacio_service")
 
@@ -39,16 +39,24 @@ class EspacioService:
         return self.repo.get_software_by_espacio(id_espacio)
 
     def actualizar(self, id_espacio: int, data: dict) -> bool:
+        schema = ActualizarEspacioSchema.from_dict({**data, "id_espacio": id_espacio})
+        errors = schema.validate()
+        if errors:
+            raise ValidationError("; ".join(errors))
         espacio = self.repo.get_by_id(id_espacio)
         if not espacio:
             raise NotFoundError("Espacio")
         return self.repo.update(id_espacio, data)
 
     def cambiar_estado(self, id_espacio: int, estado: str) -> bool:
+        schema = CambiarEstadoSchema.from_dict({"id_espacio": id_espacio, "estado": estado})
+        errors = schema.validate()
+        if errors:
+            raise ValidationError("; ".join(errors))
         espacio = self.repo.get_by_id(id_espacio)
         if not espacio:
             raise NotFoundError("Espacio")
-        return self.repo.cambiar_estado(id_espacio, estado)
+        return self.repo.cambiar_estado(id_espacio, schema.estado)
 
     def eliminar(self, id_espacio: int) -> bool:
         from app.database.connection import get_connection

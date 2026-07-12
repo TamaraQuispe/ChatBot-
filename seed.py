@@ -1,14 +1,17 @@
 import bcrypt
 from config.database import Database
 from dotenv import load_dotenv
+from app.logger import get_logger
 load_dotenv()
+
+logger = get_logger("seed")
 
 db = Database()
 conn = db.obtener_conexion()
 cur = conn.cursor()
 
 # --- 1. USUARIOS ---
-print("Insertando usuarios...")
+logger.info("Insertando usuarios...")
 pwd_docente = bcrypt.hashpw("utp123".encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
 pwd_admin = bcrypt.hashpw("admin123".encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
 
@@ -24,7 +27,7 @@ for u in usuarios_data:
     )
 
 # --- 2. DOCENTES ---
-print("Insertando docentes...")
+logger.info("Insertando docentes...")
 cur.execute("SELECT id_usuario, username FROM usuarios WHERE username IN ('mludeña','jquispe')")
 user_map = {r["username"]: r["id_usuario"] for r in cur.fetchall()}
 
@@ -39,7 +42,7 @@ for d in docentes_data:
     )
 
 # --- 3. BLOQUES HORARIO ---
-print("Insertando bloques horario...")
+logger.info("Insertando bloques horario...")
 bloques_data = [
     ("BLOQUE 1 - MAÑANA", "08:00", "09:30", "LUNES", "DIURNO"),
     ("BLOQUE 2 - MAÑANA", "09:45", "11:15", "LUNES", "DIURNO"),
@@ -57,7 +60,7 @@ for b in bloques_data:
     )
 
 # --- 4. SOFTWARE ---
-print("Insertando software...")
+logger.info("Insertando software...")
 software_data = [
     ("Windows 11 Pro", "23H2"),
     ("Visual Studio Code", "1.98"),
@@ -77,7 +80,7 @@ for s in software_data:
     )
 
 # --- 5. EQUIPAMIENTOS ---
-print("Insertando equipamientos...")
+logger.info("Insertando equipamientos...")
 equipamiento_data = [
     ("PC Dell OptiPlex 7090",),
     ("Proyector Epson EB-FH06",),
@@ -94,7 +97,7 @@ for e in equipamiento_data:
     )
 
 # --- 6. ESPACIOS ACADEMICOS ---
-print("Insertando espacios academicos (UTP Lima Norte)...")
+logger.info("Insertando espacios academicos (UTP Lima Norte)...")
 espacios_data = [
     ("Lab. de Computo - Sistemas 1", 1, "Pabellon A - Primer Piso - Sede Lima Norte", 30),
     ("Lab. de Computo - Sistemas 2", 1, "Pabellon A - Segundo Piso - Sede Lima Norte", 25),
@@ -124,7 +127,7 @@ cur.execute("SELECT id_bloque, nombre FROM bloques_horario")
 bloq_map = {r["nombre"]: r["id_bloque"] for r in cur.fetchall()}
 
 # --- 7. ESPACIO_SOFTWARE ---
-print("Insertando espacio_software...")
+logger.info("Insertando espacio_software...")
 esp_sw_data = [
     (esp_map["Lab. de Computo - Sistemas 1"], sw_map["Windows 11 Pro"]),
     (esp_map["Lab. de Computo - Sistemas 1"], sw_map["Visual Studio Code"]),
@@ -156,7 +159,7 @@ for es in esp_sw_data:
     )
 
 # --- 8. ESPACIO_EQUIPAMIENTO ---
-print("Insertando espacio_equipamiento...")
+logger.info("Insertando espacio_equipamiento...")
 esp_eq_data = [
     (esp_map["Lab. de Computo - Sistemas 1"], eq_map["PC Dell OptiPlex 7090"]),
     (esp_map["Lab. de Computo - Sistemas 1"], eq_map["Proyector Epson EB-FH06"]),
@@ -182,7 +185,7 @@ for ee in esp_eq_data:
     )
 
 # --- 9. CURSOS ---
-print("Insertando cursos de Ingenieria de Sistemas y Software...")
+logger.info("Insertando cursos de Ingenieria de Sistemas y Software...")
 cursos_data = [
     ("SI101", "Programacion I", 4, "III", "A", 4, 2, doc_map["mludeña"], 1),
     ("SI201", "Base de Datos", 4, "IV", "A", 3, 2, doc_map["jquispe"], 1),
@@ -200,7 +203,7 @@ for c in cursos_data:
     )
 
 # --- 10. RESERVAS ---
-print("Insertando reservas...")
+logger.info("Insertando reservas...")
 cur.execute("SELECT id_usuario, username FROM usuarios WHERE username IN ('mludeña','jquispe')")
 usr_map = {r["username"]: r["id_usuario"] for r in cur.fetchall()}
 cur.execute("SELECT id_curso, codigo FROM cursos")
@@ -221,7 +224,7 @@ for r in reservas_data:
     )
 
 # --- 11. PROCESAMIENTO_NLP ---
-print("Insertando procesamiento_nlp...")
+logger.info("Insertando procesamiento_nlp...")
 nlp_data = [
     (usr_map["mludeña"], "Quiero reservar el laboratorio de sistemas para el lunes", "RESERVAR_ESPACIO", '{"intencion": "reserva", "entidad": "laboratorio sistemas"}', '{"accion": "buscar_espacio", "params": {}}', "gpt-4o-mini", 450),
     (usr_map["mludeña"], "Que cursos tengo esta semana en Ingenieria de Sistemas?", "CONSULTAR_HORARIO", '{"intencion": "horario", "periodo": "semanal", "carrera": "sistemas"}', '{"accion": "listar_cursos", "params": {}}', "gpt-4o-mini", 320),
@@ -237,4 +240,4 @@ for n in nlp_data:
 conn.commit()
 cur.close()
 conn.close()
-print("\nSeed completado exitosamente - UTP Lima Norte | Sistemas y Software!")
+logger.info("Seed completado exitosamente - UTP Lima Norte | Sistemas y Software!")

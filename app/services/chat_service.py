@@ -1,14 +1,11 @@
 """Servicio de chatbot - orquestación NLP + OpenRouter + memoria."""
 
 import json
-from typing import Optional
 from app.repositories.chat_repository import SesionChatRepository, MensajeChatRepository
-from app.repositories.reserva_repository import ReservaRepository
 from app.services.openrouter_service import OpenRouterService
 from app.services.reserva_service import ReservaService
 from app.services.nlp_service import NLPService
 from app.logger import get_logger
-from app.exceptions import ExternalServiceError
 
 logger = get_logger("chat_service")
 

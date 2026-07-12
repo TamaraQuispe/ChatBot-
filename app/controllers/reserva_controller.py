@@ -2,7 +2,6 @@
 
 from app.services.reserva_service import ReservaService
 from app.logger import get_logger
-from app.utils import escapar
 
 logger = get_logger("reserva")
 
