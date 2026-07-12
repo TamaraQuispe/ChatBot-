@@ -6,7 +6,7 @@ logger = get_logger("openrouter")
 
 
 class OpenRouterService:
-    def __init__(self, model="google/gemma-3-12b-it:free"):
+    def __init__(self, model="meta-llama/llama-3.3-70b-instruct:free"):
         self.api_key = os.environ.get("OPENROUTER_API_KEY")
         if not self.api_key:
             raise ValueError("OPENROUTER_API_KEY no definida.")
