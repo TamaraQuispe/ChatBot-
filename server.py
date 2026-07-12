@@ -102,6 +102,7 @@ class UTPHandler(BaseHTTPRequestHandler):
                     self._redirect("/chat")
                 return
             self._responder_html(HTML_LOGIN)
+            return
 
         elif parsed_path == "/docs":
             self._responder_html(HTML_DOCS)
