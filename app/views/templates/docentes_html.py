@@ -235,10 +235,10 @@ $HEADER
 <span class="absolute inset-y-0 left-4 flex items-center text-secondary">
 <span class="material-symbols-outlined">filter_alt</span>
 </span>
-<input class="w-full pl-12 pr-4 py-2.5 bg-surface-container-low border border-surface-container-highest rounded-xl focus:ring-1 focus:ring-primary focus:border-primary transition-all" placeholder="Filtrar por departamento, grado academico o curso..." type="text"/>
+<input id="searchDocentes" class="w-full pl-12 pr-4 py-2.5 bg-surface-container-low border border-surface-container-highest rounded-xl focus:ring-1 focus:ring-primary focus:border-primary transition-all" placeholder="Filtrar por departamento, grado academico o curso..." type="text"/>
 </div>
-<select class="bg-white border border-surface-container-highest rounded-xl px-4 py-2.5 text-body-md focus:ring-1 focus:ring-primary w-full sm:min-w-[200px]">
-<option>Todos los Departamentos</option>
+<select id="filterDepartamento" class="bg-white border border-surface-container-highest rounded-xl px-4 py-2.5 text-body-md focus:ring-1 focus:ring-primary w-full sm:min-w-[200px]">
+<option value="">Todos los Departamentos</option>
 <option>Ingenieria de Sistemas</option>
 <option>Arquitectura</option>
 <option>Derecho</option>
@@ -253,9 +253,9 @@ $HEADER
 </div>
 </section>
 <!-- Faculty Table -->
-<section class="glass-panel rounded-2xl shadow-sm overflow-hidden mb-section-gap">
+<section class="glass-panel rounded-2xl shadow-sm mb-section-gap">
 <div class="overflow-x-auto">
-<table class="w-full text-left border-collapse">
+<table id="tabla-docentes" class="w-full text-left border-collapse">
 <thead>
 <tr class="bg-surface-container-low/50">
 <th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider border-b border-surface-container-highest">Docente</th>
@@ -285,6 +285,46 @@ $TABLA_DOCENTES
 </div>
 </section>
 </div>
+<!-- Modal Detalle Docente -->
+<div id="modalDetalle" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4" onclick="if(event.target===this) cerrarModal('modalDetalle')">
+    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
+    <div class="relative bg-white rounded-3xl shadow-2xl max-w-lg w-full p-8 transform transition-all" onclick="event.stopPropagation()">
+        <button onclick="cerrarModal('modalDetalle')" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center text-secondary hover:bg-surface-container-low rounded-full transition-colors">
+            <span class="material-symbols-outlined">close</span>
+        </button>
+        <div class="flex items-center gap-3 mb-6">
+            <div class="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
+                <span class="material-symbols-outlined text-[28px]" id="modal-icon">person</span>
+            </div>
+            <div>
+                <h3 class="font-bold text-xl text-on-surface" id="modal-nombre">-</h3>
+                <p class="text-sm text-secondary" id="modal-info">-</p>
+            </div>
+        </div>
+        <div class="space-y-4" id="modal-campos"></div>
+        <button onclick="cerrarModal('modalDetalle')" class="mt-6 w-full py-3 bg-primary text-white font-bold rounded-2xl hover:bg-primary/90 transition-all active:scale-[0.98]">Cerrar</button>
+    </div>
+</div>
+
+<!-- Modal Eliminar Docente -->
+<div id="modalEliminar" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4" onclick="if(event.target===this) cerrarModal('modalEliminar')">
+    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
+    <div class="relative bg-white rounded-3xl shadow-2xl max-w-sm w-full p-8 transform transition-all" onclick="event.stopPropagation()">
+        <div class="text-center">
+            <div class="w-16 h-16 rounded-full bg-error/10 flex items-center justify-center text-error mx-auto mb-4">
+                <span class="material-symbols-outlined text-[32px]">delete</span>
+            </div>
+            <h3 class="font-bold text-xl text-on-surface mb-2">Eliminar Docente</h3>
+            <p class="text-sm text-secondary mb-6" id="eliminar-text">¿Estas seguro de eliminar este docente?</p>
+            <form id="form-eliminar" method="POST" action="/admin/docentes/eliminar" class="flex gap-3">
+                <input type="hidden" name="id_docente" id="eliminar-id">
+                <button type="button" onclick="cerrarModal('modalEliminar')" class="flex-1 py-3 border border-surface-container-highest text-secondary font-bold rounded-2xl hover:bg-surface-container-low transition-all">Cancelar</button>
+                <button type="submit" class="flex-1 py-3 bg-error text-white font-bold rounded-2xl hover:bg-error/90 transition-all">Eliminar</button>
+            </form>
+        </div>
+    </div>
+</div>
+
 <!-- Footer -->
 <footer class="w-full py-stack-lg mt-section-gap border-t border-surface-container-highest bg-surface">
 <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center px-container-padding gap-4">
@@ -317,6 +357,58 @@ $TABLA_DOCENTES
                 this.parentElement.classList.remove('scale-[1.02]');
             });
         }
+        function filtrarDocentes() {
+            var q = document.getElementById('searchDocentes').value.toLowerCase();
+            var depto = document.getElementById('filterDepartamento').value;
+            document.querySelectorAll('#tabla-docentes tbody tr').forEach(function(r) {
+                var search = r.getAttribute('data-search').toLowerCase();
+                var match = (!q || search.indexOf(q) !== -1) && (!depto || r.getAttribute('data-departamento').toLowerCase().indexOf(depto.toLowerCase()) !== -1);
+                r.style.display = match ? '' : 'none';
+            });
+        }
+        document.getElementById('searchDocentes').addEventListener('input', filtrarDocentes);
+        document.getElementById('filterDepartamento').addEventListener('change', filtrarDocentes);
+        var menuAbierto = null;
+        function toggleAcciones(btn) {
+            var td = btn.closest('td');
+            var menu = td.querySelector('.acciones-menu');
+            if(!menu) return;
+            if(menuAbierto && menuAbierto !== menu) menuAbierto.classList.add('hidden');
+            menu.classList.toggle('hidden');
+            menuAbierto = menu.classList.contains('hidden') ? null : menu;
+        }
+        function cerrarModal(id) { document.getElementById(id).classList.add('hidden'); }
+        function verDetalleDocente(id, nombre, depto, especialidad, correo, telefono, estado) {
+            document.getElementById('modal-nombre').textContent = nombre;
+            document.getElementById('modal-info').textContent = depto + ' • ' + estado;
+            var html = '';
+            var campos = [
+                ['school', 'Departamento', depto],
+                ['psychiatry', 'Especialidad', especialidad],
+                ['mail', 'Correo', correo],
+                ['call', 'Telefono', telefono],
+            ];
+            campos.forEach(function(c) {
+                html += '<div class="flex justify-between py-3 border-b border-surface-container-highest">';
+                html += '<span class="flex items-center gap-2 text-secondary"><span class="material-symbols-outlined text-[18px]">' + c[0] + '</span>' + c[1] + '</span>';
+                html += '<span class="font-semibold text-on-surface text-right">' + c[2] + '</span>';
+                html += '</div>';
+            });
+            document.getElementById('modal-campos').innerHTML = html;
+            document.getElementById('modalDetalle').classList.remove('hidden');
+        }
+        function editarDocente(id) { window.location.href = '/admin/docentes/editar?id=' + id; }
+        function eliminarDocente(id, nombre) {
+            document.getElementById('eliminar-id').value = id;
+            document.getElementById('eliminar-text').textContent = '¿Estas seguro de eliminar a "' + nombre + '"? Esta accion no se puede deshacer.';
+            document.getElementById('modalEliminar').classList.remove('hidden');
+        }
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.acciones-menu') && !e.target.closest('button[onclick*="toggleAcciones"]')) {
+                document.querySelectorAll('.acciones-menu').forEach(function(m) { m.classList.add('hidden'); });
+                menuAbierto = null;
+            }
+        });
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebarOverlay');

@@ -12,6 +12,8 @@ from .aula_teorica import AulaTeorica
 from .aula_laboratorio import AulaLaboratorio
 from .sala_computo import SalaComputo
 from .chatbot import Chatbot
+from .sesion_chat import SesionChat
+from .notificacion import Notificacion
 from core.logger import get_logger
 
 logger = get_logger("init")
@@ -94,6 +96,8 @@ def inicializar_bd():
     BloqueHorario.crear_tabla(db)
     Reserva.crear_tabla(db)
     ProcesadorNLP.crear_tabla(db)
+    SesionChat(db).crear_tablas()
+    Notificacion(db).crear_tabla()
     _migrar_columnas(db)
     _migrar_passwords(db)
     Usuario.sembrar(db)

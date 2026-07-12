@@ -12,13 +12,17 @@ class Reserva:
     def __init__(self, db: Database):
         self.db = db
 
-    def crear(self, id_usuario: int, curso_nombre: str, id_espacio: int, horario: str, fecha: str = "2026-05-28") -> bool:
+    def crear(self, id_usuario: int, id_espacio: int, fecha: str = "2026-05-28") -> bool:
         try:
             conn = self.db.obtener_conexion()
             cursor = conn.cursor()
+            cursor.execute("SELECT MIN(id_curso) AS v FROM cursos")
+            id_curso = cursor.fetchone()["v"] or 6
+            cursor.execute("SELECT MIN(id_bloque) AS v FROM bloques_horario")
+            id_bloque = cursor.fetchone()["v"] or 34
             cursor.execute(
-                "INSERT INTO reservas (id_usuario, curso_nombre, id_espacio, horario, fecha, estado) VALUES (%s, %s, %s, %s, %s, 1)",
-                (id_usuario, curso_nombre, id_espacio, horario, fecha)
+                "INSERT INTO reservas (id_usuario, id_curso, id_espacio, id_bloque, fecha, estado) VALUES (%s, %s, %s, %s, %s, 'CONFIRMADA')",
+                (id_usuario, id_curso, id_espacio, id_bloque, fecha)
             )
             conn.commit()
             conn.close()
@@ -32,9 +36,11 @@ class Reserva:
             conn = self.db.obtener_conexion()
             cursor = conn.cursor()
             cursor.execute(
-                "SELECT r.*, e.nombre AS espacio_nombre, e.tipo, e.ubicacion "
+                "SELECT r.*, e.nombre AS espacio_nombre, t.nombre AS tipo, e.ubicacion, COALESCE(c.nombre, '') AS curso_nombre "
                 "FROM reservas r "
                 "JOIN espacios_academicos e ON r.id_espacio = e.id_espacio "
+                "JOIN tipos_espacio t ON e.id_tipo = t.id_tipo "
+                "LEFT JOIN cursos c ON r.id_curso = c.id_curso "
                 "WHERE r.id_usuario = %s ORDER BY r.fecha DESC",
                 (id_usuario,)
             )

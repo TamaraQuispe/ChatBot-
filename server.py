@@ -1,4 +1,4 @@
-import os
+import os, json
 from http.server import HTTPServer, BaseHTTPRequestHandler
 import urllib.parse
 
@@ -16,7 +16,9 @@ from app.controllers.admin_controller import AdminController
 from app.models.espacio import EspacioAcademico
 from app.models.docente import Docente
 from app.models.reserva import Reserva
-from app.services.ollama_service import OllamaService
+from app.models.sesion_chat import SesionChat
+from app.models.notificacion import Notificacion
+from app.services.openrouter_service import OpenRouterService
 from app.views.templates.login_html import HTML_LOGIN
 from app.views.templates.chat_html import HTML_CHAT
 from app.views.templates.admin_html import HTML_ADMIN
@@ -38,6 +40,18 @@ logger = get_logger("app")
 class UTPHandler(BaseHTTPRequestHandler):
     def _get_usuario(self):
         return get_session(self.headers.get("Cookie"))
+
+    def _get_sesion_id(self) -> int:
+        from http.cookies import SimpleCookie
+        cookie = self.headers.get("Cookie", "")
+        try:
+            c = SimpleCookie()
+            c.load(cookie)
+            if "utp_sesion" in c:
+                return int(c["utp_sesion"].value)
+        except Exception:
+            pass
+        return 0
 
     def _es_admin(self):
         u = self._get_usuario()
@@ -216,15 +230,267 @@ class UTPHandler(BaseHTTPRequestHandler):
                         </div>
                     </div>
                     '''
-            page_rendered = HTML_CHAT.replace("$NOMBRE_DOCENTE", usuario["nombre"]).replace("$HISTORIAL_CHAT", historial_rendered)
+            try:
+                db_reservas = Database()
+                reserva_ctrl = ReservaController(db_reservas)
+                reservas = reserva_ctrl.reserva_model.listar_por_usuario(usuario["id_usuario"])
+            except Exception:
+                reservas = []
+            reservas_rendered = ""
+            for r in reservas:
+                rid = r.get("id_reserva", 0)
+                ename = escapar(r.get("espacio_nombre", ""))
+                tipo = escapar(r.get("tipo", ""))
+                ubicacion = escapar(r.get("ubicacion", ""))
+                fecha = escapar(str(r.get("fecha", "")))
+                curso = escapar(r.get("curso_nombre", ""))
+                estado_raw = r.get("estado", "PENDIENTE")
+                if estado_raw == "CONFIRMADA":
+                    estado_class = "bg-emerald-100 text-emerald-800"
+                    estado_text = "Confirmada"
+                elif estado_raw == "CANCELADA":
+                    estado_class = "bg-red-100 text-red-800"
+                    estado_text = "Cancelada"
+                else:
+                    estado_class = "bg-amber-100 text-amber-800"
+                    estado_text = "Pendiente"
+                reservas_rendered += f'''
+                <tr class="hover:bg-black/[0.02] transition-colors">
+                    <td class="py-4 px-4 text-text-primary font-medium">#RES-{rid}</td>
+                    <td class="py-4 px-4 text-text-primary">{ename}</td>
+                    <td class="py-4 px-4 text-text-secondary">{tipo}</td>
+                    <td class="py-4 px-4 text-text-primary">{fecha}</td>
+                    <td class="py-4 px-4 text-text-primary">-</td>
+                    <td class="py-4 px-4"><span class="inline-flex items-center px-2 py-0.5 rounded text-[12px] font-semibold {estado_class}">{estado_text}</span></td>
+                    <td class="py-4 px-4 text-right whitespace-nowrap"><button onclick='abrirModal({rid},"{ename}","{tipo}","{ubicacion}","{fecha}","{estado_text}","{estado_class}","{curso}")' class="text-sm border border-black/10 text-text-secondary hover:bg-black/5 hover:text-text-primary px-3 py-1.5 rounded-lg transition-colors">Ver Detalles</button></td>
+                </tr>'''
+            if not reservas_rendered:
+                reservas_rendered = '<tr><td class="py-4 px-4 text-text-secondary text-center" colspan="7">No tienes reservas.</td></tr>'
+            sesiones_rendered = ""
+            try:
+                sc = SesionChat(db_reservas)
+                sesiones = sc.listar(usuario["id_usuario"])
+                for s in sesiones:
+                    sid = s["id_sesion"]
+                    titulo = escapar(s["titulo"])
+                    sesiones_rendered += f'''
+                    <a href="/api/sesion/cargar?id={sid}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-text-secondary hover:bg-black/5 hover:text-text-primary transition-all duration-200 text-sm group relative">
+                        <span class="material-symbols-outlined text-[18px] text-text-secondary/60">chat</span>
+                        <span class="truncate flex-1">{titulo}</span>
+                        <a href="/api/sesion/eliminar?id={sid}" class="opacity-0 group-hover:opacity-100 p-1 hover:bg-black/10 rounded text-text-secondary/60 hover:text-error transition-all" onclick="event.stopPropagation()">
+                            <span class="material-symbols-outlined text-[16px]">close</span>
+                        </a>
+                    </a>'''
+            except Exception:
+                pass
+            page_rendered = HTML_CHAT.replace("$NOMBRE_DOCENTE", usuario["nombre"]).replace("$HISTORIAL_CHAT", historial_rendered).replace("$TABLA_RESERVAS", reservas_rendered).replace("$LISTA_SESIONES", sesiones_rendered)
             self._responder_html(page_rendered)
+
+        elif parsed_path == "/api/sesion/nueva":
+            if not usuario:
+                self._redirect("/login")
+                return
+            db_sc = Database()
+            sc = SesionChat(db_sc)
+            historial = [
+                {"tipo": "bot", "texto": f"Hola, {escapar(usuario['nombre'])}. Soy el Asistente Academico UTP. ¿Que aula o reprogramacion deseas gestionar hoy?"}
+            ]
+            titulo = "Nueva conversacion"
+            id_sesion = sc.crear(usuario["id_usuario"], titulo)
+            sc.guardar_mensaje(id_sesion, "bot", json.dumps({"texto": historial[0]["texto"]}))
+            self._redirect("/chat#fin", [("Set-Cookie", self._set_historial(historial)), ("Set-Cookie", f"utp_sesion={id_sesion}; Path=/; Max-Age=86400")])
+
+        elif parsed_path == "/api/sesion/cargar":
+            if not usuario:
+                self._redirect("/login")
+                return
+            params_get = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query)
+            id_sesion = int(params_get.get("id", [0])[0])
+            if not id_sesion:
+                self._redirect("/chat")
+                return
+            db_sc = Database()
+            sc = SesionChat(db_sc)
+            mensajes = sc.obtener_mensajes(id_sesion)
+            historial = []
+            for m in mensajes:
+                try:
+                    contenido = json.loads(m["contenido_json"])
+                except Exception:
+                    contenido = {"texto": m["contenido_json"]}
+                if m["tipo"] == "card":
+                    historial.append({"tipo": "card", "data": contenido})
+                elif m["tipo"] == "user":
+                    historial.append({"tipo": "user", "texto": contenido.get("texto", "")})
+                elif m["tipo"] == "bot":
+                    historial.append({"tipo": "bot", "texto": contenido.get("texto", "")})
+                elif m["tipo"] == "success":
+                    historial.append({"tipo": "success", "texto": contenido.get("texto", "")})
+            self._redirect("/chat#fin", [("Set-Cookie", self._set_historial(historial)), ("Set-Cookie", f"utp_sesion={id_sesion}; Path=/; Max-Age=86400")])
+
+        elif parsed_path == "/api/sesion/eliminar":
+            if not usuario:
+                self._redirect("/login")
+                return
+            params_get = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query)
+            id_sesion = int(params_get.get("id", [0])[0])
+            if id_sesion:
+                db_sc = Database()
+                sc = SesionChat(db_sc)
+                sc.eliminar(id_sesion)
+            self._redirect("/chat")
+
+        elif parsed_path == "/admin/salones/editar":
+            if not self._es_admin():
+                self._redirect("/login")
+                return
+            try:
+                params_get = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query)
+                id_espacio = int(params_get.get("id", [0])[0])
+                db_edit = Database()
+                conn_edit = db_edit.obtener_conexion()
+                cur_edit = conn_edit.cursor()
+                cur_edit.execute("SELECT e.*, t.nombre AS tipo_nombre FROM espacios_academicos e JOIN tipos_espacio t ON e.id_tipo = t.id_tipo WHERE e.id_espacio = %s", (id_espacio,))
+                espacio = dict(cur_edit.fetchone())
+                cur_edit.execute("SELECT id_tipo, nombre FROM tipos_espacio ORDER BY nombre")
+                tipos = [dict(r) for r in cur_edit.fetchall()]
+                cur_edit.execute("SELECT id_equipamiento, nombre FROM equipamientos ORDER BY nombre")
+                equipos_todos = [dict(r) for r in cur_edit.fetchall()]
+                cur_edit.execute("SELECT ee.id_equipamiento FROM espacio_equipamiento ee WHERE ee.id_espacio = %s", (id_espacio,))
+                equipos_seleccionados = {r["id_equipamiento"] for r in cur_edit.fetchall()}
+                cur_edit.execute("SELECT id_software, nombre FROM software ORDER BY nombre")
+                soft_todos = [dict(r) for r in cur_edit.fetchall()]
+                softwares_seleccionados = set()
+                cur_edit.execute("SELECT es.id_software FROM espacio_software es WHERE es.id_espacio = %s", (id_espacio,))
+                softwares_seleccionados = {r["id_software"] for r in cur_edit.fetchall()}
+                conn_edit.close()
+                opts_tipo = "".join(f'<option value="{t["id_tipo"]}" {"selected" if t["id_tipo"]==espacio["id_tipo"] else ""}>{t["nombre"]}</option>' for t in tipos)
+                opts_estado = "".join(f'<option value="{e}" {"selected" if e==espacio["estado"] else ""}>{e.capitalize()}</option>' for e in ["DISPONIBLE","OCUPADO","MANTENIMIENTO"])
+                chk_equipos = "".join(f'<label class="flex items-center gap-2"><input type="checkbox" name="equipamiento" value="{eq["id_equipamiento"]}" {"checked" if eq["id_equipamiento"] in equipos_seleccionados else ""} class="rounded border-surface-container-highest text-primary focus:ring-primary"> <span class="text-sm">{eq["nombre"]}</span></label>' for eq in equipos_todos)
+                chk_software = "".join(f'<label class="flex items-center gap-2"><input type="checkbox" name="software" value="{sw["id_software"]}" {"checked" if sw["id_software"] in softwares_seleccionados else ""} class="rounded border-surface-container-highest text-primary focus:ring-primary"> <span class="text-sm">{sw["nombre"]}</span></label>' for sw in soft_todos)
+                html = f'''<!DOCTYPE html><html class="light" lang="es"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/><title>Editar Salon | UTP Admin</title><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@100;300;400;500;600;700;800;900&family=Courier+Prime&display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/><style>body{{background:#F8F9FA;color:#191C1D;font-family:'Libre Franklin',sans-serif}}.material-symbols-outlined{{font-variation-settings:'FILL'0,'wght'400,'GRAD'0,'opsz'24;vertical-align:middle}}.glass-panel{{background:rgba(255,255,255,0.7);backdrop-filter:blur(12px);border:1px solid #e6e8eb}}</style></head><body class="p-8">
+                <div class="max-w-3xl mx-auto">
+                <div class="flex items-center gap-4 mb-8">
+                <a href="/admin/salones" class="w-10 h-10 rounded-full bg-surface-container-low flex items-center justify-center text-secondary hover:bg-surface-container-highest transition-colors"><span class="material-symbols-outlined">arrow_back</span></a>
+                <div><h1 class="text-2xl font-bold">Editar Salón</h1><p class="text-sm text-secondary">{espacio["nombre"]}</p></div>
+                </div>
+                <form method="POST" action="/admin/salones/actualizar" class="glass-panel rounded-2xl p-8 space-y-6">
+                <input type="hidden" name="id_espacio" value="{id_espacio}">
+                <div><label class="block text-sm font-bold text-secondary mb-1">Nombre</label><input name="nombre" value="{escapar(espacio['nombre'])}" class="w-full px-4 py-3 border border-surface-container-highest rounded-xl focus:ring-1 focus:ring-primary" required></div>
+                <div class="grid grid-cols-2 gap-4">
+                <div><label class="block text-sm font-bold text-secondary mb-1">Tipo</label><select name="id_tipo" class="w-full px-4 py-3 border border-surface-container-highest rounded-xl focus:ring-1 focus:ring-primary">{opts_tipo}</select></div>
+                <div><label class="block text-sm font-bold text-secondary mb-1">Estado</label><select name="estado" class="w-full px-4 py-3 border border-surface-container-highest rounded-xl focus:ring-1 focus:ring-primary">{opts_estado}</select></div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                <div><label class="block text-sm font-bold text-secondary mb-1">Ubicación</label><input name="ubicacion" value="{escapar(espacio.get('ubicacion',''))}" class="w-full px-4 py-3 border border-surface-container-highest rounded-xl focus:ring-1 focus:ring-primary" required></div>
+                <div><label class="block text-sm font-bold text-secondary mb-1">Capacidad</label><input type="number" name="capacidad" value="{espacio.get('capacidad',0)}" class="w-full px-4 py-3 border border-surface-container-highest rounded-xl focus:ring-1 focus:ring-primary" required></div>
+                </div>
+                <div><label class="block text-sm font-bold text-secondary mb-2">Equipamiento</label><div class="grid grid-cols-2 gap-2">{chk_equipos}</div></div>
+                <div><label class="block text-sm font-bold text-secondary mb-2">Software</label><div class="grid grid-cols-2 gap-2">{chk_software}</div></div>
+                <div class="flex gap-3 pt-4 border-t border-surface-container-highest">
+                <a href="/admin/salones" class="px-6 py-3 border border-surface-container-highest rounded-xl text-secondary font-bold hover:bg-surface-container-low transition-all">Cancelar</a>
+                <button type="submit" class="px-6 py-3 bg-primary text-white font-bold rounded-xl hover:bg-primary/90 transition-all">Guardar Cambios</button>
+                </div>
+                </form>
+                </div></body></html>'''
+                self._responder_html(html)
+            except Exception as e:
+                logger.error(f"Error en editar salon: {e}")
+                self._redirect("/admin/salones")
+
+        elif parsed_path == "/admin/salones/historial":
+            if not self._es_admin():
+                self._redirect("/login")
+                return
+            try:
+                params_get = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query)
+                id_espacio = int(params_get.get("id", [0])[0])
+                db_hist = Database()
+                conn_hist = db_hist.obtener_conexion()
+                cur_hist = conn_hist.cursor()
+                cur_hist.execute("SELECT e.*, t.nombre AS tipo_nombre FROM espacios_academicos e JOIN tipos_espacio t ON e.id_tipo = t.id_tipo WHERE e.id_espacio = %s", (id_espacio,))
+                espacio = dict(cur_hist.fetchone())
+                cur_hist.execute("SELECT r.id_reserva, r.fecha, r.estado, u.nombre AS usuario_nombre, u.username FROM reservas r JOIN usuarios u ON r.id_usuario = u.id_usuario WHERE r.id_espacio = %s ORDER BY r.fecha DESC", (id_espacio,))
+                reservas = [dict(r) for r in cur_hist.fetchall()]
+                conn_hist.close()
+                filas_hist = ""
+                if reservas:
+                    for r in reservas:
+                        estado_r = r.get("estado","PENDIENTE")
+                        ec = {"CONFIRMADA":"text-emerald-700 bg-emerald-50","RECHAZADA":"text-red-700 bg-red-50","CANCELADA":"text-red-700 bg-red-50"}.get(estado_r,"text-amber-700 bg-amber-50")
+                        filas_hist += f'<tr class="hover:bg-surface-container-low/30"><td class="px-4 py-3">RES-{r["id_reserva"]:04d}</td><td class="px-4 py-3">{r.get("usuario_nombre","-")}</td><td class="px-4 py-3">@{r.get("username","")}</td><td class="px-4 py-3">{r["fecha"]}</td><td class="px-4 py-3"><span class="px-2 py-1 rounded-full text-xs font-bold {ec}">{estado_r.capitalize()}</span></td></tr>'
+                else:
+                    filas_hist = '<tr><td colspan="5" class="px-4 py-8 text-center text-secondary">No hay reservas registradas para este espacio</td></tr>'
+                html = f'''<!DOCTYPE html><html class="light" lang="es"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/><title>Historial | UTP Admin</title><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@100;300;400;500;600;700;800;900&family=Courier+Prime&display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/><style>body{{background:#F8F9FA;color:#191C1D;font-family:'Libre Franklin',sans-serif}}.material-symbols-outlined{{font-variation-settings:'FILL'0,'wght'400,'GRAD'0,'opsz'24;vertical-align:middle}}.glass-panel{{background:rgba(255,255,255,0.7);backdrop-filter:blur(12px);border:1px solid #e6e8eb}}</style></head><body class="p-8">
+                <div class="max-w-4xl mx-auto">
+                <div class="flex items-center gap-4 mb-8">
+                <a href="/admin/salones" class="w-10 h-10 rounded-full bg-surface-container-low flex items-center justify-center text-secondary hover:bg-surface-container-highest transition-colors"><span class="material-symbols-outlined">arrow_back</span></a>
+                <div><h1 class="text-2xl font-bold">Historial de Reservas</h1><p class="text-sm text-secondary">{espacio["nombre"]} ({espacio.get("tipo_nombre","")})</p></div>
+                </div>
+                <div class="glass-panel rounded-2xl overflow-hidden">
+                <table class="w-full text-left"><thead class="bg-surface-container-low/50"><tr><th class="px-4 py-3 text-xs uppercase text-secondary font-bold">Reserva</th><th class="px-4 py-3 text-xs uppercase text-secondary font-bold">Usuario</th><th class="px-4 py-3 text-xs uppercase text-secondary font-bold">Username</th><th class="px-4 py-3 text-xs uppercase text-secondary font-bold">Fecha</th><th class="px-4 py-3 text-xs uppercase text-secondary font-bold">Estado</th></tr></thead><tbody class="divide-y divide-surface-container-highest">{filas_hist}</tbody></table>
+                </div>
+                <div class="mt-6"><a href="/admin/salones" class="inline-flex items-center gap-2 text-primary font-bold hover:underline"><span class="material-symbols-outlined">arrow_back</span> Volver a Salones</a></div>
+                </div></body></html>'''
+                self._responder_html(html)
+            except Exception as e:
+                logger.error(f"Error en historial salon: {e}")
+                self._redirect("/admin/salones")
+
+        elif parsed_path == "/api/notificaciones":
+            if not usuario:
+                self._responder_html('[]', 401)
+                return
+            db_sc = Database()
+            n = Notificacion(db_sc)
+            no_leidas = n.contar_no_leidas(usuario["id_usuario"])
+            lista = n.listar(usuario["id_usuario"])
+            for item in lista:
+                item["created_at"] = str(item["created_at"])
+            self._responder_html(json.dumps({"no_leidas": no_leidas, "items": lista}, default=str))
 
         elif parsed_path == "/admin":
             if not self._es_admin():
                 self._redirect("/login")
                 return
             header = self._render_header()
-            page_rendered = HTML_ADMIN.replace("$HEADER", header).replace("$NOMBRE_ADMIN", usuario["nombre"])
+            try:
+                db_adm = Database()
+                admin_adm = AdminController(db_adm)
+                espacios_adm = admin_adm.obtener_espacios()
+                tipo_nombres_clase = {"AULA":"AulaTeorica","LABORATORIO":"AulaLaboratorio","SALA DE COMPUTO":"SalaComputo","AUDITORIO":"Auditorio","TALLER":"Taller"}
+                estado_map = {"DISPONIBLE":("text-emerald-600","bg-emerald-500","Disponible"),"OCUPADO":("text-primary","bg-primary","Ocupado"),"MANTENIMIENTO":("text-amber-600","bg-amber-500","Mantenimiento")}
+                filas_adm = ""
+                for e in espacios_adm:
+                    tipo_raw = e.get("tipo","")
+                    tipo_clase = tipo_nombres_clase.get(tipo_raw,tipo_raw)
+                    estado_str = e.get("estado","DISPONIBLE")
+                    ec, ed, estado_text = estado_map.get(estado_str, ("text-secondary","bg-secondary",estado_str))
+                    nombre_escapado = escapar(e["nombre"])
+                    ubicacion_escapada = escapar(e["ubicacion"])
+                    equipamiento = escapar(e.get("equipamiento",""))
+                    software = escapar(e.get("software",""))
+                    filas_adm += f'''
+                    <tr class="hover:bg-surface-container-low transition-colors group">
+                    <td class="px-8 py-4 font-bold">{nombre_escapado}</td>
+                    <td class="px-8 py-4">{ubicacion_escapada}</td>
+                    <td class="px-8 py-4"><span class="flex items-center {ec} font-semibold"><span class="w-1.5 h-1.5 rounded-full {ed} mr-2"></span> {estado_text}</span></td>
+                    <td class="px-8 py-4">{e["capacidad"]}</td>
+                    <td class="px-8 py-4 text-right relative">
+                        <button onclick="toggleAcciones(this)" class="text-secondary hover:text-primary transition-colors relative">
+                            <span class="material-symbols-outlined">more_vert</span>
+                        </button>
+                        <div class="acciones-menu hidden absolute right-0 top-8 w-48 bg-white rounded-2xl shadow-2xl border border-surface-container-highest z-50 overflow-hidden">
+                            <button onclick="verDetalle({e['id_espacio']},'{nombre_escapado}','{tipo_clase}','{ubicacion_escapada}',{e['capacidad']},'{equipamiento}','{software}','{estado_text}')" class="w-full flex items-center gap-3 px-4 py-3 text-sm text-on-surface hover:bg-surface-container-low"><span class="material-symbols-outlined text-[18px] text-secondary">visibility</span> Ver detalle</button>
+                            <button onclick="cambiarEstado({e['id_espacio']})" class="w-full flex items-center gap-3 px-4 py-3 text-sm text-on-surface hover:bg-surface-container-low"><span class="material-symbols-outlined text-[18px] text-secondary">sync_alt</span> Cambiar estado</button>
+                            <div class="h-px bg-surface-container-higher mx-3"></div>
+                            <button onclick="eliminarSalon({e['id_espacio']},'{nombre_escapado}')" class="w-full flex items-center gap-3 px-4 py-3 text-sm text-error hover:bg-error-container/10"><span class="material-symbols-outlined text-[18px]">delete</span> Eliminar</button>
+                        </div>
+                    </td>
+                    </tr>'''
+                page_rendered = HTML_ADMIN.replace("$HEADER", header).replace("$NOMBRE_ADMIN", usuario["nombre"]).replace("$TABLA_ESPACIOS", filas_adm)
+            except Exception:
+                page_rendered = HTML_ADMIN.replace("$HEADER", header).replace("$NOMBRE_ADMIN", usuario["nombre"]).replace("$TABLA_ESPACIOS", "")
             self._responder_html(page_rendered)
 
         elif parsed_path == "/admin/salones":
@@ -247,8 +513,8 @@ class UTPHandler(BaseHTTPRequestHandler):
                 }
                 estado_map = {
                     "DISPONIBLE": ("bg-emerald-50 text-emerald-700", "bg-emerald-500", "Disponible"),
-                    "OCUPADO": ("bg-amber-50 text-amber-700", "bg-amber-500", "Ocupado"),
-                    "MANTENIMIENTO": ("bg-red-50 text-red-700", "bg-red-500", "Mantenimiento"),
+                    "OCUPADO": ("bg-red-50 text-red-700", "bg-red-500", "Ocupado"),
+                    "MANTENIMIENTO": ("bg-amber-50 text-amber-700", "bg-amber-500", "Mantenimiento"),
                 }
                 filas_html = ""
                 for e in espacios:
@@ -268,7 +534,7 @@ class UTPHandler(BaseHTTPRequestHandler):
                     estado_str = e.get("estado", "DISPONIBLE")
                     ec, ed, estado_text = estado_map.get(estado_str, ("bg-surface-container-highest text-secondary", "bg-secondary", estado_str))
                     filas_html += f'''
-                    <tr class="hover:bg-surface-container-low/30 transition-colors group">
+                    <tr class="hover:bg-surface-container-low/30 transition-colors group" data-nombre="{escapar(e['nombre'])}" data-tipo="{tipo_clase}" data-ubicacion="{escapar(e.get('ubicacion',''))}" data-estado="{estado_str}" data-search="{escapar(e['nombre'])} {tipo_clase} {escapar(e.get('ubicacion',''))} {escapar(software)}">
                     <td class="px-6 py-5">
                     <div class="flex items-center gap-4">
                     <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
@@ -296,11 +562,30 @@ class UTPHandler(BaseHTTPRequestHandler):
                     {estado_text}
                     </span>
                     </td>
-                    <td class="px-6 py-5 text-right">
-                    <div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button class="p-2 hover:bg-surface-container-low rounded-lg text-secondary"><span class="material-symbols-outlined text-[20px]">visibility</span></button>
-                    <button class="p-2 hover:bg-surface-container-low rounded-lg text-secondary"><span class="material-symbols-outlined text-[20px]">edit</span></button>
-                    <button class="p-2 hover:bg-surface-container-low rounded-lg text-secondary"><span class="material-symbols-outlined text-[20px]">more_vert</span></button>
+                    <td class="px-6 py-5 text-right relative">
+                    <div class="flex justify-end opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button onclick="toggleAcciones(this)" class="p-2 hover:bg-surface-container-low rounded-lg text-secondary">
+                        <span class="material-symbols-outlined text-[20px]">more_vert</span>
+                    </button>
+                    </div>
+                    <div class="absolute right-4 top-14 w-48 bg-white rounded-2xl shadow-2xl border border-surface-container-highest hidden z-50 overflow-hidden acciones-menu">
+                        <button onclick="verDetalle({e['id_espacio']},'{escapar(e['nombre'])}','{tipo_clase}','{escapar(e['ubicacion'])}',{e['capacidad']},'{escapar(e.get('equipamiento',''))}','{escapar(software)}','{estado_text}')" class="w-full flex items-center gap-3 px-4 py-3 text-sm text-on-surface hover:bg-surface-container-low transition-colors">
+                            <span class="material-symbols-outlined text-[18px] text-secondary">visibility</span> Ver detalle
+                        </button>
+                        <button onclick="editarSalon({e['id_espacio']})" class="w-full flex items-center gap-3 px-4 py-3 text-sm text-on-surface hover:bg-surface-container-low transition-colors">
+                            <span class="material-symbols-outlined text-[18px] text-secondary">edit</span> Editar
+                        </button>
+                        <div class="h-px bg-surface-container-higher mx-3"></div>
+                        <button onclick="cambiarEstado({e['id_espacio']},'{estado_str}')" class="w-full flex items-center gap-3 px-4 py-3 text-sm text-on-surface hover:bg-surface-container-low transition-colors">
+                            <span class="material-symbols-outlined text-[18px] text-secondary">sync_alt</span> Cambiar estado
+                        </button>
+                        <button onclick="verHistorial({e['id_espacio']})" class="w-full flex items-center gap-3 px-4 py-3 text-sm text-on-surface hover:bg-surface-container-low transition-colors">
+                            <span class="material-symbols-outlined text-[18px] text-secondary">history</span> Historial
+                        </button>
+                        <div class="h-px bg-surface-container-higher mx-3"></div>
+                        <button onclick="eliminarSalon({e['id_espacio']},'{escapar(e['nombre'])}')" class="w-full flex items-center gap-3 px-4 py-3 text-sm text-error hover:bg-error-container/10 transition-colors">
+                            <span class="material-symbols-outlined text-[18px]">delete</span> Eliminar
+                        </button>
                     </div>
                     </td>
                     </tr>
@@ -339,9 +624,15 @@ class UTPHandler(BaseHTTPRequestHandler):
                     "MANTENIMIENTO": "bg-red-500",
                 }
                 tipo_iconos = {"AULA": "meeting_room", "LABORATORIO": "biotech", "SALA DE COMPUTO": "computer", "AUDITORIO": "theater_comedy", "TALLER": "handyman"}
+                estado_map_sw = {
+                    "DISPONIBLE": ("bg-emerald-50 text-emerald-700", "bg-emerald-500", "Disponible"),
+                    "OCUPADO": ("bg-red-50 text-red-700", "bg-red-500", "Ocupado"),
+                    "MANTENIMIENTO": ("bg-amber-50 text-amber-700", "bg-amber-500", "Mantenimiento"),
+                }
                 filas_html = ""
                 for a in activos:
-                    id_activo = f"ACT-{a['id_espacio']:04d}"
+                    id_espacio = a['id_espacio']
+                    id_activo = f"ACT-{id_espacio:04d}"
                     tipo_raw = a.get("tipo", "")
                     icono = tipo_iconos.get(tipo_raw, "inventory_2")
                     tipo_label = tipo_nombres.get(tipo_raw, tipo_raw)
@@ -350,10 +641,12 @@ class UTPHandler(BaseHTTPRequestHandler):
                     partes = [p for p in [equipamiento, software_list] if p]
                     software_str = ", ".join(partes) if partes else "N/A"
                     estado_str = a.get("estado", "DISPONIBLE")
-                    ec = estado_class.get(estado_str, "bg-surface-container-highest text-secondary")
-                    ed = estado_dot.get(estado_str, "bg-secondary")
+                    ec, ed, estado_text = estado_map_sw.get(estado_str, ("bg-surface-container-highest text-secondary", "bg-secondary", estado_str))
+                    nombre_escapado = escapar(a["nombre"])
+                    eq_escapado = escapar(equipamiento)
+                    sw_escapado = escapar(software_list)
                     filas_html += f'''
-                    <tr class="hover:bg-surface-container-low/30 transition-colors group">
+                    <tr class="hover:bg-surface-container-low/30 transition-colors group" data-nombre="{nombre_escapado}" data-tipo="{tipo_label}" data-estado="{estado_str}" data-search="{nombre_escapado} {tipo_label} {sw_escapado}">
                     <td class="px-6 py-5">
                     <div class="flex items-center gap-4">
                     <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
@@ -369,15 +662,38 @@ class UTPHandler(BaseHTTPRequestHandler):
                     <td class="px-6 py-5">
                     <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full {ec} text-label-md font-bold">
                     <span class="status-dot {ed}"></span>
-                    {estado_str.capitalize()}
+                    {estado_text}
                     </span>
                     </td>
                     <td class="px-6 py-5">
                     <span class="text-on-surface">{software_str}</span>
                     </td>
                     <td class="px-6 py-5 text-secondary font-mono-sm">-</td>
-                    <td class="px-6 py-5 text-right">
-                    <span class="text-secondary text-label-md">-</span>
+                    <td class="px-6 py-5 text-right relative">
+                    <div class="flex justify-end opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button onclick="toggleAcciones(this)" class="p-2 hover:bg-surface-container-low rounded-lg text-secondary">
+                        <span class="material-symbols-outlined text-[20px]">more_vert</span>
+                    </button>
+                    </div>
+                    <div class="acciones-menu hidden absolute right-4 top-14 w-48 bg-white rounded-2xl shadow-2xl border border-surface-container-highest z-50 overflow-hidden">
+                        <button onclick="verDetalle({id_espacio},'{nombre_escapado}','{tipo_label}','{eq_escapado}','{sw_escapado}','{estado_text}')" class="w-full flex items-center gap-3 px-4 py-3 text-sm text-on-surface hover:bg-surface-container-low transition-colors">
+                            <span class="material-symbols-outlined text-[18px] text-secondary">visibility</span> Ver detalle
+                        </button>
+                        <button onclick="editarItem({id_espacio})" class="w-full flex items-center gap-3 px-4 py-3 text-sm text-on-surface hover:bg-surface-container-low transition-colors">
+                            <span class="material-symbols-outlined text-[18px] text-secondary">edit</span> Editar
+                        </button>
+                        <div class="h-px bg-surface-container-higher mx-3"></div>
+                        <button onclick="cambiarEstado({id_espacio})" class="w-full flex items-center gap-3 px-4 py-3 text-sm text-on-surface hover:bg-surface-container-low transition-colors">
+                            <span class="material-symbols-outlined text-[18px] text-secondary">sync_alt</span> Cambiar estado
+                        </button>
+                        <button onclick="verHistorial({id_espacio})" class="w-full flex items-center gap-3 px-4 py-3 text-sm text-on-surface hover:bg-surface-container-low transition-colors">
+                            <span class="material-symbols-outlined text-[18px] text-secondary">history</span> Historial
+                        </button>
+                        <div class="h-px bg-surface-container-higher mx-3"></div>
+                        <button onclick="eliminarItem({id_espacio},'{nombre_escapado}')" class="w-full flex items-center gap-3 px-4 py-3 text-sm text-error hover:bg-error-container/10 transition-colors">
+                            <span class="material-symbols-outlined text-[18px]">delete</span> Eliminar
+                        </button>
+                    </div>
                     </td>
                     </tr>
                     '''
@@ -453,18 +769,24 @@ class UTPHandler(BaseHTTPRequestHandler):
                 docentes = admin.obtener_docentes()
                 filas_html = ""
                 for d in docentes:
+                    id_docente = d.get("id_docente", 0)
                     avatar = d.get("nombre", "?")[0] if d.get("nombre") else "?"
                     estado_texto = "Activo"
                     estado_color = "bg-emerald-500"
                     estado_text_class = "text-emerald-700"
+                    nombre_escapado = escapar(d.get("nombre", "Sin nombre"))
+                    depto_escapado = escapar(d.get("departamento", "No asignado"))
+                    espec_escapado = escapar(d.get("especialidad", "General"))
+                    correo_escapado = escapar(d.get("correo", "N/A"))
+                    telefono_escapado = escapar(d.get("telefono", "N/A"))
                     filas_html += f'''
-                    <tr class="hover:bg-surface-container-low/30 transition-colors group">
+                    <tr class="hover:bg-surface-container-low/30 transition-colors group" data-nombre="{nombre_escapado}" data-departamento="{depto_escapado}" data-search="{nombre_escapado} {depto_escapado} {espec_escapado}">
                     <td class="px-6 py-4">
                     <div class="flex items-center gap-4">
                     <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">{avatar}</div>
                     <div>
                     <p class="font-bold text-on-surface">{d.get("nombre", "Sin nombre")}</p>
-                    <p class="text-label-md text-secondary">ID: DOC-{d.get("id_docente", "0")}</p>
+                    <p class="text-label-md text-secondary">ID: DOC-{id_docente}</p>
                     </div>
                     </div>
                     </td>
@@ -486,8 +808,24 @@ class UTPHandler(BaseHTTPRequestHandler):
                     <span class="text-label-md font-medium {estado_text_class}">{estado_texto}</span>
                     </div>
                     </td>
-                    <td class="px-6 py-4 text-right">
-                    <button class="material-symbols-outlined text-secondary hover:text-primary transition-colors">more_vert</button>
+                    <td class="px-6 py-4 text-right relative">
+                    <div class="flex justify-end opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button onclick="toggleAcciones(this)" class="p-2 hover:bg-surface-container-low rounded-lg text-secondary">
+                        <span class="material-symbols-outlined text-[20px]">more_vert</span>
+                    </button>
+                    </div>
+                    <div class="acciones-menu hidden absolute right-4 top-14 w-48 bg-white rounded-2xl shadow-2xl border border-surface-container-highest z-50 overflow-hidden">
+                        <button onclick="verDetalleDocente({id_docente},'{nombre_escapado}','{depto_escapado}','{espec_escapado}','{correo_escapado}','{telefono_escapado}','{estado_texto}')" class="w-full flex items-center gap-3 px-4 py-3 text-sm text-on-surface hover:bg-surface-container-low transition-colors">
+                            <span class="material-symbols-outlined text-[18px] text-secondary">visibility</span> Ver detalle
+                        </button>
+                        <button onclick="editarDocente({id_docente})" class="w-full flex items-center gap-3 px-4 py-3 text-sm text-on-surface hover:bg-surface-container-low transition-colors">
+                            <span class="material-symbols-outlined text-[18px] text-secondary">edit</span> Editar
+                        </button>
+                        <div class="h-px bg-surface-container-higher mx-3"></div>
+                        <button onclick="eliminarDocente({id_docente},'{nombre_escapado}')" class="w-full flex items-center gap-3 px-4 py-3 text-sm text-error hover:bg-error-container/10 transition-colors">
+                            <span class="material-symbols-outlined text-[18px]">delete</span> Eliminar
+                        </button>
+                    </div>
                     </td>
                     </tr>
                     '''
@@ -670,13 +1008,16 @@ class UTPHandler(BaseHTTPRequestHandler):
                 roles_iconos = {"Admin": "admin_panel_settings", "Docente": "school", "Estudiante": "person"}
                 roles_colores = {"Admin": "bg-purple-50 text-purple-700", "Docente": "bg-blue-50 text-blue-700", "Estudiante": "bg-green-50 text-green-700"}
                 for u in usuarios:
+                    id_usuario = u.get("id_usuario", 0)
                     rol = u.get("rol", "Estudiante")
                     avatar = (u.get("nombre", "?")[:2]).upper() if u.get("nombre") else "??"
                     estado_u = u.get("estado", 1)
                     estado_text = "Activo" if estado_u == 1 else "Inactivo"
                     estado_dot = "bg-emerald-500" if estado_u == 1 else "bg-red-500"
+                    nombre_escapado = escapar(u["nombre"])
+                    username_escapado = escapar(u.get("username", ""))
                     filas_usuarios += f'''
-                    <tr class="hover:bg-surface-container-low/30 transition-colors group">
+                    <tr class="hover:bg-surface-container-low/30 transition-colors group" data-nombre="{nombre_escapado}" data-rol="{rol}" data-search="{nombre_escapado} {rol}">
                     <td class="px-6 py-4">
                     <div class="flex items-center gap-4">
                     <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">{avatar}</div>
@@ -698,10 +1039,24 @@ class UTPHandler(BaseHTTPRequestHandler):
                     <span class="text-label-md font-medium">{estado_text}</span>
                     </div>
                     </td>
-                    <td class="px-6 py-4 text-right">
-                    <button class="p-2 hover:bg-surface-container-low rounded-lg text-secondary transition-colors">
-                    <span class="material-symbols-outlined text-[20px]">more_vert</span>
+                    <td class="px-6 py-4 text-right relative">
+                    <div class="flex justify-end opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button onclick="toggleAcciones(this)" class="p-2 hover:bg-surface-container-low rounded-lg text-secondary transition-colors">
+                        <span class="material-symbols-outlined text-[20px]">more_vert</span>
                     </button>
+                    </div>
+                    <div class="acciones-menu hidden absolute right-4 top-14 w-48 bg-white rounded-2xl shadow-2xl border border-surface-container-highest z-50 overflow-hidden">
+                        <button onclick="verDetalleUsuario({id_usuario},'{nombre_escapado}','{username_escapado}','{rol}','{estado_text}')" class="w-full flex items-center gap-3 px-4 py-3 text-sm text-on-surface hover:bg-surface-container-low transition-colors">
+                            <span class="material-symbols-outlined text-[18px] text-secondary">visibility</span> Ver detalle
+                        </button>
+                        <button onclick="editarUsuario({id_usuario})" class="w-full flex items-center gap-3 px-4 py-3 text-sm text-on-surface hover:bg-surface-container-low transition-colors">
+                            <span class="material-symbols-outlined text-[18px] text-secondary">edit</span> Editar
+                        </button>
+                        <div class="h-px bg-surface-container-higher mx-3"></div>
+                        <button onclick="eliminarUsuario({id_usuario},'{nombre_escapado}')" class="w-full flex items-center gap-3 px-4 py-3 text-sm text-error hover:bg-error-container/10 transition-colors">
+                            <span class="material-symbols-outlined text-[18px]">delete</span> Eliminar
+                        </button>
+                    </div>
                     </td>
                     </tr>
                     '''
@@ -777,22 +1132,45 @@ class UTPHandler(BaseHTTPRequestHandler):
                 if not prompt.strip():
                     self._redirect("/chat")
                     return
+                sesion_id = self._get_sesion_id()
                 historial = self._get_historial()
                 historial.append({"tipo": "user", "texto": prompt})
+
+                if sesion_id:
+                    sc = SesionChat(db)
+                    if len(historial) <= 2:
+                        titulo = prompt[:60]
+                        sc.eliminar(sesion_id)
+                        sesion_id = sc.crear(usuario["id_usuario"], titulo)
+                    sc.guardar_mensaje(sesion_id, "user", json.dumps({"texto": prompt}))
 
                 reserva_ctrl = ReservaController(db)
                 aulas = reserva_ctrl.buscar_disponibilidad(prompt)
 
-                ollama = OllamaService()
-                contexto = f"Salones disponibles: {[dict(a) for a in aulas]}" if aulas else "No hay disponibilidad"
-                respuesta = ollama.consultar(prompt, contexto)
+                try:
+                    ors = OpenRouterService()
+                    contexto = f"Salones disponibles: {[dict(a) for a in aulas]}" if aulas else "No hay disponibilidad"
+                    respuesta = ors.consultar(prompt, contexto)
+                except Exception as e:
+                    logger.error(f"Error en OpenRouter: {e}")
+                    respuesta = "Lo siento, el servicio de IA no está disponible."
 
                 if aulas:
                     historial.append({"tipo": "card", "data": dict(aulas[0])})
                 else:
                     historial.append({"tipo": "bot", "texto": respuesta})
 
-                self._redirect("/chat", [self._set_historial(historial)])
+                cookies = [("Set-Cookie", self._set_historial(historial))]
+                if sesion_id:
+                    ultimo = historial[-1]
+                    if ultimo["tipo"] == "card":
+                        sc.guardar_mensaje(sesion_id, "card", json.dumps(ultimo["data"], default=str))
+                    elif ultimo["tipo"] == "bot":
+                        sc.guardar_mensaje(sesion_id, "bot", json.dumps({"texto": ultimo["texto"]}))
+                    cookies.append(("Set-Cookie", f"utp_sesion={sesion_id}; Path=/; Max-Age=86400"))
+
+                self._redirect("/chat#fin", cookies)
+                return
 
             elif parsed_path_post == "/reservar":
                 id_espacio = int(params.get("id_espacio", [0])[0])
@@ -800,15 +1178,117 @@ class UTPHandler(BaseHTTPRequestHandler):
 
                 reserva_ctrl = ReservaController(db)
                 exito = reserva_ctrl.procesar_reserva(
-                    usuario["id_usuario"], "Curso Demostracion UTP", id_espacio, "15:00 - 17:00"
+                    usuario["id_usuario"], id_espacio
                 )
 
                 historial = self._get_historial()
                 if exito:
                     historial.append({"tipo": "success", "texto": nombre_aula})
                     logger.info(f"Reserva exitosa: espacio={id_espacio}, usuario={usuario['id_usuario']}")
+                    n = Notificacion(db)
+                    n.crear(usuario["id_usuario"], "Reserva Confirmada", f"El ambiente {nombre_aula} ha sido reservado exitosamente.", "success")
+                    try:
+                        cur = db.obtener_conexion().cursor()
+                        cur.execute("SELECT id_usuario FROM usuarios WHERE id_rol = (SELECT id_rol FROM roles WHERE nombre = 'Admin')")
+                        for row in cur.fetchall():
+                            n.crear(row["id_usuario"], "Nueva Reserva Pendiente", f"{usuario['nombre']} reservo {nombre_aula}.", "warning")
+                    except Exception:
+                        pass
+                cookies = [("Set-Cookie", self._set_historial(historial))]
+                if exito:
+                    sesion_id = self._get_sesion_id()
+                    if sesion_id:
+                        sc = SesionChat(db)
+                        sc.guardar_mensaje(sesion_id, "success", json.dumps({"texto": nombre_aula}))
+                        cookies.append(("Set-Cookie", f"utp_sesion={sesion_id}; Path=/; Max-Age=86400"))
 
-                self._redirect("/chat", [self._set_historial(historial)])
+                self._redirect("/chat#fin", cookies)
+                return
+
+            elif parsed_path_post == "/admin/salones/eliminar":
+                if usuario["rol"] != "Admin":
+                    self._redirect("/admin")
+                    return
+                id_espacio = int(params.get("id_espacio", [0])[0])
+                admin = AdminController(db)
+                admin.eliminar_espacio(id_espacio)
+                self._redirect("/admin/salones")
+                return
+
+            elif parsed_path_post == "/admin/salones/estado":
+                if usuario["rol"] != "Admin":
+                    self._redirect("/admin")
+                    return
+                id_espacio = int(params.get("id_espacio", [0])[0])
+                estado_nuevo = params.get("estado", ["DISPONIBLE"])[0]
+                admin = AdminController(db)
+                admin.cambiar_estado_espacio(id_espacio, estado_nuevo)
+                self._redirect("/admin/salones")
+                return
+
+            elif parsed_path_post == "/admin/salones/actualizar":
+                if usuario["rol"] != "Admin":
+                    self._redirect("/admin")
+                    return
+                id_espacio = int(params.get("id_espacio", [0])[0])
+                nombre = params.get("nombre", [""])[0]
+                id_tipo = int(params.get("id_tipo", [0])[0])
+                estado_nuevo = params.get("estado", ["DISPONIBLE"])[0]
+                ubicacion = params.get("ubicacion", [""])[0]
+                capacidad = int(params.get("capacidad", [0])[0])
+                equipos_ids = [int(v) for v in params.get("equipamiento", [])]
+                soft_ids = [int(v) for v in params.get("software", [])]
+                try:
+                    conn_upd = db.obtener_conexion()
+                    cur_upd = conn_upd.cursor()
+                    cur_upd.execute("UPDATE espacios_academicos SET nombre=%s, id_tipo=%s, ubicacion=%s, capacidad=%s, estado=%s WHERE id_espacio=%s",
+                                    (nombre, id_tipo, ubicacion, capacidad, estado_nuevo, id_espacio))
+                    cur_upd.execute("DELETE FROM espacio_equipamiento WHERE id_espacio = %s", (id_espacio,))
+                    for eq_id in equipos_ids:
+                        cur_upd.execute("INSERT INTO espacio_equipamiento (id_espacio, id_equipamiento) VALUES (%s, %s)", (id_espacio, eq_id))
+                    cur_upd.execute("DELETE FROM espacio_software WHERE id_espacio = %s", (id_espacio,))
+                    for sw_id in soft_ids:
+                        cur_upd.execute("INSERT INTO espacio_software (id_espacio, id_software) VALUES (%s, %s)", (id_espacio, sw_id))
+                    conn_upd.commit()
+                    conn_upd.close()
+                except Exception as e:
+                    logger.error(f"Error actualizando salon: {e}")
+                self._redirect("/admin/salones")
+                return
+
+            elif parsed_path_post == "/admin/docentes/eliminar":
+                if usuario["rol"] != "Admin":
+                    self._redirect("/admin")
+                    return
+                id_docente = int(params.get("id_docente", [0])[0])
+                try:
+                    from app.models.docente import Docente
+                    d_model = Docente(db)
+                    conn = db.obtener_conexion()
+                    cur = conn.cursor()
+                    cur.execute("DELETE FROM docentes WHERE id_docente = %s", (id_docente,))
+                    conn.commit()
+                    conn.close()
+                except Exception as e:
+                    logger.error(f"Error eliminando docente: {e}")
+                self._redirect("/admin/docentes")
+                return
+
+            elif parsed_path_post == "/admin/usuarios/eliminar":
+                if usuario["rol"] != "Admin":
+                    self._redirect("/admin")
+                    return
+                id_usuario_u = int(params.get("id_usuario", [0])[0])
+                try:
+                    conn = db.obtener_conexion()
+                    cur = conn.cursor()
+                    cur.execute("DELETE FROM usuarios WHERE id_usuario = %s", (id_usuario_u,))
+                    conn.commit()
+                    conn.close()
+                except Exception as e:
+                    logger.error(f"Error eliminando usuario: {e}")
+                self._redirect("/admin/roles")
+                return
 
             elif parsed_path_post == "/admin/aprobar_reserva":
                 if usuario["rol"] != "Admin":
@@ -817,7 +1297,17 @@ class UTPHandler(BaseHTTPRequestHandler):
                 id_reserva = int(params.get("id_reserva", [0])[0])
                 admin = AdminController(db)
                 admin.aprobar_reserva(id_reserva)
+                try:
+                    cur = db.obtener_conexion().cursor()
+                    cur.execute("SELECT id_usuario FROM reservas WHERE id_reserva = %s", (id_reserva,))
+                    row = cur.fetchone()
+                    if row:
+                        n = Notificacion(db)
+                        n.crear(row["id_usuario"], "Reserva Aprobada", "Tu reserva ha sido aprobada por administracion.", "success")
+                except Exception:
+                    pass
                 self._redirect("/admin/reservas")
+                return
 
             elif parsed_path_post == "/admin/rechazar_reserva":
                 if usuario["rol"] != "Admin":
@@ -826,10 +1316,27 @@ class UTPHandler(BaseHTTPRequestHandler):
                 id_reserva = int(params.get("id_reserva", [0])[0])
                 admin = AdminController(db)
                 admin.rechazar_reserva(id_reserva)
+                try:
+                    cur = db.obtener_conexion().cursor()
+                    cur.execute("SELECT id_usuario FROM reservas WHERE id_reserva = %s", (id_reserva,))
+                    row = cur.fetchone()
+                    if row:
+                        n = Notificacion(db)
+                        n.crear(row["id_usuario"], "Reserva Rechazada", "Tu reserva ha sido rechazada por administracion.", "error")
+                except Exception:
+                    pass
                 self._redirect("/admin/reservas")
+                return
+
+            elif parsed_path_post == "/api/notificaciones/leer":
+                n = Notificacion(db)
+                n.marcar_todas_leidas(usuario["id_usuario"])
+                self._responder_html('{"ok": true}')
+                return
 
             else:
                 self._redirect("/chat")
+                return
 
         except Exception as e:
             logger.error(f"Error en POST {self.path}: {e}")

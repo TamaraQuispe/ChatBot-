@@ -68,16 +68,23 @@ try{
         </div>
     </div>
 
-    <nav class="flex-1 px-4 space-y-1">
-        <a class="flex items-center gap-4 px-4 py-3 rounded-2xl text-text-secondary hover:bg-black/5 hover:text-text-primary transition-all duration-200" href="#" onclick="showView('chat'); return false;">
+    <div class="px-4 mb-2">
+        <a class="flex items-center gap-3 px-4 py-3 rounded-2xl bg-utp-red-institutional/10 text-utp-red-institutional hover:bg-utp-red-institutional/20 transition-all duration-200 font-bold text-sm" href="/api/sesion/nueva">
+            <span class="material-symbols-outlined text-[20px]">add</span>
+            <span>Nuevo Chat</span>
+        </a>
+    </div>
+    <nav class="flex-1 px-4 space-y-1 overflow-y-auto scrollbar-hide">
+        <a id="nav-chat" class="flex items-center gap-4 px-4 py-3 rounded-2xl text-text-secondary hover:bg-black/5 hover:text-text-primary transition-all duration-200" href="#" onclick="showView('chat'); return false;">
             <span class="material-symbols-outlined" data-icon="chat">chat</span>
             <span class="font-body-md font-medium">Chat Actual</span>
         </a>
-        <a class="flex items-center gap-4 px-4 py-3 rounded-2xl text-text-secondary hover:bg-black/5 hover:text-text-primary transition-all duration-200" href="#" onclick="showView('historial'); return false;">
-            <span class="material-symbols-outlined" data-icon="history">history</span>
-            <span class="font-body-md font-medium">Historial</span>
-        </a>
-        <a class="flex items-center gap-4 px-4 py-3 rounded-2xl text-text-secondary hover:bg-black/5 hover:text-text-primary transition-all duration-200" href="#" onclick="showView('reservas'); return false;">
+        <div class="h-px bg-black/5 mx-2 my-2"></div>
+        <p class="px-4 text-[10px] text-text-secondary/60 font-bold uppercase tracking-widest mb-1">Sesiones Anteriores</p>
+        <div id="lista-sesiones" class="space-y-0.5">
+            $LISTA_SESIONES
+        </div>
+        <a id="nav-reservas" class="flex items-center gap-4 px-4 py-3 rounded-2xl text-text-secondary hover:bg-black/5 hover:text-text-primary transition-all duration-200" href="#" onclick="showView('reservas'); return false;">
             <span class="material-symbols-outlined" data-icon="event_available">event_available</span>
             <span class="font-body-md font-medium">Mis Reservas</span>
         </a>
@@ -103,10 +110,21 @@ try{
         </div>
 
         <div class="flex items-center gap-6">
-            <button class="w-10 h-10 flex items-center justify-center text-text-secondary hover:bg-black/5 rounded-full transition-colors relative">
-                <span class="material-symbols-outlined">notifications</span>
-                <span class="absolute top-2.5 right-2.5 w-2 h-2 bg-utp-red-institutional rounded-full ring-2 ring-white"></span>
-            </button>
+            <div class="relative" id="notif-container">
+                <button onclick="toggleNotificaciones()" class="w-10 h-10 flex items-center justify-center text-text-secondary hover:bg-black/5 rounded-full transition-colors relative">
+                    <span class="material-symbols-outlined">notifications</span>
+                    <span id="notif-badge" class="absolute top-2 right-2 min-w-[8px] h-2 bg-utp-red-institutional rounded-full ring-2 ring-white hidden"></span>
+                </button>
+                <div id="notif-dropdown" class="absolute right-0 top-12 w-80 bg-white rounded-2xl shadow-2xl border border-black/5 hidden overflow-hidden z-50">
+                    <div class="flex items-center justify-between px-5 py-4 border-b border-black/5">
+                        <h3 class="font-bold text-sm text-text-primary">Notificaciones</h3>
+                        <button onclick="marcarLeidas()" class="text-[11px] text-utp-red-institutional font-bold uppercase hover:underline">Marcar todas leidas</button>
+                    </div>
+                    <div id="notif-lista" class="max-h-80 overflow-y-auto divide-y divide-black/5">
+                        <div class="px-5 py-8 text-center text-text-secondary text-sm">Cargando...</div>
+                    </div>
+                </div>
+            </div>
             <div class="flex items-center gap-4 pl-6 border-l border-black/5">
                 <div class="text-right hidden sm:block">
                     <p class="font-bold text-sm text-text-primary">$NOMBRE_DOCENTE</p>
@@ -124,6 +142,7 @@ try{
 
                 $HISTORIAL_CHAT
 
+                <div id="fin"></div>
             </div>
         </section>
 
@@ -158,33 +177,7 @@ try{
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-black/5 text-sm">
-                                <tr class="hover:bg-black/[0.02] transition-colors">
-                                    <td class="py-4 px-4 text-text-primary font-medium">#RES-1024</td>
-                                    <td class="py-4 px-4 text-text-primary">Aula 402</td>
-                                    <td class="py-4 px-4 text-text-secondary">Teorica</td>
-                                    <td class="py-4 px-4 text-text-primary">2023-11-15</td>
-                                    <td class="py-4 px-4 text-text-primary">08:00 - 10:00 / Manana</td>
-                                    <td class="py-4 px-4"><span class="inline-flex items-center px-2 py-0.5 rounded text-[12px] font-semibold bg-emerald-100 text-emerald-800">Confirmada</span></td>
-                                    <td class="py-4 px-4 text-right whitespace-nowrap"><button class="text-sm border border-black/10 text-text-secondary hover:bg-black/5 hover:text-text-primary px-3 py-1.5 rounded-lg transition-colors">Ver Detalles</button></td>
-                                </tr>
-                                <tr class="hover:bg-black/[0.02] transition-colors">
-                                    <td class="py-4 px-4 text-text-primary font-medium">#RES-1025</td>
-                                    <td class="py-4 px-4 text-text-primary">Lab Computo B</td>
-                                    <td class="py-4 px-4 text-text-secondary">Laboratorio</td>
-                                    <td class="py-4 px-4 text-text-primary">2023-11-16</td>
-                                    <td class="py-4 px-4 text-text-primary">14:00 - 16:00 / Tarde</td>
-                                    <td class="py-4 px-4"><span class="inline-flex items-center px-2 py-0.5 rounded text-[12px] font-semibold bg-amber-100 text-amber-800">Pendiente</span></td>
-                                    <td class="py-4 px-4 text-right whitespace-nowrap"><button class="text-sm border border-black/10 text-text-secondary hover:bg-black/5 hover:text-text-primary px-3 py-1.5 rounded-lg transition-colors">Ver Detalles</button></td>
-                                </tr>
-                                <tr class="hover:bg-black/[0.02] transition-colors">
-                                    <td class="py-4 px-4 text-text-primary font-medium">#RES-1028</td>
-                                    <td class="py-4 px-4 text-text-primary">Auditorio Principal</td>
-                                    <td class="py-4 px-4 text-text-secondary">Especial</td>
-                                    <td class="py-4 px-4 text-text-primary">2023-11-20</td>
-                                    <td class="py-4 px-4 text-text-primary">18:00 - 21:00 / Noche</td>
-                                    <td class="py-4 px-4"><span class="inline-flex items-center px-2 py-0.5 rounded text-[12px] font-semibold bg-emerald-100 text-emerald-800">Confirmada</span></td>
-                                    <td class="py-4 px-4 text-right whitespace-nowrap"><button class="text-sm border border-black/10 text-text-secondary hover:bg-black/5 hover:text-text-primary px-3 py-1.5 rounded-lg transition-colors">Ver Detalles</button></td>
-                                </tr>
+                                $TABLA_RESERVAS
                             </tbody>
                         </table>
                     </div>
@@ -214,6 +207,54 @@ try{
             </p>
         </div>
     </div>
+
+    <!-- Modal Detalles Reserva -->
+    <div id="modalDetalles" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4" onclick="cerrarModal(event)">
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
+        <div class="relative bg-white rounded-3xl shadow-2xl max-w-lg w-full p-8 transform transition-all" onclick="event.stopPropagation()">
+            <button onclick="cerrarModal()" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center text-text-secondary hover:bg-black/5 rounded-full transition-colors">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-12 h-12 rounded-2xl bg-utp-red-institutional/10 flex items-center justify-center text-utp-red-institutional">
+                    <span class="material-symbols-outlined text-[28px]">assignment</span>
+                </div>
+                <div>
+                    <h3 class="font-bold text-xl text-text-primary">Detalle de Reserva</h3>
+                    <p class="text-sm text-text-secondary" id="modal-id">#RES-000</p>
+                </div>
+            </div>
+            <div class="space-y-4">
+                <div class="flex justify-between py-3 border-b border-black/5">
+                    <span class="text-text-secondary">Aula / Ambiente</span>
+                    <span class="font-semibold text-text-primary" id="modal-aula">-</span>
+                </div>
+                <div class="flex justify-between py-3 border-b border-black/5">
+                    <span class="text-text-secondary">Tipo de Espacio</span>
+                    <span class="font-semibold text-text-primary" id="modal-tipo">-</span>
+                </div>
+                <div class="flex justify-between py-3 border-b border-black/5">
+                    <span class="text-text-secondary">Ubicacion</span>
+                    <span class="font-semibold text-text-primary" id="modal-ubicacion">-</span>
+                </div>
+                <div class="flex justify-between py-3 border-b border-black/5">
+                    <span class="text-text-secondary">Fecha</span>
+                    <span class="font-semibold text-text-primary" id="modal-fecha">-</span>
+                </div>
+                <div class="flex justify-between py-3 border-b border-black/5">
+                    <span class="text-text-secondary">Estado</span>
+                    <span class="font-semibold" id="modal-estado">-</span>
+                </div>
+                <div class="flex justify-between py-3">
+                    <span class="text-text-secondary">Curso</span>
+                    <span class="font-semibold text-text-primary" id="modal-curso">-</span>
+                </div>
+            </div>
+            <button onclick="cerrarModal()" class="mt-6 w-full py-3 bg-utp-red-institutional text-white font-bold rounded-2xl hover:bg-primary transition-all active:scale-[0.98]">
+                Cerrar
+            </button>
+        </div>
+    </div>
 </main>
 
 <script>
@@ -221,29 +262,24 @@ try{
         var chatView = document.getElementById('view-chat');
         var reservasView = document.getElementById('view-reservas');
         var chatInput = document.querySelector('.absolute.bottom-0');
-        var navItems = document.querySelectorAll('nav.flex-1 a');
 
         chatView.classList.add('hidden');
         reservasView.classList.add('hidden');
         if(chatInput) chatInput.classList.add('hidden');
-        navItems.forEach(function(item) {
-            item.classList.remove('bg-utp-red-institutional/10', 'text-utp-red-institutional');
-            item.classList.add('text-text-secondary');
+
+        var navChat = document.getElementById('nav-chat');
+        var navReservas = document.getElementById('nav-reservas');
+        [navChat, navReservas].forEach(function(el) {
+            if(el) { el.classList.remove('bg-utp-red-institutional/10', 'text-utp-red-institutional'); el.classList.add('text-text-secondary'); }
         });
 
         if (view === 'chat') {
             chatView.classList.remove('hidden');
             if(chatInput) chatInput.classList.remove('hidden');
-            navItems[0].classList.add('bg-utp-red-institutional/10', 'text-utp-red-institutional');
-            navItems[0].classList.remove('text-text-secondary');
+            if(navChat) { navChat.classList.remove('text-text-secondary'); navChat.classList.add('bg-utp-red-institutional/10', 'text-utp-red-institutional'); }
         } else if (view === 'reservas') {
             reservasView.classList.remove('hidden');
-            navItems[2].classList.add('bg-utp-red-institutional/10', 'text-utp-red-institutional');
-            navItems[2].classList.remove('text-text-secondary');
-        } else if (view === 'historial') {
-            if(chatInput) chatInput.classList.remove('hidden');
-            navItems[1].classList.add('bg-utp-red-institutional/10', 'text-utp-red-institutional');
-            navItems[1].classList.remove('text-text-secondary');
+            if(navReservas) { navReservas.classList.remove('text-text-secondary'); navReservas.classList.add('bg-utp-red-institutional/10', 'text-utp-red-institutional'); }
         }
     }
 
@@ -256,6 +292,81 @@ try{
             chatInput.closest('form').classList.remove('shadow-[0_15px_50px_rgba(0,0,0,0.1)]');
         });
     }
+    function abrirModal(rid, aula, tipo, ubicacion, fecha, estado, estadoClass, curso) {
+        document.getElementById('modal-id').textContent = '#RES-' + rid;
+        document.getElementById('modal-aula').textContent = aula;
+        document.getElementById('modal-tipo').textContent = tipo;
+        document.getElementById('modal-ubicacion').textContent = ubicacion || '-';
+        document.getElementById('modal-fecha').textContent = fecha;
+        document.getElementById('modal-estado').textContent = estado;
+        document.getElementById('modal-estado').className = 'font-semibold inline-flex items-center px-2 py-0.5 rounded text-[12px] ' + estadoClass;
+        document.getElementById('modal-curso').textContent = curso || '-';
+        document.getElementById('modalDetalles').classList.remove('hidden');
+    }
+    function cerrarModal(e) {
+        if(!e || e.target === document.getElementById('modalDetalles')) {
+            document.getElementById('modalDetalles').classList.add('hidden');
+        }
+    }
+    function toggleNotificaciones() {
+        var dd = document.getElementById('notif-dropdown');
+        var isHidden = dd.classList.contains('hidden');
+        if (isHidden) {
+            dd.classList.remove('hidden');
+            cargarNotificaciones();
+        } else {
+            dd.classList.add('hidden');
+        }
+    }
+    function cargarNotificaciones() {
+        fetch('/api/notificaciones').then(function(r) { return r.json(); }).then(function(data) {
+            var lista = document.getElementById('notif-lista');
+            var badge = document.getElementById('notif-badge');
+            if (data.no_leidas > 0) { badge.classList.remove('hidden'); } else { badge.classList.add('hidden'); }
+            if (data.items.length === 0) {
+                lista.innerHTML = '<div class="px-5 py-8 text-center text-text-secondary text-sm">No tienes notificaciones.</div>';
+                return;
+            }
+            var html = '';
+            data.items.forEach(function(n) {
+                var bg = n.leida ? '' : 'bg-utp-red-institutional/5';
+                var icon = 'info';
+                var iconColor = 'text-utp-red-institutional';
+                if (n.tipo === 'success') { icon = 'check_circle'; iconColor = 'text-green-600'; }
+                else if (n.tipo === 'error') { icon = 'cancel'; iconColor = 'text-red-600'; }
+                else if (n.tipo === 'warning') { icon = 'warning'; iconColor = 'text-amber-600'; }
+                html += '<div class="flex items-start gap-3 px-5 py-4 ' + bg + '">';
+                html += '<span class="material-symbols-outlined text-[20px] ' + iconColor + ' mt-0.5">' + icon + '</span>';
+                html += '<div class="flex-1 min-w-0">';
+                html += '<p class="font-bold text-sm text-text-primary">' + n.titulo + '</p>';
+                html += '<p class="text-xs text-text-secondary mt-0.5">' + n.mensaje + '</p>';
+                html += '<p class="text-[10px] text-text-secondary/50 mt-1">' + n.created_at + '</p>';
+                html += '</div></div>';
+            });
+            lista.innerHTML = html;
+        }).catch(function() {
+            document.getElementById('notif-lista').innerHTML = '<div class="px-5 py-8 text-center text-text-secondary text-sm">Error al cargar.</div>';
+        });
+    }
+    function marcarLeidas() {
+        fetch('/api/notificaciones/leer', {method:'POST'}).then(function() {
+            document.getElementById('notif-badge').classList.add('hidden');
+            cargarNotificaciones();
+        });
+    }
+    document.addEventListener('click', function(e) {
+        var dd = document.getElementById('notif-dropdown');
+        var btn = document.getElementById('notif-container');
+        if (dd && !dd.classList.contains('hidden') && !btn.contains(e.target)) {
+            dd.classList.add('hidden');
+        }
+    });
+    document.addEventListener('DOMContentLoaded', function() {
+        fetch('/api/notificaciones').then(function(r) { return r.json(); }).then(function(data) {
+            var badge = document.getElementById('notif-badge');
+            if (data.no_leidas > 0) { badge.classList.remove('hidden'); } else { badge.classList.add('hidden'); }
+        });
+    });
     function toggleSidebar() {
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('sidebarOverlay');
