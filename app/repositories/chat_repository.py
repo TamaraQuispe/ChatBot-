@@ -25,6 +25,10 @@ class SesionChatRepository(BaseRepository):
 
     def delete(self, id_sesion: int, id_usuario: int) -> bool:
         from app.database.connection import execute
+        execute(
+            "DELETE FROM mensajes_chat WHERE id_sesion = %s",
+            (id_sesion,),
+        )
         affected = execute(
             "DELETE FROM sesiones_chat WHERE id_sesion = %s AND id_usuario = %s",
             (id_sesion, id_usuario),
