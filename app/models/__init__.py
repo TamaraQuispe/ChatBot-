@@ -43,9 +43,11 @@ def inicializar_bd():
             "ALTER TABLE procesamiento_nlp ADD COLUMN IF NOT EXISTS modelo_usado VARCHAR(100)",
             "ALTER TABLE procesamiento_nlp ADD COLUMN IF NOT EXISTS tiempo_procesamiento_ms INTEGER",
             "ALTER TABLE procesamiento_nlp ADD COLUMN IF NOT EXISTS fecha_creacion TIMESTAMP DEFAULT NOW()",
-            # Migraciones para tabla reservas (columnas faltantes)
+            # Migraciones para tabla reservas (columnas y constraints)
             "ALTER TABLE reservas ADD COLUMN IF NOT EXISTS curso_nombre VARCHAR(255) DEFAULT ''",
             "ALTER TABLE reservas ADD COLUMN IF NOT EXISTS horario VARCHAR(50) DEFAULT ''",
+            "ALTER TABLE reservas ALTER COLUMN id_curso DROP NOT NULL",
+            "ALTER TABLE reservas ALTER COLUMN id_bloque DROP NOT NULL",
             # Migraciones para tablas de chat en producción
             "ALTER TABLE sesiones_chat ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP DEFAULT NOW()",
             "ALTER TABLE mensajes_chat RENAME COLUMN contenido_json TO contenido",
