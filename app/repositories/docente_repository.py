@@ -11,8 +11,8 @@ class DocenteRepository(BaseRepository):
 
     def get_all_with_details(self) -> list:
         return fetch_all(
-            "SELECT d.*, u.nombre AS usuario_nombre, u.username "
+            "SELECT d.*, u.nombre, u.username "
             "FROM docentes d "
             "LEFT JOIN usuarios u ON d.id_usuario = u.id_usuario "
-            "ORDER BY d.nombre"
+            "ORDER BY u.nombre"
         )

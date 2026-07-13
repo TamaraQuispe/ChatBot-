@@ -24,16 +24,17 @@ class UsuarioRepository(BaseRepository):
         )
 
     def create(self, data: dict) -> Optional[dict]:
+        id_rol = 1 if data.get("rol", "").lower() == "admin" else 2
         return fetch_one(
-            "INSERT INTO usuarios (username, password, nombre, correo, rol) "
-            "VALUES (%s, %s, %s, %s, %s) RETURNING id_usuario, username, nombre, correo, rol",
+            "INSERT INTO usuarios (username, password_hash, nombre, correo, id_rol) "
+            "VALUES (%s, %s, %s, %s, %s) RETURNING id_usuario, username, nombre, correo, id_rol",
             (data["username"], data["password"], data["nombre"],
-             data["correo"], data.get("rol", "DOCENTE")),
+             data["correo"], id_rol),
         )
 
     def update_password(self, id_usuario: int, new_password: str) -> bool:
         affected = self._execute(
-            "UPDATE usuarios SET password = %s WHERE id_usuario = %s",
+            "UPDATE usuarios SET password_hash = %s WHERE id_usuario = %s",
             (new_password, id_usuario),
         )
         return affected > 0

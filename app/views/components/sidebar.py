@@ -6,6 +6,8 @@ NAV_ITEMS = [
     ("/admin/software", "computer", "Software y Equipos"),
     ("/admin/docentes", "person", "Docentes"),
     ("/admin/reservas", "event_seat", "Reservas"),
+    ("/admin/horarios", "calendar_month", "Horarios"),
+    ("/admin/reportes", "bar_chart", "Reportes"),
     ("/admin/roles", "admin_panel_settings", "Roles"),
 ]
 

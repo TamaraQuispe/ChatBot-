@@ -23,7 +23,7 @@ _CONTENT = """<section class="mb-stack-lg">
 </div>
 <p class="text-label-md text-secondary uppercase font-medium">Salones Activos</p>
 <div class="flex items-end justify-between">
-<h3 class="text-display-lg font-display-lg leading-none mt-2">142</h3>
+<h3 class="text-display-lg font-display-lg leading-none mt-2">$KPI_TOTAL_SALONES</h3>
 <svg class="w-20 h-10" viewbox="0 0 100 40"><path d="M0 35 Q 25 10, 50 25 T 100 5" stroke="#b00020" stroke-width="2" fill="none"></path></svg>
 </div>
 </div>
@@ -34,18 +34,18 @@ _CONTENT = """<section class="mb-stack-lg">
 </div>
 <p class="text-label-md text-secondary uppercase font-medium">Cantidad de Docentes</p>
 <div class="flex items-end justify-between">
-<h3 class="text-display-lg font-display-lg leading-none mt-2">84</h3>
+<h3 class="text-display-lg font-display-lg leading-none mt-2">$KPI_TOTAL_DOCENTES</h3>
 <svg class="w-20 h-10" viewbox="0 0 100 40"><path d="M0 30 Q 20 20, 40 30 T 60 10 T 100 15" stroke="#b00020" stroke-width="2" fill="none"></path></svg>
 </div>
 </div>
 <div class="glass-card p-6">
 <div class="flex justify-between items-start mb-4">
 <span class="material-symbols-outlined text-amber-600 p-2 bg-amber-50 rounded-lg">event_busy</span>
-<span class="bg-amber-100 text-amber-700 px-2 py-1 rounded text-label-md font-bold">24 Pend.</span>
+<span class="bg-amber-100 text-amber-700 px-2 py-1 rounded text-label-md font-bold">$KPI_RESERVAS_PENDIENTES Pend.</span>
 </div>
 <p class="text-label-md text-secondary uppercase font-medium">Reservas Hoy</p>
 <div class="flex items-end justify-between">
-<h3 class="text-display-lg font-display-lg leading-none mt-2">312</h3>
+<h3 class="text-display-lg font-display-lg leading-none mt-2">$KPI_RESERVAS_HOY</h3>
 <svg class="w-20 h-10" viewbox="0 0 100 40"><path d="M0 10 Q 30 40, 60 20 T 100 30" stroke="#f59e0b" stroke-width="2" fill="none"></path></svg>
 </div>
 </div>
@@ -55,7 +55,7 @@ _CONTENT = """<section class="mb-stack-lg">
 <div class="p-8 border-b border-surface-container-highest flex justify-between items-center">
 <h3 class="font-title-lg text-title-lg text-on-surface">Gestion de Salones</h3>
 <div class="flex space-x-2">
-<span class="px-3 py-1 bg-surface-container text-secondary text-label-md rounded-full">Total: 48</span>
+<span class="px-3 py-1 bg-surface-container text-secondary text-label-md rounded-full">Total: $KPI_TOTAL_SALONES</span>
 </div>
 </div>
 <div class="overflow-x-auto">

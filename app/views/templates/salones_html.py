@@ -27,7 +27,7 @@ _CONTENT = """<section class="flex justify-between items-end mb-12">
 </div>
 <h3 class="text-secondary text-label-md uppercase tracking-wider mb-1">Salones Disponibles</h3>
 <div class="flex items-end justify-between">
-<span class="text-headline-md font-bold">88</span>
+<span class="text-headline-md font-bold">$KPI_SALONES_DISPONIBLES</span>
 <div class="w-24 h-10 opacity-50"><svg class="w-full h-full" viewbox="0 0 100 40"><path class="sparkline-svg" d="M0,10 Q10,25 20,20 T40,35 T60,15 T80,25 T100,5"></path></svg></div>
 </div>
 </div>
@@ -38,7 +38,7 @@ _CONTENT = """<section class="flex justify-between items-end mb-12">
 </div>
 <h3 class="text-secondary text-label-md uppercase tracking-wider mb-1">Tasa de Ocupacion</h3>
 <div class="flex items-end justify-between">
-<span class="text-headline-md font-bold">76.4%</span>
+<span class="text-headline-md font-bold">$KPI_TASA_OCUPACION%</span>
 <div class="w-24 h-10"><svg class="w-full h-full" viewbox="0 0 100 40"><path class="sparkline-svg" d="M0,38 C20,38 20,10 40,10 C60,10 60,25 80,25 C100,25 100,5 100,5"></path></svg></div>
 </div>
 </div>

@@ -33,6 +33,28 @@ _MODAL_ELIMINAR = """<div id="modalEliminar" class="fixed inset-0 z-50 hidden fl
 </div>
 </div>"""
 
+_MODAL_PASSWORD = """<div id="modalPassword" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4" onclick="if(event.target===this) cerrarModal('modalPassword')" role="dialog" aria-modal="true">
+<div class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
+<div class="relative bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 transform transition-all" onclick="event.stopPropagation()">
+<button onclick="cerrarModal('modalPassword')" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center text-secondary hover:bg-surface-container-low rounded-full transition-colors" aria-label="Cerrar"><span class="material-symbols-outlined">close</span></button>
+<div class="flex items-center gap-3 mb-6">
+<div class="w-12 h-12 rounded-2xl bg-amber-50 flex items-center justify-center text-amber-600"><span class="material-symbols-outlined text-[28px]">lock_reset</span></div>
+<div>
+<h3 class="font-bold text-xl text-on-surface">Cambiar Contrasena</h3>
+<p class="text-sm text-secondary" id="password-nombre">-</p>
+</div>
+</div>
+<form method="POST" action="/admin/usuarios/password" class="space-y-4">
+<input type="hidden" name="id_usuario" id="password-id">
+<div>
+<label class="block text-sm font-bold text-secondary mb-1">Nueva Contrasena</label>
+<input type="text" name="new_password" required class="w-full px-4 py-3 border border-surface-container-highest rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" placeholder="Escribe la nueva contrasena">
+</div>
+<button type="submit" class="w-full py-3 bg-amber-600 text-white font-bold rounded-2xl hover:bg-amber-700 transition-all">Actualizar Contrasena</button>
+</form>
+</div>
+</div>"""
+
 _CONTENT = """<section class="flex justify-between items-end mb-12">
 <div>
 <h1 class="font-headline-lg text-headline-lg text-on-surface">Roles</h1>
@@ -93,7 +115,11 @@ function verDetalleUsuario(id, nombre, username, rol, estado) {
     document.getElementById('modal-campos').innerHTML = html;
     document.getElementById('modalDetalle').classList.remove('hidden');
 }
-function editarUsuario(id) { window.location.href = '/admin/usuarios/editar?id=' + id; }
+function editarUsuario(id, nombre) { 
+    document.getElementById('password-id').value = id;
+    document.getElementById('password-nombre').textContent = nombre;
+    document.getElementById('modalPassword').classList.remove('hidden');
+}
 function eliminarUsuario(id, nombre) {
     document.getElementById('eliminar-id').value = id;
     document.getElementById('eliminar-text').textContent = '¿Estas seguro de eliminar a "' + nombre + '"? Esta accion no se puede deshacer.';
@@ -111,4 +137,4 @@ function filtrarRoles() {
 document.getElementById('filterRol').addEventListener('change', filtrarRoles);
 """
 
-HTML_ROLES = render_roles(_CONTENT, extra_js=_JS, after_footer=_MODAL_DETALLE + _MODAL_ELIMINAR)
+HTML_ROLES = render_roles(_CONTENT, extra_js=_JS, after_footer=_MODAL_DETALLE + _MODAL_ELIMINAR + _MODAL_PASSWORD)

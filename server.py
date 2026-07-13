@@ -537,9 +537,10 @@ class UTPHandler(BaseHTTPRequestHandler):
                 return
             header = self._render_header()
             try:
-                db_adm = Database()
-                admin_adm = AdminController(db_adm)
+                db = Database()
+                admin_adm = AdminController(db)
                 espacios_adm = admin_adm.obtener_espacios()
+                stats = admin_adm.obtener_estadisticas()
                 tipo_nombres_clase = {"AULA":"AulaTeorica","LABORATORIO":"AulaLaboratorio","SALA DE COMPUTO":"SalaComputo","AUDITORIO":"Auditorio","TALLER":"Taller"}
                 estado_map = {"DISPONIBLE":("text-emerald-600","bg-emerald-500","Disponible"),"OCUPADO":("text-primary","bg-primary","Ocupado"),"MANTENIMIENTO":("text-amber-600","bg-amber-500","Mantenimiento")}
                 filas_adm = ""
@@ -571,6 +572,10 @@ class UTPHandler(BaseHTTPRequestHandler):
                     </td>
                     </tr>'''
                 page_rendered = HTML_ADMIN.replace("$HEADER", header).replace("$NOMBRE_ADMIN", usuario["nombre"]).replace("$TABLA_ESPACIOS", filas_adm)
+                page_rendered = page_rendered.replace("$KPI_TOTAL_SALONES", str(stats.get("total_espacios", 0)))
+                page_rendered = page_rendered.replace("$KPI_TOTAL_DOCENTES", str(stats.get("total_usuarios", 0)))
+                page_rendered = page_rendered.replace("$KPI_RESERVAS_PENDIENTES", str(stats.get("reservas_pendientes", 0)))
+                page_rendered = page_rendered.replace("$KPI_RESERVAS_HOY", str(stats.get("total_reservas", 0)))
             except Exception:
                 page_rendered = HTML_ADMIN.replace("$HEADER", header).replace("$NOMBRE_ADMIN", usuario["nombre"]).replace("$TABLA_ESPACIOS", "")
             self._responder_html(page_rendered)
@@ -672,10 +677,13 @@ class UTPHandler(BaseHTTPRequestHandler):
                     </td>
                     </tr>
                     '''
-                header = self._render_header("Buscar recurso...")
+                header = self._render_header("Buscar salon, aula o software...")
+                stats = admin.obtener_estadisticas()
                 page_rendered = HTML_SALONES.replace("$HEADER", header).replace("$NOMBRE_ADMIN", usuario["nombre"])
                 page_rendered = page_rendered.replace("$TABLA_SALONES", filas_html)
                 page_rendered = page_rendered.replace("$TOTAL_SALONES", str(len(espacios)))
+                page_rendered = page_rendered.replace("$KPI_SALONES_DISPONIBLES", str(stats.get("espacios_disponibles", 0)))
+                page_rendered = page_rendered.replace("$KPI_TASA_OCUPACION", str(stats.get("tasa_ocupacion", 0)))
                 self._responder_html(page_rendered)
             except Exception as e:
                 logger.error(f"Error en /admin/salones: {e}")
@@ -841,6 +849,42 @@ class UTPHandler(BaseHTTPRequestHandler):
                 logger.error(f"Error en /admin/horarios: {e}")
                 self._redirect("/admin")
 
+        elif parsed_path == "/admin/usuarios/password":
+            if not self._es_admin():
+                self._redirect("/login")
+                return
+            try:
+                import cgi
+                import bcrypt
+                form = cgi.FieldStorage(fp=self.rfile, headers=self.headers, environ={'REQUEST_METHOD': 'POST'})
+                id_usuario = int(form.getvalue("id_usuario"))
+                new_password = form.getvalue("new_password")
+                if id_usuario and new_password:
+                    hashed = bcrypt.hashpw(new_password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+                    from app.repositories.usuario_repository import UsuarioRepository
+                    UsuarioRepository().update_password(id_usuario, hashed)
+                self._redirect("/admin/roles")
+            except Exception as e:
+                logger.error(f"Error cambiando contraseña: {e}")
+                self._redirect("/admin/roles?error=1")
+
+        elif parsed_path == "/admin/usuarios/eliminar":
+            if not self._es_admin():
+                self._redirect("/login")
+                return
+            try:
+                import cgi
+                form = cgi.FieldStorage(fp=self.rfile, headers=self.headers, environ={'REQUEST_METHOD': 'POST'})
+                id_usuario = int(form.getvalue("id_usuario"))
+                if id_usuario:
+                    from app.database.connection import execute
+                    execute("DELETE FROM docentes WHERE id_usuario = %s", (id_usuario,))
+                    execute("DELETE FROM usuarios WHERE id_usuario = %s", (id_usuario,))
+                self._redirect("/admin/roles")
+            except Exception as e:
+                logger.error(f"Error eliminando usuario: {e}")
+                self._redirect("/admin/roles?error=1")
+
         elif parsed_path == "/admin/docentes":
             if not self._es_admin():
                 self._redirect("/login")
@@ -949,7 +993,7 @@ class UTPHandler(BaseHTTPRequestHandler):
                         acciones = '<span class="text-[11px] text-secondary italic">Confirmada</span>'
                     else:
                         acciones = f'''
-                        <div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <div class="flex justify-end gap-2 transition-opacity">
                         <form method="POST" action="/admin/aprobar_reserva" class="inline">
                         <input type="hidden" name="id_reserva" value="{r["id_reserva"]}">
                         <button class="w-8 h-8 flex items-center justify-center rounded-full bg-emerald-500 text-white hover:shadow-lg transition-all" title="Aprobar">
@@ -1131,8 +1175,8 @@ class UTPHandler(BaseHTTPRequestHandler):
                         <button onclick="verDetalleUsuario({id_usuario},'{nombre_escapado}','{username_escapado}','{rol}','{estado_text}')" class="w-full flex items-center gap-3 px-4 py-3 text-sm text-on-surface hover:bg-surface-container-low transition-colors">
                             <span class="material-symbols-outlined text-[18px] text-secondary">visibility</span> Ver detalle
                         </button>
-                        <button onclick="editarUsuario({id_usuario})" class="w-full flex items-center gap-3 px-4 py-3 text-sm text-on-surface hover:bg-surface-container-low transition-colors">
-                            <span class="material-symbols-outlined text-[18px] text-secondary">edit</span> Editar
+                        <button onclick="editarUsuario({id_usuario},'{nombre_escapado}')" class="w-full flex items-center gap-3 px-4 py-3 text-sm text-on-surface hover:bg-surface-container-low transition-colors">
+                            <span class="material-symbols-outlined text-[18px] text-secondary">lock_reset</span> Cambiar Contrasena
                         </button>
                         <div class="h-px bg-surface-container-higher mx-3"></div>
                         <button onclick="eliminarUsuario({id_usuario},'{nombre_escapado}')" class="w-full flex items-center gap-3 px-4 py-3 text-sm text-error hover:bg-error-container/10 transition-colors">
@@ -1151,7 +1195,12 @@ class UTPHandler(BaseHTTPRequestHandler):
                 self._redirect("/admin")
 
         elif parsed_path == "/logout":
-            self._redirect("/login", [("Set-Cookie", make_clear_cookie_header())])
+            cookies = [
+                ("Set-Cookie", "utp_token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT"),
+                ("Set-Cookie", "utp_sesion=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT"),
+                ("Set-Cookie", "utp_historial=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT")
+            ]
+            self._redirect("/login", cookies)
 
         else:
             self.send_response(404)

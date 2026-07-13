@@ -149,4 +149,8 @@ class ReservaService:
             return "LABORATORIO"
         elif "teorica" in palabra or "teórica" in palabra or "aula" in palabra:
             return "AULA"
+        elif "auditorio" in palabra:
+            return "AUDITORIO"
+        elif "taller" in palabra:
+            return "TALLER"
         return "SALA DE COMPUTO"

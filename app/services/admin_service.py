@@ -58,7 +58,7 @@ class AdminService:
     def obtener_usuarios(self) -> list:
         return fetch_all(
             "SELECT u.id_usuario, u.nombre, u.username, "
-            "COALESCE(r.nombre, u.rol) AS rol, u.estado "
+            "COALESCE(r.nombre, 'Docente') AS rol, u.estado "
             "FROM usuarios u "
             "LEFT JOIN roles r ON u.id_rol = r.id_rol "
             "ORDER BY u.nombre"

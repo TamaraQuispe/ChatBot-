@@ -227,7 +227,7 @@ HTML_LOGIN = """
 <input class="w-4 h-4 text-primary border-outline-variant rounded focus:ring-primary" id="remember" name="remember" type="checkbox"/>
 <label class="ml-2 font-body-sm text-body-sm text-secondary cursor-pointer select-none" for="remember">Recordarme</label>
 </div>
-<a class="font-label-md text-label-md text-primary hover:underline font-semibold" href="#">¿Olvidaste tu contrasena?</a>
+<a class="font-label-md text-label-md text-primary hover:underline font-semibold cursor-pointer" onclick="alert('Por medidas de seguridad de la red UTP, por favor contacta al departamento de TI (soporte@utp.edu.pe) o acercate a la mesa de ayuda de tu sede para restablecer tus credenciales.')">¿Olvidaste tu contrasena?</a>
 </div>
 <button class="w-full py-4 bg-utp-red-vibrant text-white font-body-md font-bold rounded-xl shadow-lg shadow-utp-red-vibrant/25 hover:bg-utp-red-muted active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2 group" type="submit">
                         Iniciar Sesion
