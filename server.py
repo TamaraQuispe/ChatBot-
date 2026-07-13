@@ -40,9 +40,10 @@ logger = get_logger("app")
 
 class UTPHandler(BaseHTTPRequestHandler):
     _usuario_actual: dict | None = None
+    _skip_refresh: bool = False
 
     def end_headers(self):
-        if self._usuario_actual:
+        if self._usuario_actual and not self._skip_refresh:
             self.send_header("Set-Cookie", make_set_cookie_header(self._usuario_actual))
         super().end_headers()
 
@@ -1176,6 +1177,7 @@ class UTPHandler(BaseHTTPRequestHandler):
                 self._redirect("/admin")
 
         elif parsed_path == "/logout":
+            self._skip_refresh = True
             cookies = [
                 ("Set-Cookie", "utp_session=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; SameSite=Lax"),
                 ("Set-Cookie", "utp_token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT"),
