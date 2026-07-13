@@ -118,10 +118,9 @@ def get_session_from_headers(headers: dict) -> Optional[dict]:
 
 def make_set_cookie_header(usuario: dict) -> str:
     token = create_session_token(usuario)
-    max_age = _ACCESS_TOKEN_EXPIRY
     return (
         f"{_COOKIE_NAME}={token}; HttpOnly; SameSite=Lax; "
-        f"Path=/; Max-Age={max_age}"
+        f"Path=/"
     )
 
 
