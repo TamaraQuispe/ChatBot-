@@ -275,14 +275,14 @@ class UTPHandler(BaseHTTPRequestHandler):
             try:
                 db_reservas = Database()
                 reserva_ctrl = ReservaController(db_reservas)
-                reservas = reserva_ctrl.reserva_model.listar_por_usuario(usuario["id_usuario"])
+                reservas = reserva_ctrl.reserva_service.listar_por_usuario(usuario["id_usuario"])
             except Exception:
                 reservas = []
             reservas_rendered = ""
             for r in reservas:
                 rid = r.get("id_reserva", 0)
                 ename = escapar(r.get("espacio_nombre", ""))
-                tipo = escapar(r.get("tipo", ""))
+                tipo = escapar(r.get("tipo_nombre", ""))
                 ubicacion = escapar(r.get("ubicacion", ""))
                 fecha = escapar(str(r.get("fecha", "")))
                 curso = escapar(r.get("curso_nombre", ""))
