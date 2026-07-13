@@ -420,7 +420,7 @@ class UTPHandler(BaseHTTPRequestHandler):
                     rc.reserva_service.cancelar(id_reserva, usuario["id_usuario"])
                 except Exception as e:
                     logger.error(f"Error al cancelar reserva: {e}")
-            self._redirect("/chat")
+            self._redirect("/chat#reservas")
 
         elif parsed_path == "/admin/salones/editar":
             if not self._es_admin():
@@ -1286,7 +1286,7 @@ class UTPHandler(BaseHTTPRequestHandler):
                         sc.guardar_mensaje(sesion_id, "success", json.dumps({"texto": nombre_aula}))
                         cookies.append(("Set-Cookie", f"utp_sesion={sesion_id}; Path=/; Max-Age=86400"))
 
-                self._redirect("/chat#fin", cookies)
+                self._redirect("/chat#reservas", cookies)
                 return
 
             elif parsed_path_post == "/admin/salones/eliminar":
