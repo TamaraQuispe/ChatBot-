@@ -39,8 +39,17 @@ logger = get_logger("app")
 
 
 class UTPHandler(BaseHTTPRequestHandler):
+    _usuario_actual: dict | None = None
+
+    def end_headers(self):
+        if self._usuario_actual:
+            self.send_header("Set-Cookie", make_set_cookie_header(self._usuario_actual))
+        super().end_headers()
+
     def _get_usuario(self):
-        return get_session(self.headers.get("Cookie"))
+        u = get_session(self.headers.get("Cookie"))
+        self._usuario_actual = u
+        return u
 
     def _get_sesion_id(self) -> int:
         from http.cookies import SimpleCookie
