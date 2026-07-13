@@ -11,7 +11,11 @@ class UsuarioRepository(BaseRepository):
 
     def get_by_username(self, username: str) -> Optional[dict]:
         return fetch_one(
-            "SELECT * FROM usuarios WHERE username = %s", (username,)
+            "SELECT u.*, COALESCE(r.nombre, 'Docente') AS rol "
+            "FROM usuarios u "
+            "LEFT JOIN roles r ON u.id_rol = r.id_rol "
+            "WHERE u.username = %s",
+            (username,)
         )
 
     def get_by_correo(self, correo: str) -> Optional[dict]:
