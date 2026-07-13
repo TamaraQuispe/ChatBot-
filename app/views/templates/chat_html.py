@@ -157,11 +157,19 @@ try{
                     <div class="p-4 border-b border-black/5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white">
                         <div class="relative w-full sm:w-72">
                             <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary/40 text-[18px]">search</span>
-                            <input class="w-full pl-10 pr-4 py-2 border border-black/10 rounded text-sm text-text-primary focus:border-utp-red-institutional focus:ring-1 focus:ring-utp-red-institutional/10 outline-none transition-all bg-white" placeholder="Buscar por aula o ID..." type="text">
+                            <input id="reserva-search" class="w-full pl-10 pr-4 py-2 border border-black/10 rounded text-sm text-text-primary focus:border-utp-red-institutional focus:ring-1 focus:ring-utp-red-institutional/10 outline-none transition-all bg-white" placeholder="Buscar por aula o ID..." type="text">
                         </div>
-                        <button class="flex items-center gap-2 text-sm font-medium text-text-secondary hover:bg-black/5 transition-colors border border-black/10 px-3 py-2 rounded hover:text-text-primary">
-                            <span class="material-symbols-outlined text-[18px]">filter_list</span> Filtrar
-                        </button>
+                        <div class="relative">
+                            <button id="reserva-filter-btn" class="flex items-center gap-2 text-sm font-medium text-text-secondary hover:bg-black/5 transition-colors border border-black/10 px-3 py-2 rounded hover:text-text-primary">
+                                <span class="material-symbols-outlined text-[18px]">filter_list</span> Filtrar
+                            </button>
+                            <div id="reserva-filter-dropdown" class="hidden absolute right-0 top-11 mt-1 w-44 bg-white rounded-lg shadow-xl border border-black/5 py-2 z-50">
+                                <button class="filter-option w-full text-left px-4 py-2 text-sm text-text-secondary hover:bg-black/5" data-filter="">Todas</button>
+                                <button class="filter-option w-full text-left px-4 py-2 text-sm text-text-secondary hover:bg-black/5" data-filter="CONFIRMADA">Confirmadas</button>
+                                <button class="filter-option w-full text-left px-4 py-2 text-sm text-text-secondary hover:bg-black/5" data-filter="PENDIENTE">Pendientes</button>
+                                <button class="filter-option w-full text-left px-4 py-2 text-sm text-text-secondary hover:bg-black/5" data-filter="CANCELADA">Canceladas</button>
+                            </div>
+                        </div>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse">
@@ -176,16 +184,16 @@ try{
                                     <th class="py-3 px-4 text-[12px] font-bold text-text-secondary uppercase tracking-wider text-right">Acciones</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-black/5 text-sm">
+                            <tbody id="reserva-tbody" class="divide-y divide-black/5 text-sm">
                                 $TABLA_RESERVAS
                             </tbody>
                         </table>
                     </div>
                     <div class="p-3 px-4 border-t border-black/5 flex items-center justify-between text-sm text-text-secondary bg-white">
-                        <span>Mostrando 1 a 3 de 12 reservas</span>
+                        <span id="reserva-pagination-info">Cargando...</span>
                         <div class="flex gap-1">
-                            <button class="p-1 rounded hover:bg-black/5 disabled:opacity-50"><span class="material-symbols-outlined text-[18px]">chevron_left</span></button>
-                            <button class="p-1 rounded hover:bg-black/5"><span class="material-symbols-outlined text-[18px]">chevron_right</span></button>
+                            <button id="reserva-prev" class="p-1 rounded hover:bg-black/5 disabled:opacity-50" disabled><span class="material-symbols-outlined text-[18px]">chevron_left</span></button>
+                            <button id="reserva-next" class="p-1 rounded hover:bg-black/5"><span class="material-symbols-outlined text-[18px]">chevron_right</span></button>
                         </div>
                     </div>
                 </div>
@@ -442,6 +450,80 @@ try{
             if (data.no_leidas > 0) { badge.classList.remove('hidden'); } else { badge.classList.add('hidden'); }
         });
     });
+    /* ── Reservas: búsqueda, filtro y paginación ── */
+    const PER_PAGE = 5;
+    let currentPage = 0;
+    let currentFilter = '';
+    let currentSearch = '';
+
+    function getFiltradas() {
+        const rows = Array.from(document.querySelectorAll('#reserva-tbody tr'));
+        return rows.filter(r => {
+            const estado = (r.getAttribute('data-estado') || '').trim();
+            if (currentFilter && estado !== currentFilter) return false;
+            if (!currentSearch) return true;
+            const texto = (r.textContent || '').toLowerCase();
+            return texto.includes(currentSearch.toLowerCase());
+        });
+    }
+
+    function renderPagination() {
+        const rows = getFiltradas();
+        const total = rows.length;
+        const pages = Math.max(1, Math.ceil(total / PER_PAGE));
+        if (currentPage >= pages) currentPage = pages - 1;
+        const start = currentPage * PER_PAGE;
+        const end = start + PER_PAGE;
+
+        document.querySelectorAll('#reserva-tbody tr').forEach(r => r.classList.add('hidden'));
+        rows.slice(start, end).forEach(r => r.classList.remove('hidden'));
+
+        const info = document.getElementById('reserva-pagination-info');
+        if (total === 0) {
+            info.textContent = 'No se encontraron reservas.';
+        } else {
+            info.textContent = 'Mostrando ' + (start + 1) + ' a ' + Math.min(end, total) + ' de ' + total + ' reservas';
+        }
+
+        document.getElementById('reserva-prev').disabled = currentPage <= 0;
+        document.getElementById('reserva-next').disabled = currentPage >= pages - 1;
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        renderPagination();
+    });
+
+    document.getElementById('reserva-search').addEventListener('input', function() {
+        currentSearch = this.value;
+        currentPage = 0;
+        renderPagination();
+    });
+
+    document.getElementById('reserva-filter-btn').addEventListener('click', function(e) {
+        e.stopPropagation();
+        const dd = document.getElementById('reserva-filter-dropdown');
+        dd.classList.toggle('hidden');
+    });
+    document.querySelectorAll('.filter-option').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            currentFilter = this.getAttribute('data-filter');
+            document.getElementById('reserva-filter-dropdown').classList.add('hidden');
+            currentPage = 0;
+            renderPagination();
+        });
+    });
+    document.addEventListener('click', function() {
+        document.getElementById('reserva-filter-dropdown').classList.add('hidden');
+    });
+
+    document.getElementById('reserva-prev').addEventListener('click', function() {
+        if (currentPage > 0) { currentPage--; renderPagination(); }
+    });
+    document.getElementById('reserva-next').addEventListener('click', function() {
+        currentPage++; renderPagination();
+    });
+    /* ── fin reservas ── */
+
     function toggleSidebar() {
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('sidebarOverlay');
