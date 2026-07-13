@@ -304,7 +304,19 @@ class UTPHandler(BaseHTTPRequestHandler):
                     <td class="py-4 px-4 text-text-primary">{fecha}</td>
                     <td class="py-4 px-4 text-text-primary">-</td>
                     <td class="py-4 px-4"><span class="inline-flex items-center px-2 py-0.5 rounded text-[12px] font-semibold {estado_class}">{estado_text}</span></td>
-                    <td class="py-4 px-4 text-right whitespace-nowrap"><button onclick='abrirModal({rid},"{ename}","{tipo}","{ubicacion}","{fecha}","{estado_text}","{estado_class}","{curso}")' class="text-sm border border-black/10 text-text-secondary hover:bg-black/5 hover:text-text-primary px-3 py-1.5 rounded-lg transition-colors">Ver Detalles</button></td>
+                    <td class="py-4 px-4 text-right whitespace-nowrap relative">
+                        <button onclick="toggleAcciones(this)" class="p-1 rounded hover:bg-black/5 text-text-secondary/60 hover:text-text-primary transition-colors">
+                            <span class="material-symbols-outlined text-[20px]">more_vert</span>
+                        </button>
+                        <div class="acciones-menu hidden absolute right-0 top-10 mt-0.5 w-44 bg-white rounded-lg shadow-xl border border-black/5 py-1.5 z-50">
+                            <button onclick="abrirModal({rid},'{ename}','{tipo}','{ubicacion}','{fecha}','{estado_text}','{estado_class}','{curso}'); cerrarTodosAcciones()" class="w-full text-left px-4 py-2.5 text-sm text-text-secondary hover:bg-black/5 flex items-center gap-3">
+                                <span class="material-symbols-outlined text-[18px] text-text-secondary/50">visibility</span> Ver Detalles
+                            </button>
+                            <button onclick="if(confirm('Cancelar esta reserva?'))window.location.href='/api/reserva/cancelar?id={rid}'" class="w-full text-left px-4 py-2.5 text-sm text-text-secondary hover:bg-red-50 hover:text-red-600 flex items-center gap-3">
+                                <span class="material-symbols-outlined text-[18px] text-text-secondary/50">cancel</span> Cancelar
+                            </button>
+                        </div>
+                    </td>
                 </tr>'''
             if not reservas_rendered:
                 reservas_rendered = '<tr data-estado=""><td class="py-4 px-4 text-text-secondary text-center" colspan="7">No tienes reservas.</td></tr>'
@@ -384,6 +396,21 @@ class UTPHandler(BaseHTTPRequestHandler):
                 db_sc = Database()
                 sc = SesionChat(db_sc)
                 sc.eliminar(id_sesion, usuario["id_usuario"])
+            self._redirect("/chat")
+
+        elif parsed_path == "/api/reserva/cancelar":
+            if not usuario:
+                self._redirect("/login")
+                return
+            params_get = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query)
+            id_reserva = int(params_get.get("id", [0])[0])
+            if id_reserva:
+                db_cancel = Database()
+                rc = ReservaController(db_cancel)
+                try:
+                    rc.reserva_service.cancelar(id_reserva, usuario["id_usuario"])
+                except Exception as e:
+                    logger.error(f"Error al cancelar reserva: {e}")
             self._redirect("/chat")
 
         elif parsed_path == "/admin/salones/editar":

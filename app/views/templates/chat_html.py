@@ -375,6 +375,25 @@ try{
             if (data.no_leidas > 0) { badge.classList.remove('hidden'); } else { badge.classList.add('hidden'); }
         });
     });
+    /* ── Menú de acciones (tres puntitos) ── */
+    function toggleAcciones(btn) {
+        cerrarTodosAcciones(btn);
+        var menu = btn.nextElementSibling;
+        if (menu) menu.classList.toggle('hidden');
+    }
+    function cerrarTodosAcciones(excludeBtn) {
+        document.querySelectorAll('.acciones-menu').forEach(function(m) {
+            var parent = m.parentElement;
+            if (!excludeBtn || !parent.contains(excludeBtn)) {
+                m.classList.add('hidden');
+            }
+        });
+    }
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.acciones-menu') && !e.target.closest('[onclick*="toggleAcciones"]')) {
+            cerrarTodosAcciones();
+        }
+    });
     /* ── Reservas: búsqueda, filtro y paginación ── */
     const PER_PAGE = 5;
     let currentPage = 0;
