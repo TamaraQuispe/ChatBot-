@@ -69,10 +69,10 @@ try{
     </div>
 
     <div class="px-4 mb-2">
-        <button onclick="document.cookie='utp_historial=; Path=/; Max-Age=0';document.cookie='utp_sesion=; Path=/; Max-Age=0';window.location.href='/chat'" class="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-utp-red-institutional/10 text-utp-red-institutional hover:bg-utp-red-institutional/20 transition-all duration-200 font-bold text-sm">
+        <a href="/api/sesion/nueva" class="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-utp-red-institutional/10 text-utp-red-institutional hover:bg-utp-red-institutional/20 transition-all duration-200 font-bold text-sm">
             <span class="material-symbols-outlined text-[20px]">add</span>
             <span>Nuevo Chat</span>
-        </button>
+        </a>
     </div>
     <nav class="flex-1 px-4 space-y-1 overflow-y-auto scrollbar-hide">
         <a id="nav-chat" class="flex items-center gap-4 px-4 py-3 rounded-2xl text-text-secondary hover:bg-black/5 hover:text-text-primary transition-all duration-200" href="#" onclick="showView('chat'); return false;">

@@ -21,5 +21,12 @@ class SesionChat:
     def obtener_mensajes(self, id_sesion: int) -> list:
         return self.msg_repo.get_by_sesion(id_sesion)
 
+    def eliminar(self, id_sesion: int, id_usuario: int) -> bool:
+        return self.repo.delete(id_sesion, id_usuario)
+
+    def verificar_propiedad(self, id_sesion: int, id_usuario: int) -> bool:
+        return self.repo.pertenece_a_usuario(id_sesion, id_usuario)
+
     def guardar_mensaje(self, id_sesion: int, tipo: str, contenido: str):
         self.msg_repo.create(id_sesion, tipo, contenido)
+        self.repo.actualizar_actividad(id_sesion)
