@@ -297,7 +297,7 @@ class UTPHandler(BaseHTTPRequestHandler):
                     estado_class = "bg-amber-100 text-amber-800"
                     estado_text = "Pendiente"
                 reservas_rendered += f'''
-                <tr class="hover:bg-black/[0.02] transition-colors">
+                <tr class="hover:bg-black/[0.02] transition-colors" data-estado="{estado_raw}">
                     <td class="py-4 px-4 text-text-primary font-medium">#RES-{rid}</td>
                     <td class="py-4 px-4 text-text-primary">{ename}</td>
                     <td class="py-4 px-4 text-text-secondary">{tipo}</td>
@@ -307,7 +307,7 @@ class UTPHandler(BaseHTTPRequestHandler):
                     <td class="py-4 px-4 text-right whitespace-nowrap"><button onclick='abrirModal({rid},"{ename}","{tipo}","{ubicacion}","{fecha}","{estado_text}","{estado_class}","{curso}")' class="text-sm border border-black/10 text-text-secondary hover:bg-black/5 hover:text-text-primary px-3 py-1.5 rounded-lg transition-colors">Ver Detalles</button></td>
                 </tr>'''
             if not reservas_rendered:
-                reservas_rendered = '<tr><td class="py-4 px-4 text-text-secondary text-center" colspan="7">No tienes reservas.</td></tr>'
+                reservas_rendered = '<tr data-estado=""><td class="py-4 px-4 text-text-secondary text-center" colspan="7">No tienes reservas.</td></tr>'
             sesiones_rendered = ""
             try:
                 sc = SesionChat(db_reservas)
