@@ -319,8 +319,9 @@ class UTPHandler(BaseHTTPRequestHandler):
                     <a href="/api/sesion/cargar?id={sid}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-text-secondary hover:bg-black/5 hover:text-text-primary transition-all duration-200 text-sm group relative">
                         <span class="material-symbols-outlined text-[18px] text-text-secondary/60">chat</span>
                         <span class="truncate flex-1">{titulo}</span>
-                        <a href="/api/sesion/eliminar?id={sid}" class="opacity-0 group-hover:opacity-100 p-1 hover:bg-black/10 rounded text-text-secondary/60 hover:text-error transition-all" onclick="event.stopPropagation()">
-                            <span class="material-symbols-outlined text-[16px]">close</span>
+                        <a href="/api/sesion/eliminar?id={sid}" class="ml-auto p-1.5 hover:bg-red-50 rounded-lg text-text-secondary/40 hover:text-red-600 transition-all flex items-center gap-1 shrink-0" onclick="event.stopPropagation(); return confirm('Eliminar esta conversación?')">
+                            <span class="material-symbols-outlined text-[16px]">delete</span>
+                            <span class="text-[11px] font-medium hidden group-hover:inline">Eliminar</span>
                         </a>
                     </a>'''
             except Exception as e:
