@@ -345,11 +345,11 @@ HTML_LOGIN = """
         function verificarRespuesta() {
             var respuesta = document.getElementById('reset-respuesta').value.trim();
             if (!respuesta) return;
-            var params = new URLSearchParams({username: resetUsername, respuesta: respuesta, new_password: '___verify___'});
-            fetch('/api/auth/restablecer', {method:'POST', body: params})
+            var params = new URLSearchParams({username: resetUsername, respuesta: respuesta});
+            fetch('/api/auth/verificar-respuesta', {method:'POST', body: params})
             .then(function(r) { return r.json(); })
             .then(function(data) {
-                if (data.error === 'Respuesta de seguridad incorrecta') {
+                if (data.error) {
                     document.getElementById('reset-step2-error').textContent = data.error;
                     document.getElementById('reset-step2-error').classList.remove('hidden');
                     return;

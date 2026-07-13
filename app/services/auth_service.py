@@ -90,7 +90,7 @@ class AuthService:
         pregunta = usuario.get("pregunta_seguridad") or "¿Cuál es tu código de docente?"
         return pregunta
 
-    def restablecer(self, username: str, respuesta: str, new_password: str) -> bool:
+    def _validar_respuesta(self, username: str, respuesta: str) -> dict:
         usuario = self.usuario_repo.get_by_username(username.strip())
         if not usuario:
             raise NotFoundError("Usuario no encontrado")
@@ -98,12 +98,20 @@ class AuthService:
         respuesta_guardada = (usuario.get("respuesta_seguridad") or "").strip().lower()
         respuesta_dada = respuesta.strip().lower()
 
-        # Si no hay respuesta guardada, usar el username como validación por defecto
         if not respuesta_guardada:
             respuesta_guardada = username.strip().lower()
 
         if respuesta_dada != respuesta_guardada:
             raise ValidationError("Respuesta de seguridad incorrecta")
+
+        return usuario
+
+    def verificar_respuesta(self, username: str, respuesta: str) -> bool:
+        self._validar_respuesta(username, respuesta)
+        return True
+
+    def restablecer(self, username: str, respuesta: str, new_password: str) -> bool:
+        usuario = self._validar_respuesta(username, respuesta)
 
         hashed = bcrypt.hashpw(
             new_password.encode("utf-8"), bcrypt.gensalt()

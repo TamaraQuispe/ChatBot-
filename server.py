@@ -850,23 +850,6 @@ class UTPHandler(BaseHTTPRequestHandler):
                 logger.error(f"Error en /admin/horarios: {e}")
                 self._redirect("/admin")
 
-        elif parsed_path == "/logout":
-            if not self._es_admin():
-                self._redirect("/login")
-                return
-            try:
-                import cgi
-                form = cgi.FieldStorage(fp=self.rfile, headers=self.headers, environ={'REQUEST_METHOD': 'POST'})
-                id_usuario = int(form.getvalue("id_usuario"))
-                if id_usuario:
-                    from app.database.connection import execute
-                    execute("DELETE FROM docentes WHERE id_usuario = %s", (id_usuario,))
-                    execute("DELETE FROM usuarios WHERE id_usuario = %s", (id_usuario,))
-                self._redirect("/admin/roles")
-            except Exception as e:
-                logger.error(f"Error eliminando usuario: {e}")
-                self._redirect("/admin/roles?error=1")
-
         elif parsed_path == "/admin/docentes":
             if not self._es_admin():
                 self._redirect("/login")
@@ -1240,6 +1223,17 @@ class UTPHandler(BaseHTTPRequestHandler):
                 try:
                     pregunta = auth.auth_service.obtener_pregunta(username)
                     self._responder_json({"pregunta": pregunta})
+                except Exception as e:
+                    self._responder_json({"error": str(e)}, status=400)
+                return
+
+            if parsed_path_post == "/api/auth/verificar-respuesta":
+                username = params.get("username", [""])[0]
+                respuesta = params.get("respuesta", [""])[0]
+                auth = AuthController(db)
+                try:
+                    auth.auth_service.verificar_respuesta(username, respuesta)
+                    self._responder_json({"ok": True})
                 except Exception as e:
                     self._responder_json({"error": str(e)}, status=400)
                 return
