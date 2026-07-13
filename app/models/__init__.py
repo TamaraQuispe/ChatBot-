@@ -11,6 +11,22 @@ def inicializar_bd():
         init_pool()
 
         migraciones = [
+            # Crear tablas de chat si no existen
+            "CREATE TABLE IF NOT EXISTS sesiones_chat ("
+            "id_sesion SERIAL PRIMARY KEY, "
+            "id_usuario INTEGER REFERENCES usuarios(id_usuario), "
+            "titulo VARCHAR(255) DEFAULT 'Nuevo Chat', "
+            "created_at TIMESTAMP DEFAULT NOW(), "
+            "updated_at TIMESTAMP DEFAULT NOW()"
+            ")",
+            "CREATE TABLE IF NOT EXISTS mensajes_chat ("
+            "id_mensaje SERIAL PRIMARY KEY, "
+            "id_sesion INTEGER REFERENCES sesiones_chat(id_sesion) ON DELETE CASCADE, "
+            "tipo VARCHAR(50), "
+            "contenido TEXT, "
+            "created_at TIMESTAMP DEFAULT NOW()"
+            ")",
+            # Migraciones existentes
             "ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS estado SMALLINT DEFAULT 1",
             "ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS fecha_creacion TIMESTAMP DEFAULT NOW()",
             "ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS fecha_actualizacion TIMESTAMP DEFAULT NOW()",
