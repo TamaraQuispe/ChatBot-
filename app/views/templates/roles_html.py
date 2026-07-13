@@ -47,7 +47,7 @@ _MODAL_PASSWORD = """<div id="modalPassword" class="fixed inset-0 z-50 hidden fl
 <form method="POST" action="/admin/usuarios/password" class="space-y-4">
 <input type="hidden" name="id_usuario" id="password-id">
 <div>
-<label class="block text-sm font-bold text-secondary mb-1">Nueva Contrasena</label>
+<label class="block text-sm font-bold text-secondary mb-1">Nueva Contraseña</label>
 <input type="text" name="new_password" class="w-full px-4 py-3 border border-surface-container-highest rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" placeholder="Dejar vacio para no cambiar">
 </div>
 <button type="submit" class="w-full py-3 bg-amber-600 text-white font-bold rounded-2xl hover:bg-amber-700 transition-all">Guardar Cambios</button>
@@ -60,7 +60,7 @@ _MODAL_RESET_CONFIRM = """<div id="modalResetConfirm" class="fixed inset-0 z-50 
 <div class="relative bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 transform transition-all text-center" onclick="event.stopPropagation()">
 <button onclick="cerrarModal('modalResetConfirm')" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center text-secondary hover:bg-surface-container-low rounded-full transition-colors"><span class="material-symbols-outlined">close</span></button>
 <div class="w-16 h-16 rounded-full bg-amber-50 flex items-center justify-center text-amber-600 mx-auto mb-4"><span class="material-symbols-outlined text-[32px]">password</span></div>
-<h3 class="font-bold text-xl text-on-surface mb-2">Restablecer Contrasena</h3>
+<h3 class="font-bold text-xl text-on-surface mb-2">Restablecer Contraseña</h3>
 <p class="text-sm text-secondary mb-6" id="reset-confirm-text">¿Desea generar una nueva contraseña temporal para este docente?<br><br>La contraseña anterior dejara de ser valida y el docente debera cambiar la contraseña al iniciar sesion.</p>
 <div class="flex gap-3">
 <button onclick="cerrarModal('modalResetConfirm')" class="flex-1 py-3 border border-surface-container-highest text-secondary font-bold rounded-2xl hover:bg-surface-container-low transition-all">Cancelar</button>
@@ -170,7 +170,7 @@ function ejecutarReset() {
         btn.disabled = false; btn.textContent = 'Restablecer';
         cerrarModal('modalResetConfirm');
         if (res.data.error || res.status >= 400) {
-            alert(res.data.error || 'Error al restablecer la contrasena');
+            alert(res.data.error || 'Error al restablecer la contraseña');
             return;
         }
         document.getElementById('result-user').textContent = res.data.nombre + ' (@' + res.data.username + ')';

@@ -211,7 +211,7 @@ HTML_LOGIN = """
 </div>
 </div>
 <div class="space-y-1.5">
-<label class="font-label-md text-label-md text-on-surface-variant block ml-1" for="password">Contrasena</label>
+<label class="font-label-md text-label-md text-on-surface-variant block ml-1" for="password">Contraseña</label>
 <div class="relative group">
 <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-secondary group-focus-within:text-primary transition-colors">
 <span class="material-symbols-outlined text-body-lg">lock_open</span>
@@ -227,7 +227,7 @@ HTML_LOGIN = """
 <input class="w-4 h-4 text-primary border-outline-variant rounded focus:ring-primary" id="remember" name="remember" type="checkbox"/>
 <label class="ml-2 font-body-sm text-body-sm text-secondary cursor-pointer select-none" for="remember">Recordarme</label>
 </div>
-<a class="font-label-md text-label-md text-primary hover:underline font-semibold cursor-pointer" onclick="document.getElementById('reset-modal').classList.remove('hidden')">¿Olvidaste tu contrasena?</a>
+<a class="font-label-md text-label-md text-primary hover:underline font-semibold cursor-pointer" onclick="document.getElementById('reset-modal').classList.remove('hidden')">¿Olvidaste tu contraseña?</a>
 </div>
 <button class="w-full py-4 bg-utp-red-vibrant text-white font-body-md font-bold rounded-xl shadow-lg shadow-utp-red-vibrant/25 hover:bg-utp-red-muted active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2 group" type="submit">
                         Iniciar Sesion
@@ -240,8 +240,8 @@ HTML_LOGIN = """
 <div class="relative bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 transform transition-all text-center" onclick="event.stopPropagation()">
 <button onclick="document.getElementById('reset-modal').classList.add('hidden')" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center text-secondary hover:bg-surface-container-low rounded-full transition-colors"><span class="material-symbols-outlined">close</span></button>
 <div class="w-16 h-16 rounded-2xl bg-amber-50 flex items-center justify-center text-amber-600 mx-auto mb-6"><span class="material-symbols-outlined text-[32px]">lock_reset</span></div>
-<h3 class="font-bold text-xl text-on-surface mb-3">Restablecer Contrasena</h3>
-<p class="text-secondary text-sm leading-relaxed mb-8">La recuperacion de contrasena solo puede ser realizada por el administrador del sistema. Comuniquese con el para solicitar un restablecimiento.</p>
+<h3 class="font-bold text-xl text-on-surface mb-3">Restablecer Contraseña</h3>
+<p class="text-secondary text-sm leading-relaxed mb-8">La recuperacion de contraseña solo puede ser realizada por el administrador del sistema. Comuniquese con el para solicitar un restablecimiento.</p>
 <button onclick="document.getElementById('reset-modal').classList.add('hidden')" class="w-full py-3.5 bg-primary text-white font-bold rounded-xl hover:bg-primary-hover transition-all active:scale-[0.98]">Entendido</button>
 </div>
 </div>
