@@ -1196,6 +1196,7 @@ class UTPHandler(BaseHTTPRequestHandler):
 
         elif parsed_path == "/logout":
             cookies = [
+                ("Set-Cookie", "utp_session=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; SameSite=Lax"),
                 ("Set-Cookie", "utp_token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT"),
                 ("Set-Cookie", "utp_sesion=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT"),
                 ("Set-Cookie", "utp_historial=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT")
