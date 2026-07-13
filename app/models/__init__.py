@@ -55,6 +55,8 @@ def inicializar_bd():
             "ALTER TABLE espacios_academicos ADD COLUMN IF NOT EXISTS estado_int SMALLINT DEFAULT 1",
             "ALTER TABLE reservas ADD COLUMN IF NOT EXISTS estado_int SMALLINT DEFAULT 1",
             "ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS estado_int SMALLINT DEFAULT 1",
+            "ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS password_hash VARCHAR(255) DEFAULT ''",
+            "ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS id_rol INTEGER DEFAULT 2",
         ]
         for sql in migraciones:
             try:
