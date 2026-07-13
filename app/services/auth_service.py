@@ -82,3 +82,32 @@ class AuthService:
         if usuario.get("rol"):
             return usuario["rol"]
         return "Docente"
+
+    def obtener_pregunta(self, username: str) -> Optional[str]:
+        usuario = self.usuario_repo.get_by_username(username.strip())
+        if not usuario:
+            raise NotFoundError("Usuario no encontrado")
+        pregunta = usuario.get("pregunta_seguridad") or "¿Cuál es tu código de docente?"
+        return pregunta
+
+    def restablecer(self, username: str, respuesta: str, new_password: str) -> bool:
+        usuario = self.usuario_repo.get_by_username(username.strip())
+        if not usuario:
+            raise NotFoundError("Usuario no encontrado")
+
+        respuesta_guardada = (usuario.get("respuesta_seguridad") or "").strip().lower()
+        respuesta_dada = respuesta.strip().lower()
+
+        # Si no hay respuesta guardada, usar el username como validación por defecto
+        if not respuesta_guardada:
+            respuesta_guardada = username.strip().lower()
+
+        if respuesta_dada != respuesta_guardada:
+            raise ValidationError("Respuesta de seguridad incorrecta")
+
+        hashed = bcrypt.hashpw(
+            new_password.encode("utf-8"), bcrypt.gensalt()
+        ).decode("utf-8")
+        self.usuario_repo.update_password(usuario["id_usuario"], hashed)
+        logger.info(f"Contraseña restablecida para: {username}")
+        return True

@@ -11,6 +11,7 @@ except ImportError:
 from config.database import Database
 from app.models import inicializar_bd
 from app.controllers.auth_controller import AuthController
+from app.repositories.usuario_repository import UsuarioRepository
 from app.controllers.reserva_controller import ReservaController
 from app.controllers.admin_controller import AdminController
 from app.models.docente import Docente
@@ -849,26 +850,7 @@ class UTPHandler(BaseHTTPRequestHandler):
                 logger.error(f"Error en /admin/horarios: {e}")
                 self._redirect("/admin")
 
-        elif parsed_path == "/admin/usuarios/password":
-            if not self._es_admin():
-                self._redirect("/login")
-                return
-            try:
-                import cgi
-                import bcrypt
-                form = cgi.FieldStorage(fp=self.rfile, headers=self.headers, environ={'REQUEST_METHOD': 'POST'})
-                id_usuario = int(form.getvalue("id_usuario"))
-                new_password = form.getvalue("new_password")
-                if id_usuario and new_password:
-                    hashed = bcrypt.hashpw(new_password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
-                    from app.repositories.usuario_repository import UsuarioRepository
-                    UsuarioRepository().update_password(id_usuario, hashed)
-                self._redirect("/admin/roles")
-            except Exception as e:
-                logger.error(f"Error cambiando contraseña: {e}")
-                self._redirect("/admin/roles?error=1")
-
-        elif parsed_path == "/admin/usuarios/eliminar":
+        elif parsed_path == "/logout":
             if not self._es_admin():
                 self._redirect("/login")
                 return
@@ -1252,6 +1234,28 @@ class UTPHandler(BaseHTTPRequestHandler):
                     self._redirect("/login?error=1")
                 return
 
+            if parsed_path_post == "/api/auth/pregunta-seguridad":
+                username = params.get("username", [""])[0]
+                auth = AuthController(db)
+                try:
+                    pregunta = auth.auth_service.obtener_pregunta(username)
+                    self._responder_json({"pregunta": pregunta})
+                except Exception as e:
+                    self._responder_json({"error": str(e)}, status=400)
+                return
+
+            if parsed_path_post == "/api/auth/restablecer":
+                username = params.get("username", [""])[0]
+                respuesta = params.get("respuesta", [""])[0]
+                new_password = params.get("new_password", [""])[0]
+                auth = AuthController(db)
+                try:
+                    auth.auth_service.restablecer(username, respuesta, new_password)
+                    self._responder_json({"ok": True})
+                except Exception as e:
+                    self._responder_json({"error": str(e)}, status=400)
+                return
+
             usuario = self._get_usuario()
             if not usuario:
                 self._redirect("/login")
@@ -1421,6 +1425,31 @@ class UTPHandler(BaseHTTPRequestHandler):
                     conn.close()
                 except Exception as e:
                     logger.error(f"Error eliminando usuario: {e}")
+                self._redirect("/admin/roles")
+                return
+
+            elif parsed_path_post == "/admin/usuarios/password":
+                if usuario["rol"] != "Admin":
+                    self._redirect("/admin")
+                    return
+                id_usuario_p = int(params.get("id_usuario", [0])[0])
+                new_password = params.get("new_password", [""])[0]
+                pregunta = params.get("pregunta_seguridad", [""])[0]
+                respuesta = params.get("respuesta_seguridad", [""])[0]
+                try:
+                    repo = UsuarioRepository()
+                    if new_password:
+                        import bcrypt
+                        hashed = bcrypt.hashpw(new_password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+                        repo.update_password(id_usuario_p, hashed)
+                    if pregunta and respuesta:
+                        from app.database.connection import execute
+                        execute(
+                            "UPDATE usuarios SET pregunta_seguridad = %s, respuesta_seguridad = %s WHERE id_usuario = %s",
+                            (pregunta, respuesta, id_usuario_p),
+                        )
+                except Exception as e:
+                    logger.error(f"Error configurando acceso: {e}")
                 self._redirect("/admin/roles")
                 return
 

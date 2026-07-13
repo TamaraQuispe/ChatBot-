@@ -40,7 +40,7 @@ _MODAL_PASSWORD = """<div id="modalPassword" class="fixed inset-0 z-50 hidden fl
 <div class="flex items-center gap-3 mb-6">
 <div class="w-12 h-12 rounded-2xl bg-amber-50 flex items-center justify-center text-amber-600"><span class="material-symbols-outlined text-[28px]">lock_reset</span></div>
 <div>
-<h3 class="font-bold text-xl text-on-surface">Cambiar Contrasena</h3>
+<h3 class="font-bold text-xl text-on-surface">Configurar Acceso</h3>
 <p class="text-sm text-secondary" id="password-nombre">-</p>
 </div>
 </div>
@@ -48,9 +48,24 @@ _MODAL_PASSWORD = """<div id="modalPassword" class="fixed inset-0 z-50 hidden fl
 <input type="hidden" name="id_usuario" id="password-id">
 <div>
 <label class="block text-sm font-bold text-secondary mb-1">Nueva Contrasena</label>
-<input type="text" name="new_password" required class="w-full px-4 py-3 border border-surface-container-highest rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" placeholder="Escribe la nueva contrasena">
+<input type="text" name="new_password" class="w-full px-4 py-3 border border-surface-container-highest rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" placeholder="Dejar vacio para no cambiar">
 </div>
-<button type="submit" class="w-full py-3 bg-amber-600 text-white font-bold rounded-2xl hover:bg-amber-700 transition-all">Actualizar Contrasena</button>
+<div>
+<label class="block text-sm font-bold text-secondary mb-1">Pregunta de Seguridad</label>
+<select name="pregunta_seguridad" class="w-full px-4 py-3 border border-surface-container-highest rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
+<option value="">Sin cambios</option>
+<option value="¿Cuál es tu código de docente?">¿Cual es tu codigo de docente?</option>
+<option value="¿Cuál es tu sede UTP?">¿Cual es tu sede UTP?</option>
+<option value="¿Cuál es tu curso favorito?">¿Cual es tu curso favorito?</option>
+<option value="¿Cuál es el nombre de tu mascota?">¿Cual es el nombre de tu mascota?</option>
+<option value="¿Cuál es tu fecha de nacimiento?">¿Cual es tu fecha de nacimiento?</option>
+</select>
+</div>
+<div>
+<label class="block text-sm font-bold text-secondary mb-1">Respuesta de Seguridad</label>
+<input type="text" name="respuesta_seguridad" class="w-full px-4 py-3 border border-surface-container-highest rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" placeholder="Respuesta (dejar vacio para no cambiar)">
+</div>
+<button type="submit" class="w-full py-3 bg-amber-600 text-white font-bold rounded-2xl hover:bg-amber-700 transition-all">Guardar Cambios</button>
 </form>
 </div>
 </div>"""
