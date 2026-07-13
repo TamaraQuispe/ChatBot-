@@ -328,13 +328,15 @@ class UTPHandler(BaseHTTPRequestHandler):
                     sid = s["id_sesion"]
                     titulo = escapar(s["titulo"])
                     sesiones_rendered += f'''
-                    <a href="/api/sesion/cargar?id={sid}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-text-secondary hover:bg-black/5 hover:text-text-primary transition-all duration-200 text-sm group relative">
-                        <span class="material-symbols-outlined text-[18px] text-text-secondary/60">chat</span>
-                        <span class="truncate flex-1">{titulo}</span>
-                        <button onclick="event.stopPropagation(); if(confirm('Eliminar esta conversación?'))window.location.href='/api/sesion/eliminar?id={sid}'" class="opacity-0 group-hover:opacity-100 ml-auto p-1.5 hover:bg-red-50 rounded-lg text-text-secondary/40 hover:text-red-600 transition-all shrink-0">
+                    <div class="flex items-center gap-1 px-4 py-2.5 rounded-xl text-sm group relative hover:bg-black/5 transition-all duration-200">
+                        <a href="/api/sesion/cargar?id={sid}" class="flex items-center gap-3 flex-1 min-w-0 text-text-secondary hover:text-text-primary transition-all duration-200">
+                            <span class="material-symbols-outlined text-[18px] text-text-secondary/60">chat</span>
+                            <span class="truncate">{titulo}</span>
+                        </a>
+                        <a href="/api/sesion/eliminar?id={sid}" onclick="return confirm('Eliminar esta conversación?')" class="opacity-0 group-hover:opacity-100 p-1.5 hover:bg-red-50 rounded-lg text-text-secondary/40 hover:text-red-600 transition-all shrink-0">
                             <span class="material-symbols-outlined text-[16px]">delete</span>
-                        </button>
-                    </a>'''
+                        </a>
+                    </div>'''
             except Exception as e:
                 logger.error(f"Error al listar sesiones: {e}")
             page_rendered = HTML_CHAT.replace("$NOMBRE_DOCENTE", usuario["nombre"]).replace("$HISTORIAL_CHAT", historial_rendered).replace("$TABLA_RESERVAS", reservas_rendered).replace("$LISTA_SESIONES", sesiones_rendered)
@@ -395,7 +397,14 @@ class UTPHandler(BaseHTTPRequestHandler):
             if id_sesion:
                 db_sc = Database()
                 sc = SesionChat(db_sc)
-                sc.eliminar(id_sesion, usuario["id_usuario"])
+                try:
+                    ok = sc.eliminar(id_sesion, usuario["id_usuario"])
+                    if ok:
+                        logger.info(f"Sesión {id_sesion} eliminada por usuario {usuario['id_usuario']}")
+                    else:
+                        logger.warning(f"No se eliminó sesión {id_sesion} (no existe o no pertenece al usuario)")
+                except Exception as e:
+                    logger.error(f"Error eliminando sesión {id_sesion}: {e}")
             self._redirect("/chat")
 
         elif parsed_path == "/api/reserva/cancelar":
