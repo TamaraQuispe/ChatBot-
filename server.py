@@ -1257,39 +1257,64 @@ class UTPHandler(BaseHTTPRequestHandler):
                     })
                     errors = schema.validate()
                     if errors:
-                        self._responder_json({"error": "; ".join(errors)}, status=400)
+                        raw = json.dumps({"error": "; ".join(errors)}, ensure_ascii=False)
+                        self.send_response(400)
+                        self.send_header("Content-Type", "application/json; charset=utf-8")
+                        self.end_headers()
+                        self.wfile.write(raw.encode("utf-8"))
                         return
                     result = ctrl.force_change_password(
                         usuario["id_usuario"], current_password, new_password
                     )
+                    raw = json.dumps(result, ensure_ascii=False)
                     self.send_response(200)
+                    self.send_header("Content-Type", "application/json; charset=utf-8")
                     self.send_header("Set-Cookie", make_set_cookie_header(usuario))
-                    self._responder_json(result)
+                    self.end_headers()
+                    self.wfile.write(raw.encode("utf-8"))
                 except Exception as e:
-                    self._responder_json({"error": str(e)}, status=400)
+                    raw = json.dumps({"error": str(e)}, ensure_ascii=False)
+                    self.send_response(400)
+                    self.send_header("Content-Type", "application/json; charset=utf-8")
+                    self.end_headers()
+                    self.wfile.write(raw.encode("utf-8"))
                 return
 
             if parsed_path_post.startswith("/api/admin/users/") and parsed_path_post.endswith("/reset-password"):
                 if usuario["rol"] != "Admin":
-                    self._responder_json({"error": "No autorizado"}, status=403)
+                    raw = json.dumps({"error": "No autorizado"}, ensure_ascii=False)
+                    self.send_response(403)
+                    self.send_header("Content-Type", "application/json; charset=utf-8")
+                    self.end_headers()
+                    self.wfile.write(raw.encode("utf-8"))
                     return
                 try:
                     docente_id = int(parsed_path_post.split("/")[4])
                 except (IndexError, ValueError):
-                    self._responder_json({"error": "ID inválido"}, status=400)
+                    raw = json.dumps({"error": "ID inválido"}, ensure_ascii=False)
+                    self.send_response(400)
+                    self.send_header("Content-Type", "application/json; charset=utf-8")
+                    self.end_headers()
+                    self.wfile.write(raw.encode("utf-8"))
                     return
                 from app.controllers.password_reset_controller import PasswordResetController
                 ctrl = PasswordResetController()
                 try:
                     result = ctrl.reset_password(usuario["id_usuario"], docente_id)
-                    self._responder_json(result)
+                    raw = json.dumps(result, ensure_ascii=False)
+                    self.send_response(200)
+                    self.send_header("Content-Type", "application/json; charset=utf-8")
+                    self.end_headers()
+                    self.wfile.write(raw.encode("utf-8"))
                 except Exception as e:
-                    if "No encontrado" in str(e):
-                        self._responder_json({"error": str(e)}, status=404)
-                    elif "No puedes" in str(e):
-                        self._responder_json({"error": str(e)}, status=400)
-                    else:
-                        self._responder_json({"error": str(e)}, status=500)
+                    status = 500
+                    if "No encontrado" in str(e): status = 404
+                    elif "No puedes" in str(e): status = 400
+                    raw = json.dumps({"error": str(e)}, ensure_ascii=False)
+                    self.send_response(status)
+                    self.send_header("Content-Type", "application/json; charset=utf-8")
+                    self.end_headers()
+                    self.wfile.write(raw.encode("utf-8"))
                 return
 
             if parsed_path_post == "/query":

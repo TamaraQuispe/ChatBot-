@@ -184,12 +184,29 @@ function ejecutarReset() {
 }
 function copiarPassword() {
     var text = document.getElementById('result-password-box').textContent;
-    navigator.clipboard.writeText(text).then(function() {
-        var btn = event.target;
-        if (btn.tagName !== 'BUTTON') btn = btn.closest('button');
+    var btn = event && event.target;
+    if (btn && btn.tagName !== 'BUTTON') btn = btn.closest('button');
+    function copiado() {
+        if (!btn) return;
         btn.innerHTML = '<span class="material-symbols-outlined text-[18px] align-middle">check</span> Copiado';
         setTimeout(function() { btn.innerHTML = '<span class="material-symbols-outlined text-[18px] align-middle">content_copy</span> Copiar Contraseña'; }, 2000);
-    }).catch(function() {});
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(copiado).catch(function() {
+            fallback(text, copiado);
+        });
+    } else {
+        fallback(text, copiado);
+    }
+}
+function fallback(text, cb) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed'; ta.style.left = '-9999px';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); cb(); } catch(e) {}
+    document.body.removeChild(ta);
 }
 function filtrarRoles() {
     var q = document.getElementById('searchRoles') ? document.getElementById('searchRoles').value.toLowerCase() : '';
