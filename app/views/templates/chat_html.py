@@ -374,6 +374,7 @@ try{
             var badge = document.getElementById('notif-badge');
             if (data.no_leidas > 0) { badge.classList.remove('hidden'); } else { badge.classList.add('hidden'); }
         });
+        if (window.location.hash === '#reservas') showView('reservas');
     });
     /* ── Menú de acciones (tres puntitos) ── */
     function toggleAcciones(btn) {
