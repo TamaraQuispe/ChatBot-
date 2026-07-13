@@ -12,8 +12,8 @@ class SesionChat:
         self.repo = SesionChatRepository()
         self.msg_repo = MensajeChatRepository()
 
-    def crear(self, id_usuario: int) -> Optional[dict]:
-        return self.repo.create(id_usuario)
+    def crear(self, id_usuario: int, titulo: str = "Nueva conversacion") -> Optional[dict]:
+        return self.repo.create(id_usuario, titulo)
 
     def listar_por_usuario(self, id_usuario: int) -> list:
         return self.repo.get_by_usuario(id_usuario)
