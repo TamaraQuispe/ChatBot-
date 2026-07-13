@@ -39,6 +39,25 @@ class UsuarioRepository(BaseRepository):
         )
         return affected > 0
 
+    def update_password_with_force(
+        self, id_usuario: int, new_password: str, force_change: bool = True
+    ) -> bool:
+        from app.database.connection import execute
+        affected = execute(
+            "UPDATE usuarios SET password_hash = %s, force_password_change = %s, "
+            "password_changed_at = NOW() WHERE id_usuario = %s",
+            (new_password, force_change, id_usuario),
+        )
+        return affected > 0
+
+    def set_force_password_change(self, id_usuario: int, force: bool) -> bool:
+        from app.database.connection import execute
+        affected = execute(
+            "UPDATE usuarios SET force_password_change = %s WHERE id_usuario = %s",
+            (force, id_usuario),
+        )
+        return affected > 0
+
     def get_all_docentes(self) -> list:
         return fetch_all(
             "SELECT id_usuario, username, nombre, correo FROM usuarios WHERE rol = 'DOCENTE' ORDER BY nombre"

@@ -234,51 +234,15 @@ HTML_LOGIN = """
                         <span class="material-symbols-outlined transition-transform group-hover:translate-x-1">arrow_forward</span>
 </button>
 </form>
-<!-- Password Reset Modal -->
+<!-- Password Reset Info Modal -->
 <div id="reset-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4" onclick="if(event.target===this)document.getElementById('reset-modal').classList.add('hidden')">
 <div class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
-<div class="relative bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 transform transition-all" onclick="event.stopPropagation()">
+<div class="relative bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 transform transition-all text-center" onclick="event.stopPropagation()">
 <button onclick="document.getElementById('reset-modal').classList.add('hidden')" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center text-secondary hover:bg-surface-container-low rounded-full transition-colors"><span class="material-symbols-outlined">close</span></button>
-<div id="reset-step1">
-<div class="flex items-center gap-3 mb-6">
-<div class="w-12 h-12 rounded-2xl bg-amber-50 flex items-center justify-center text-amber-600"><span class="material-symbols-outlined text-[28px]">lock_reset</span></div>
-<div><h3 class="font-bold text-xl text-on-surface">Restablecer Contrasena</h3><p class="text-sm text-secondary">Ingresa tu codigo de docente</p></div>
-</div>
-<div class="space-y-4">
-<div><label class="block text-sm font-bold text-secondary mb-1">Codigo de Docente</label>
-<input id="reset-username" type="text" class="w-full px-4 py-3 border border-outline-variant rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" placeholder="C0000000"></div>
-<button onclick="buscarPregunta()" class="w-full py-3 bg-utp-red-vibrant text-white font-bold rounded-xl hover:bg-utp-red-muted transition-all">Buscar</button>
-<p id="reset-step1-error" class="text-red-600 text-sm hidden mt-2"></p>
-</div>
-</div>
-<div id="reset-step2" class="hidden">
-<div class="flex items-center gap-3 mb-6">
-<div class="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center text-blue-600"><span class="material-symbols-outlined text-[28px]">quiz</span></div>
-<div><h3 class="font-bold text-xl text-on-surface">Pregunta de Seguridad</h3><p class="text-sm text-secondary">Responde para verificar tu identidad</p></div>
-</div>
-<div class="space-y-4">
-<p id="reset-pregunta" class="text-sm font-semibold text-on-surface p-4 bg-surface-container-low rounded-xl"></p>
-<div><label class="block text-sm font-bold text-secondary mb-1">Tu Respuesta</label>
-<input id="reset-respuesta" type="text" class="w-full px-4 py-3 border border-outline-variant rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" placeholder="Escribe tu respuesta"></div>
-<button onclick="verificarRespuesta()" class="w-full py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition-all">Verificar</button>
-<p id="reset-step2-error" class="text-red-600 text-sm hidden mt-2"></p>
-</div>
-</div>
-<div id="reset-step3" class="hidden">
-<div class="flex items-center gap-3 mb-6">
-<div class="w-12 h-12 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-600"><span class="material-symbols-outlined text-[28px]">password</span></div>
-<div><h3 class="font-bold text-xl text-on-surface">Nueva Contrasena</h3><p class="text-sm text-secondary">Escribe tu nueva contrasena</p></div>
-</div>
-<div class="space-y-4">
-<div><label class="block text-sm font-bold text-secondary mb-1">Nueva Contrasena</label>
-<input id="reset-new-password" type="password" class="w-full px-4 py-3 border border-outline-variant rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" placeholder="********"></div>
-<div><label class="block text-sm font-bold text-secondary mb-1">Confirmar Contrasena</label>
-<input id="reset-confirm-password" type="password" class="w-full px-4 py-3 border border-outline-variant rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" placeholder="********"></div>
-<button onclick="cambiarContrasena()" class="w-full py-3 bg-emerald-600 text-white font-bold rounded-xl hover:bg-emerald-700 transition-all">Cambiar Contrasena</button>
-<p id="reset-step3-error" class="text-red-600 text-sm hidden mt-2"></p>
-<p id="reset-step3-success" class="text-emerald-600 text-sm hidden mt-2">Contrasena cambiada exitosamente. <a href="/login" class="font-bold underline">Iniciar sesion</a></p>
-</div>
-</div>
+<div class="w-16 h-16 rounded-2xl bg-amber-50 flex items-center justify-center text-amber-600 mx-auto mb-6"><span class="material-symbols-outlined text-[32px]">lock_reset</span></div>
+<h3 class="font-bold text-xl text-on-surface mb-3">Restablecer Contrasena</h3>
+<p class="text-secondary text-sm leading-relaxed mb-8">La recuperacion de contrasena solo puede ser realizada por el administrador del sistema. Comuniquese con el para solicitar un restablecimiento.</p>
+<button onclick="document.getElementById('reset-modal').classList.add('hidden')" class="w-full py-3.5 bg-primary text-white font-bold rounded-xl hover:bg-primary-hover transition-all active:scale-[0.98]">Entendido</button>
 </div>
 </div>
 <!-- Footer Info -->
@@ -320,71 +284,6 @@ HTML_LOGIN = """
         const params = new URLSearchParams(window.location.search);
         if (params.get('error') === '1') {
             document.getElementById('error-msg').classList.remove('hidden');
-        }
-    </script>
-    <script>
-        var resetUsername = '';
-        function buscarPregunta() {
-            var username = document.getElementById('reset-username').value.trim();
-            if (!username) return;
-            fetch('/api/auth/pregunta-seguridad', {method:'POST', body: new URLSearchParams({username: username})})
-            .then(function(r) { return r.json(); })
-            .then(function(data) {
-                if (data.error) {
-                    document.getElementById('reset-step1-error').textContent = data.error;
-                    document.getElementById('reset-step1-error').classList.remove('hidden');
-                    return;
-                }
-                resetUsername = username;
-                document.getElementById('reset-pregunta').textContent = data.pregunta;
-                document.getElementById('reset-step1').classList.add('hidden');
-                document.getElementById('reset-step2').classList.remove('hidden');
-                document.getElementById('reset-step1-error').classList.add('hidden');
-            });
-        }
-        function verificarRespuesta() {
-            var respuesta = document.getElementById('reset-respuesta').value.trim();
-            if (!respuesta) return;
-            var params = new URLSearchParams({username: resetUsername, respuesta: respuesta});
-            fetch('/api/auth/verificar-respuesta', {method:'POST', body: params})
-            .then(function(r) { return r.json(); })
-            .then(function(data) {
-                if (data.error) {
-                    document.getElementById('reset-step2-error').textContent = data.error;
-                    document.getElementById('reset-step2-error').classList.remove('hidden');
-                    return;
-                }
-                document.getElementById('reset-step2').classList.add('hidden');
-                document.getElementById('reset-step3').classList.remove('hidden');
-                document.getElementById('reset-step2-error').classList.add('hidden');
-            });
-        }
-        function cambiarContrasena() {
-            var np = document.getElementById('reset-new-password').value;
-            var cp = document.getElementById('reset-confirm-password').value;
-            if (!np || np.length < 6) {
-                document.getElementById('reset-step3-error').textContent = 'La contrasena debe tener al menos 6 caracteres';
-                document.getElementById('reset-step3-error').classList.remove('hidden');
-                return;
-            }
-            if (np !== cp) {
-                document.getElementById('reset-step3-error').textContent = 'Las contrasenas no coinciden';
-                document.getElementById('reset-step3-error').classList.remove('hidden');
-                return;
-            }
-            var params = new URLSearchParams({username: resetUsername, respuesta: document.getElementById('reset-respuesta').value.trim(), new_password: np});
-            fetch('/api/auth/restablecer', {method:'POST', body: params})
-            .then(function(r) { return r.json(); })
-            .then(function(data) {
-                if (data.error) {
-                    document.getElementById('reset-step3-error').textContent = data.error;
-                    document.getElementById('reset-step3-error').classList.remove('hidden');
-                    return;
-                }
-                document.getElementById('reset-step3-error').classList.add('hidden');
-                document.getElementById('reset-step3-success').classList.remove('hidden');
-                document.querySelector('#reset-step3 button').classList.add('hidden');
-            });
         }
     </script>
 </body></html>

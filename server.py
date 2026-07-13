@@ -1143,6 +1143,9 @@ class UTPHandler(BaseHTTPRequestHandler):
                         <button onclick="editarUsuario({id_usuario},'{nombre_escapado}')" class="w-full flex items-center gap-3 px-4 py-3 text-sm text-on-surface hover:bg-surface-container-low transition-colors">
                             <span class="material-symbols-outlined text-[18px] text-secondary">lock_reset</span> Cambiar Contrasena
                         </button>
+                        <button onclick="resetPassword({id_usuario},'{nombre_escapado}')" class="w-full flex items-center gap-3 px-4 py-3 text-sm text-on-surface hover:bg-surface-container-low transition-colors">
+                            <span class="material-symbols-outlined text-[18px] text-secondary">password</span> Restablecer Contrasena
+                        </button>
                         <div class="h-px bg-surface-container-higher mx-3"></div>
                         <button onclick="eliminarUsuario({id_usuario},'{nombre_escapado}')" class="w-full flex items-center gap-3 px-4 py-3 text-sm text-error hover:bg-error-container/10 transition-colors">
                             <span class="material-symbols-outlined text-[18px]">delete</span> Eliminar
@@ -1167,6 +1170,18 @@ class UTPHandler(BaseHTTPRequestHandler):
                 ("Set-Cookie", "utp_historial=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT")
             ]
             self._redirect("/login", cookies)
+
+        elif parsed_path == "/force-change-password":
+            if not usuario:
+                self._redirect("/login")
+                return
+            repo = UsuarioRepository()
+            user_data = repo.get_by_id(usuario["id_usuario"])
+            if not user_data or not user_data.get("force_password_change"):
+                self._redirect("/chat")
+                return
+            from app.views.templates.force_change_html import HTML_FORCE_CHANGE
+            self._responder_html(HTML_FORCE_CHANGE)
 
         else:
             self.send_response(404)
@@ -1208,6 +1223,12 @@ class UTPHandler(BaseHTTPRequestHandler):
                     if usuario["rol"] == "Admin":
                         self._redirect("/admin", [("Set-Cookie", cookie)])
                     else:
+                        from app.repositories.usuario_repository import UsuarioRepository
+                        repo = UsuarioRepository()
+                        user_data = repo.get_by_username(usuario["username"])
+                        if user_data and user_data.get("force_password_change"):
+                            self._redirect("/force-change-password", [("Set-Cookie", cookie)])
+                            return
                         historial = [
                             {"tipo": "bot", "texto": f"Hola, {escapar(usuario['nombre'])}. Soy el Asistente Academico UTP. ¿Que aula o reprogramacion deseas gestionar hoy?"}
                         ]
@@ -1217,42 +1238,58 @@ class UTPHandler(BaseHTTPRequestHandler):
                     self._redirect("/login?error=1")
                 return
 
-            if parsed_path_post == "/api/auth/pregunta-seguridad":
-                username = params.get("username", [""])[0]
-                auth = AuthController(db)
-                try:
-                    pregunta = auth.auth_service.obtener_pregunta(username)
-                    self._responder_json({"pregunta": pregunta})
-                except Exception as e:
-                    self._responder_json({"error": str(e)}, status=400)
-                return
-
-            if parsed_path_post == "/api/auth/verificar-respuesta":
-                username = params.get("username", [""])[0]
-                respuesta = params.get("respuesta", [""])[0]
-                auth = AuthController(db)
-                try:
-                    auth.auth_service.verificar_respuesta(username, respuesta)
-                    self._responder_json({"ok": True})
-                except Exception as e:
-                    self._responder_json({"error": str(e)}, status=400)
-                return
-
-            if parsed_path_post == "/api/auth/restablecer":
-                username = params.get("username", [""])[0]
-                respuesta = params.get("respuesta", [""])[0]
-                new_password = params.get("new_password", [""])[0]
-                auth = AuthController(db)
-                try:
-                    auth.auth_service.restablecer(username, respuesta, new_password)
-                    self._responder_json({"ok": True})
-                except Exception as e:
-                    self._responder_json({"error": str(e)}, status=400)
-                return
-
             usuario = self._get_usuario()
             if not usuario:
                 self._redirect("/login")
+                return
+
+            if parsed_path_post == "/api/auth/force-change-password":
+                current_password = params.get("current_password", [""])[0]
+                new_password = params.get("new_password", [""])[0]
+                confirm_password = params.get("confirm_password", [""])[0]
+                from app.controllers.password_reset_controller import PasswordResetController
+                ctrl = PasswordResetController()
+                try:
+                    from app.schemas.password_schema import ForceChangePasswordSchema
+                    schema = ForceChangePasswordSchema.from_dict({
+                        "new_password": new_password,
+                        "confirm_password": confirm_password,
+                    })
+                    errors = schema.validate()
+                    if errors:
+                        self._responder_json({"error": "; ".join(errors)}, status=400)
+                        return
+                    result = ctrl.force_change_password(
+                        usuario["id_usuario"], current_password, new_password
+                    )
+                    self.send_response(200)
+                    self.send_header("Set-Cookie", make_set_cookie_header(usuario))
+                    self._responder_json(result)
+                except Exception as e:
+                    self._responder_json({"error": str(e)}, status=400)
+                return
+
+            if parsed_path_post.startswith("/api/admin/users/") and parsed_path_post.endswith("/reset-password"):
+                if usuario["rol"] != "Admin":
+                    self._responder_json({"error": "No autorizado"}, status=403)
+                    return
+                try:
+                    docente_id = int(parsed_path_post.split("/")[4])
+                except (IndexError, ValueError):
+                    self._responder_json({"error": "ID inválido"}, status=400)
+                    return
+                from app.controllers.password_reset_controller import PasswordResetController
+                ctrl = PasswordResetController()
+                try:
+                    result = ctrl.reset_password(usuario["id_usuario"], docente_id)
+                    self._responder_json(result)
+                except Exception as e:
+                    if "No encontrado" in str(e):
+                        self._responder_json({"error": str(e)}, status=404)
+                    elif "No puedes" in str(e):
+                        self._responder_json({"error": str(e)}, status=400)
+                    else:
+                        self._responder_json({"error": str(e)}, status=500)
                 return
 
             if parsed_path_post == "/query":
@@ -1428,20 +1465,12 @@ class UTPHandler(BaseHTTPRequestHandler):
                     return
                 id_usuario_p = int(params.get("id_usuario", [0])[0])
                 new_password = params.get("new_password", [""])[0]
-                pregunta = params.get("pregunta_seguridad", [""])[0]
-                respuesta = params.get("respuesta_seguridad", [""])[0]
                 try:
                     repo = UsuarioRepository()
                     if new_password:
                         import bcrypt
                         hashed = bcrypt.hashpw(new_password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
                         repo.update_password(id_usuario_p, hashed)
-                    if pregunta and respuesta:
-                        from app.database.connection import execute
-                        execute(
-                            "UPDATE usuarios SET pregunta_seguridad = %s, respuesta_seguridad = %s WHERE id_usuario = %s",
-                            (pregunta, respuesta, id_usuario_p),
-                        )
                 except Exception as e:
                     logger.error(f"Error configurando acceso: {e}")
                 self._redirect("/admin/roles")

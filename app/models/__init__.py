@@ -59,6 +59,8 @@ def inicializar_bd():
             "ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS id_rol INTEGER DEFAULT 2",
             "ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS pregunta_seguridad VARCHAR(255) DEFAULT '¿Cuál es tu código de docente?'",
             "ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS respuesta_seguridad VARCHAR(255) DEFAULT ''",
+            "ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS force_password_change BOOLEAN DEFAULT FALSE",
+            "ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS password_changed_at TIMESTAMP",
         ]
         for sql in migraciones:
             try:

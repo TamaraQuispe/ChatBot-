@@ -8,6 +8,7 @@ from app.schemas.admin_schema import (
     CambiarEstadoSchema,
     ActualizarEspacioSchema,
 )
+from app.schemas.password_schema import ForceChangePasswordSchema
 
 __all__ = [
     "LoginSchema",
@@ -18,4 +19,5 @@ __all__ = [
     "CrearEspacioSchema",
     "CambiarEstadoSchema",
     "ActualizarEspacioSchema",
+    "ForceChangePasswordSchema",
 ]
