@@ -43,6 +43,10 @@ def inicializar_bd():
             "ALTER TABLE procesamiento_nlp ADD COLUMN IF NOT EXISTS modelo_usado VARCHAR(100)",
             "ALTER TABLE procesamiento_nlp ADD COLUMN IF NOT EXISTS tiempo_procesamiento_ms INTEGER",
             "ALTER TABLE procesamiento_nlp ADD COLUMN IF NOT EXISTS fecha_creacion TIMESTAMP DEFAULT NOW()",
+            # Migraciones para tablas de chat en producción
+            "ALTER TABLE sesiones_chat ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP DEFAULT NOW()",
+            "ALTER TABLE mensajes_chat RENAME COLUMN contenido_json TO contenido",
+            "ALTER TABLE mensajes_chat ADD COLUMN IF NOT EXISTS contenido TEXT",
             "ALTER TABLE espacios_academicos ADD COLUMN IF NOT EXISTS estado_int SMALLINT DEFAULT 1",
             "ALTER TABLE reservas ADD COLUMN IF NOT EXISTS estado_int SMALLINT DEFAULT 1",
             "ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS estado_int SMALLINT DEFAULT 1",
