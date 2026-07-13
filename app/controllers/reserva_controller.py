@@ -24,7 +24,7 @@ class ReservaController:
                 return False
             if not isinstance(id_espacio, int) or id_espacio <= 0:
                 return False
-            resultado = self.reserva_service.crear(id_usuario, id_espacio, fecha)
+            resultado = self.reserva_service.crear(id_usuario, id_espacio, fecha, "Reserva Rápida", "08:00-10:00")
             return resultado is not None
         except Exception as e:
             logger.error(f"Error al procesar reserva: {e}")

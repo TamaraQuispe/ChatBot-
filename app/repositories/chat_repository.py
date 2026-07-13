@@ -23,6 +23,29 @@ class SesionChatRepository(BaseRepository):
             (id_usuario, titulo),
         )
 
+    def delete(self, id_sesion: int, id_usuario: int) -> bool:
+        from app.database.connection import execute
+        affected = execute(
+            "DELETE FROM sesiones_chat WHERE id_sesion = %s AND id_usuario = %s",
+            (id_sesion, id_usuario),
+        )
+        return affected > 0
+
+    def pertenece_a_usuario(self, id_sesion: int, id_usuario: int) -> bool:
+        row = fetch_one(
+            "SELECT 1 FROM sesiones_chat WHERE id_sesion = %s AND id_usuario = %s",
+            (id_sesion, id_usuario),
+        )
+        return row is not None
+
+    def actualizar_actividad(self, id_sesion: int) -> bool:
+        from app.database.connection import execute
+        affected = execute(
+            "UPDATE sesiones_chat SET updated_at = NOW() WHERE id_sesion = %s",
+            (id_sesion,),
+        )
+        return affected > 0
+
     def update_titulo(self, id_sesion: int, titulo: str) -> bool:
         from app.database.connection import execute
         affected = execute(

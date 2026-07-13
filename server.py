@@ -122,7 +122,32 @@ class UTPHandler(BaseHTTPRequestHandler):
                 self._redirect("/login")
                 return
             historial_rendered = ""
-            historial = self._get_historial()
+            sesion_id = self._get_sesion_id()
+            if sesion_id:
+                try:
+                    sc_carga = SesionChat(Database())
+                    mensajes_bd = sc_carga.obtener_mensajes(sesion_id)
+                    if mensajes_bd:
+                        historial = []
+                        for m in mensajes_bd:
+                            try:
+                                contenido = json.loads(m["contenido"])
+                            except Exception:
+                                contenido = {"texto": m["contenido"]}
+                            if m["tipo"] == "card":
+                                historial.append({"tipo": "card", "data": contenido})
+                            elif m["tipo"] == "user":
+                                historial.append({"tipo": "user", "texto": contenido.get("texto", "")})
+                            elif m["tipo"] == "bot":
+                                historial.append({"tipo": "bot", "texto": contenido.get("texto", "")})
+                            elif m["tipo"] == "success":
+                                historial.append({"tipo": "success", "texto": contenido.get("texto", "")})
+                    else:
+                        historial = self._get_historial()
+                except Exception:
+                    historial = self._get_historial()
+            else:
+                historial = self._get_historial()
             for msg in historial:
                 texto = escapar(msg.get("texto", ""))
                 if msg["tipo"] == "user":
@@ -130,7 +155,7 @@ class UTPHandler(BaseHTTPRequestHandler):
                     <div class="flex flex-col items-end message-in">
                         <div class="max-w-[80%] text-right">
                             <p class="text-text-primary font-body-md text-[17px] leading-relaxed">{texto}</p>
-                            <span class="inline-block mt-2 text-[10px] text-text-secondary/50 font-bold uppercase tracking-widest">Tu • 14:20 PM</span>
+                            <span class="inline-block mt-2 text-[10px] text-text-secondary/50 font-bold uppercase tracking-widest">Tu</span>
                         </div>
                     </div>
                     '''
@@ -144,7 +169,7 @@ class UTPHandler(BaseHTTPRequestHandler):
                             <div class="glass-dark p-7 rounded-3xl rounded-tl-none shadow-sm">
                                 <p class="text-text-primary font-body-md text-[17px] leading-relaxed">{texto}</p>
                             </div>
-                            <span class="inline-block text-[10px] text-text-secondary/50 font-bold uppercase tracking-widest">Asistente • 14:21 PM</span>
+                            <span class="inline-block text-[10px] text-text-secondary/50 font-bold uppercase tracking-widest">Asistente</span>
                         </div>
                     </div>
                     '''
@@ -228,7 +253,7 @@ class UTPHandler(BaseHTTPRequestHandler):
                                     </form>
                                 </div>
                             </div>
-                            <span class="inline-block text-[10px] text-text-secondary/50 font-bold uppercase tracking-widest">Asistente • 14:21 PM</span>
+                            <span class="inline-block text-[10px] text-text-secondary/50 font-bold uppercase tracking-widest">Asistente</span>
                         </div>
                     </div>
                     '''
@@ -298,8 +323,8 @@ class UTPHandler(BaseHTTPRequestHandler):
                             <span class="material-symbols-outlined text-[16px]">close</span>
                         </a>
                     </a>'''
-            except Exception:
-                pass
+            except Exception as e:
+                logger.error(f"Error al listar sesiones: {e}")
             page_rendered = HTML_CHAT.replace("$NOMBRE_DOCENTE", usuario["nombre"]).replace("$HISTORIAL_CHAT", historial_rendered).replace("$TABLA_RESERVAS", reservas_rendered).replace("$LISTA_SESIONES", sesiones_rendered)
             self._responder_html(page_rendered)
 
@@ -329,6 +354,9 @@ class UTPHandler(BaseHTTPRequestHandler):
                 return
             db_sc = Database()
             sc = SesionChat(db_sc)
+            if not sc.verificar_propiedad(id_sesion, usuario["id_usuario"]):
+                self._redirect("/chat")
+                return
             mensajes = sc.obtener_mensajes(id_sesion)
             historial = []
             for m in mensajes:
@@ -355,7 +383,7 @@ class UTPHandler(BaseHTTPRequestHandler):
             if id_sesion:
                 db_sc = Database()
                 sc = SesionChat(db_sc)
-                sc.eliminar(id_sesion)
+                sc.eliminar(id_sesion, usuario["id_usuario"])
             self._redirect("/chat")
 
         elif parsed_path == "/admin/salones/editar":
@@ -1152,13 +1180,17 @@ class UTPHandler(BaseHTTPRequestHandler):
                 historial = self._get_historial()
                 historial.append({"tipo": "user", "texto": prompt})
 
-                if sesion_id:
-                    sc = SesionChat(db)
-                    if len(historial) <= 2:
-                        titulo = prompt[:60]
-                        sc.eliminar(sesion_id)
-                        sesion_id = sc.crear(usuario["id_usuario"], titulo)
-                    sc.guardar_mensaje(sesion_id, "user", json.dumps({"texto": prompt}))
+                sc = SesionChat(db)
+                if not sesion_id:
+                    titulo = prompt[:60]
+                    sesion = sc.crear(usuario["id_usuario"], titulo)
+                    if not sesion:
+                        self._redirect("/chat")
+                        return
+                    sesion_id = sesion["id_sesion"]
+                elif len(historial) <= 2:
+                    sc.repo.update_titulo(sesion_id, prompt[:60])
+                sc.guardar_mensaje(sesion_id, "user", json.dumps({"texto": prompt}))
 
                 reserva_ctrl = ReservaController(db)
                 aulas = reserva_ctrl.buscar_disponibilidad(prompt)
