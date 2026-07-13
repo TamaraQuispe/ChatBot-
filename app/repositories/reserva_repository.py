@@ -21,7 +21,7 @@ class ReservaRepository(BaseRepository):
 
     def get_by_usuario(self, id_usuario: int) -> list:
         return fetch_all(
-            "SELECT r.*, e.nombre AS espacio_nombre, t.nombre AS tipo_nombre "
+            "SELECT r.*, e.nombre AS espacio_nombre, e.ubicacion, t.nombre AS tipo_nombre "
             "FROM reservas r "
             "JOIN espacios_academicos e ON r.id_espacio = e.id_espacio "
             "JOIN tipos_espacio t ON e.id_tipo = t.id_tipo "
