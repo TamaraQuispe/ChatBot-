@@ -286,7 +286,7 @@ class UTPHandler(BaseHTTPRequestHandler):
             sesiones_rendered = ""
             try:
                 sc = SesionChat(db_reservas)
-                sesiones = sc.listar(usuario["id_usuario"])
+                sesiones = sc.listar_por_usuario(usuario["id_usuario"])
                 for s in sesiones:
                     sid = s["id_sesion"]
                     titulo = escapar(s["titulo"])
@@ -313,7 +313,8 @@ class UTPHandler(BaseHTTPRequestHandler):
                 {"tipo": "bot", "texto": f"Hola, {escapar(usuario['nombre'])}. Soy el Asistente Academico UTP. ¿Que aula o reprogramacion deseas gestionar hoy?"}
             ]
             titulo = "Nueva conversacion"
-            id_sesion = sc.crear(usuario["id_usuario"], titulo)
+            sesion = sc.crear(usuario["id_usuario"], titulo)
+            id_sesion = sesion["id_sesion"]
             sc.guardar_mensaje(id_sesion, "bot", json.dumps({"texto": historial[0]["texto"]}))
             self._redirect("/chat#fin", [("Set-Cookie", self._set_historial(historial)), ("Set-Cookie", f"utp_sesion={id_sesion}; Path=/; Max-Age=86400")])
 
@@ -332,9 +333,9 @@ class UTPHandler(BaseHTTPRequestHandler):
             historial = []
             for m in mensajes:
                 try:
-                    contenido = json.loads(m["contenido_json"])
+                    contenido = json.loads(m["contenido"])
                 except Exception:
-                    contenido = {"texto": m["contenido_json"]}
+                    contenido = {"texto": m["contenido"]}
                 if m["tipo"] == "card":
                     historial.append({"tipo": "card", "data": contenido})
                 elif m["tipo"] == "user":
