@@ -156,10 +156,10 @@ try{
                 <div class="bg-white rounded-2xl border border-black/5 overflow-hidden shadow-[0_2px_4px_rgba(0,0,0,0.04)]">
                     <div class="p-4 border-b border-black/5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white">
                         <div class="relative w-full sm:w-72">
-                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary/60 text-[20px]">search</span>
-                            <input class="w-full pl-10 pr-4 py-2.5 border border-black/10 rounded-xl text-sm text-text-primary focus:border-utp-red-institutional focus:ring-2 focus:ring-utp-red-institutional/10 outline-none transition-all bg-white" placeholder="Buscar por aula o ID..." type="text">
+                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary/40 text-[18px]">search</span>
+                            <input class="w-full pl-10 pr-4 py-2 border border-black/10 rounded text-sm text-text-primary focus:border-utp-red-institutional focus:ring-1 focus:ring-utp-red-institutional/10 outline-none transition-all bg-white" placeholder="Buscar por aula o ID..." type="text">
                         </div>
-                        <button class="flex items-center gap-2 text-sm font-medium text-text-secondary hover:text-text-primary transition-colors border border-black/10 px-4 py-2.5 rounded-xl hover:bg-black/5">
+                        <button class="flex items-center gap-2 text-sm font-medium text-text-secondary hover:bg-black/5 transition-colors border border-black/10 px-3 py-2 rounded hover:text-text-primary">
                             <span class="material-symbols-outlined text-[18px]">filter_list</span> Filtrar
                         </button>
                     </div>
