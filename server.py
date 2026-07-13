@@ -1102,9 +1102,13 @@ class UTPHandler(BaseHTTPRequestHandler):
                     id_usuario = u.get("id_usuario", 0)
                     rol = u.get("rol", "Estudiante")
                     avatar = (u.get("nombre", "?")[:2]).upper() if u.get("nombre") else "??"
-                    estado_u = u.get("estado", 1)
-                    estado_text = "Activo" if estado_u == 1 else "Inactivo"
-                    estado_dot = "bg-emerald-500" if estado_u == 1 else "bg-red-500"
+                    estado_u = u.get("estado_int") or u.get("estado", 1)
+                    if estado_u in (1, "1", "ACTIVO"): 
+                        estado_text = "Activo"
+                        estado_dot = "bg-emerald-500" 
+                    else:
+                        estado_text = "Inactivo"
+                        estado_dot = "bg-red-500"
                     nombre_escapado = escapar(u["nombre"])
                     username_escapado = escapar(u.get("username", ""))
                     filas_usuarios += f'''
@@ -1476,7 +1480,7 @@ class UTPHandler(BaseHTTPRequestHandler):
                 try:
                     conn = db.obtener_conexion()
                     cur = conn.cursor()
-                    cur.execute("DELETE FROM usuarios WHERE id_usuario = %s", (id_usuario_u,))
+                    cur.execute("UPDATE usuarios SET estado = 'INACTIVO', estado_int = 0 WHERE id_usuario = %s", (id_usuario_u,))
                     conn.commit()
                     conn.close()
                 except Exception as e:
