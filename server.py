@@ -146,7 +146,10 @@ class UTPHandler(BaseHTTPRequestHandler):
                             except Exception:
                                 contenido = {"texto": m["contenido"]}
                             if m["tipo"] == "card":
-                                historial.append({"tipo": "card", "data": contenido})
+                                if isinstance(contenido, list):
+                                    historial.append({"tipo": "aulas", "data": contenido})
+                                else:
+                                    historial.append({"tipo": "card", "data": contenido})
                             elif m["tipo"] == "user":
                                 historial.append({"tipo": "user", "texto": contenido.get("texto", "")})
                             elif m["tipo"] == "bot":
@@ -263,6 +266,65 @@ class UTPHandler(BaseHTTPRequestHandler):
                                         </button>
                                     </form>
                                 </div>
+                            </div>
+                            <span class="inline-block text-[10px] text-text-secondary/50 font-bold uppercase tracking-widest">Asistente</span>
+                        </div>
+                    </div>
+                    '''
+                elif msg["tipo"] == "aulas":
+                    historial_rendered += '''
+                    <div class="flex items-start gap-6 message-in">
+                        <div class="w-10 h-10 rounded-xl bg-utp-red-institutional flex items-center justify-center flex-shrink-0 shadow-lg shadow-utp-red-institutional/20 mt-1">
+                            <span class="material-symbols-outlined text-[22px] text-white" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+                        </div>
+                        <div class="flex-1 space-y-4">
+                            <div class="glass-dark p-7 rounded-3xl rounded-tl-none shadow-sm">
+                                <p class="text-text-primary font-body-md text-[17px] leading-relaxed">''' + escapar(msg.get("texto", "")) + '''</p>
+                            </div>
+                            <div class="space-y-4">
+                    '''
+                    for d in msg["data"]:
+                        nombre = escapar(d["nombre"])
+                        ubicacion = escapar(d["ubicacion"])
+                        capacidad = escapar(str(d.get("capacidad", "")))
+                        equipamiento = escapar(d.get("equipamiento", ""))
+                        software = escapar(d.get("software", ""))
+                        id_espacio = d.get("id_espacio", 0)
+                        historial_rendered += f'''
+                                <div class="bg-white rounded-[32px] shadow-[0_12px_40px_rgba(0,0,0,0.04)] border border-black/5 overflow-hidden group hover:shadow-[0_20px_50px_rgba(0,0,0,0.08)] transition-all duration-500">
+                                    <div class="p-6">
+                                        <div class="flex justify-between items-start mb-4">
+                                            <div>
+                                                <div class="flex items-center gap-2 mb-1">
+                                                    <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                                                    <span class="text-[11px] font-bold text-green-600 uppercase tracking-widest">Disponible</span>
+                                                </div>
+                                                <h3 class="text-xl font-bold text-text-primary">{nombre}</h3>
+                                                <p class="text-text-secondary text-sm flex items-center gap-1.5 mt-1">
+                                                    <span class="material-symbols-outlined text-[18px]">location_on</span>
+                                                    {ubicacion}
+                                                </p>
+                                            </div>
+                                            <div class="w-12 h-12 rounded-2xl bg-utp-red-institutional/5 flex items-center justify-center text-utp-red-institutional">
+                                                <span class="material-symbols-outlined text-[28px]">computer</span>
+                                            </div>
+                                        </div>
+                                        <div class="grid grid-cols-3 gap-4 mb-4 text-sm">
+                                            <div><span class="text-[10px] text-text-secondary font-bold uppercase tracking-wider">Capacidad</span><p class="font-bold text-text-primary">{capacidad}</p></div>
+                                            <div class="col-span-2"><span class="text-[10px] text-text-secondary font-bold uppercase tracking-wider">Equipamiento</span><p class="text-text-primary truncate">{equipamiento}</p></div>
+                                        </div>
+                                        <form method="POST" action="/reservar">
+                                            <input type="hidden" name="id_espacio" value="{id_espacio}">
+                                            <input type="hidden" name="nombre_aula" value="{nombre}">
+                                            <button type="submit" class="w-full py-3 bg-utp-red-institutional text-white font-bold rounded-xl transition-all hover:bg-primary hover:shadow-lg hover:shadow-utp-red-institutional/20 flex items-center justify-center gap-2 active:scale-[0.98] text-sm">
+                                                <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                                                Reservar
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                        '''
+                    historial_rendered += '''
                             </div>
                             <span class="inline-block text-[10px] text-text-secondary/50 font-bold uppercase tracking-widest">Asistente</span>
                         </div>
@@ -1365,14 +1427,14 @@ class UTPHandler(BaseHTTPRequestHandler):
                     respuesta = "Lo siento, el servicio de IA no está disponible."
 
                 if aulas:
-                    historial.append({"tipo": "card", "data": dict(aulas[0])})
+                    historial.append({"tipo": "aulas", "data": [dict(a) for a in aulas], "texto": respuesta})
                 else:
                     historial.append({"tipo": "bot", "texto": respuesta})
 
                 cookies = [("Set-Cookie", self._set_historial(historial))]
                 if sesion_id:
                     ultimo = historial[-1]
-                    if ultimo["tipo"] == "card":
+                    if ultimo["tipo"] in ("card", "aulas"):
                         sc.guardar_mensaje(sesion_id, "card", json.dumps(ultimo["data"], default=str))
                     elif ultimo["tipo"] == "bot":
                         sc.guardar_mensaje(sesion_id, "bot", json.dumps({"texto": ultimo["texto"]}))
