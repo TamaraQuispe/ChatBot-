@@ -16,7 +16,7 @@ logger = get_logger("auth")
 _SECRET = os.environ.get("JWT_SECRET") or os.environ.get(
     "SESSION_SECRET", "utp-chatbot-secret-dev-key-2024"
 )
-_ACCESS_TOKEN_EXPIRY = int(os.environ.get("JWT_ACCESS_EXPIRY", "600"))
+_ACCESS_TOKEN_EXPIRY = int(os.environ.get("JWT_ACCESS_EXPIRY", "3600"))
 _REFRESH_TOKEN_EXPIRY = int(os.environ.get("JWT_REFRESH_EXPIRY", "2592000"))
 _COOKIE_NAME = os.environ.get("SESSION_COOKIE", "utp_session")
 
