@@ -820,7 +820,7 @@ class UTPHandler(BaseHTTPRequestHandler):
                 headers_dias = ["LUNES", "MARTES", "MIERCOLES", "JUEVES", "VIERNES"]
                 eventos_por_dia = {i: [] for i in range(7)}
                 for b in bloques:
-                    dia_str = b.get("dia_semana", "LUNES")
+                    dia_str = str(b.get("dia_semana", "LUNES")).upper().strip()
                     dia = dias_map.get(dia_str, 0)
                     if dia > 4:
                         continue
