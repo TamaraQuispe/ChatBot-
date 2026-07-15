@@ -2,33 +2,73 @@
 
 Sistema de gestión de reservas de espacios académicos con chatbot para la Universidad Tecnológica del Perú (UTP).
 
+## Características
+
+- Autenticación segura mediante bcrypt y cookies firmadas con HMAC.
+- Gestión de usuarios con roles de administrador y docente.
+- Reserva y administración de espacios académicos.
+- Chatbot impulsado por inteligencia artificial mediante OpenRouter.
+- Base de datos PostgreSQL alojada en Neon.
+- Despliegue en AWS EC2 con HTTPS.
+
 ## Stack
 
 - **Backend**: Python 3 (http.server)
+- **Frontend**: HTML, CSS y JavaScript
 - **Base de datos**: PostgreSQL (Neon)
-- **Despliegue**: Render
+- **Inteligencia Artificial**: OpenRouter (`openrouter/free`)
+- **Despliegue**: AWS EC2 (Ubuntu Server, us-east-1)
+- **Servidor web**: Nginx
+- **Dominio**: DuckDNS
+- **HTTPS**: Let's Encrypt
 - **Autenticación**: bcrypt + cookies con HMAC
 
 ## Credenciales
 
 | Usuario   | Contraseña | Rol     |
-|-----------|-----------|---------|
-| atorres   | admin123  | Admin   |
-| C23204737 | utp123    | Docente |
-| C23204738 | utp123    | Docente |
+|-----------|----------- |---------|
+| atorres   | admin123   | Admin   |
+| C23204737 | Utp12345@  | Docente |
+| C23204738 | Utp12345@  | Docente |
 
-## Estructura
+## Arquitectura del proyecto
 
 ```
-server.py          → Servidor HTTP principal
-app/
-├── controllers/   → Lógica de negocio
-├── models/        → Modelos de datos (usuario, reserva)
-└── views/         → Templates HTML
-config/database.py → Conexión PostgreSQL
-core/
-├── logger.py      → Logging con fallback a /tmp
-└── utils.py       → Utilidades varias
+├── app/
+│   ├── auth/              # Autenticación y manejo de JWT
+│   ├── controllers/       # Controladores y lógica de las rutas
+│   ├── database/          # Conexión y configuración de la base de datos
+│   ├── docs/              # Especificación OpenAPI
+│   ├── dto/               # Objetos de transferencia de datos (DTO)
+│   ├── exceptions/        # Manejo de excepciones personalizadas
+│   ├── middleware/        # Middleware (CORS, Rate Limit)
+│   ├── models/            # Modelos del dominio
+│   ├── repositories/      # Acceso y operaciones sobre la base de datos
+│   ├── schemas/           # Validación de datos
+│   ├── services/          # Lógica de negocio
+│   ├── tests/             # Pruebas unitarias
+│   ├── utils/             # Utilidades
+│   ├── validators/        # Validaciones
+│   ├── views/             # Vistas y plantillas HTML
+│   ├── response.py
+│   ├── settings.py
+│   └── logger.py
+│
+├── api/                   # Punto de entrada para la API
+├── config/
+│   └── database.py        # Configuración de PostgreSQL
+├── core/
+│   ├── logger.py          # Sistema de logging
+│   ├── session.py         # Gestión de sesiones
+│   └── utils.py           # Utilidades compartidas
+│
+├── public/                # Recursos públicos
+├── app.py                 # Punto de entrada principal
+├── server.py              # Servidor HTTP
+├── seed.py                # Datos iniciales de la base de datos
+├── requirements.txt       # Dependencias del proyecto
+├── pyproject.toml         # Configuración del proyecto
+└── README.md
 ```
 
 ## Seed
@@ -41,28 +81,60 @@ source venv/bin/activate
 pip install -r requirements.txt
 DATABASE_URL="postgresql://..." python3 seed.py
 ```
+## Chatbot con Inteligencia Artificial
 
-## Despliegue en Render
+El asistente utiliza la API de OpenRouter.
 
-[https://chatbot-x0vp.onrender.com](https://chatbot-x0vp.onrender.com)
+Actualmente se emplea el endpoint gratuito:
 
-1. Conecta el repo en https://dashboard.render.com
-2. Crea un **Web Service** con:
-   - **Build Command**: `pip install -r requirements.txt`
-   - **Start Command**: `python app.py`
-3. Agrega `DATABASE_URL` en Environment Variables
-4. La app escucha el puerto `$PORT` automáticamente
+```
+openrouter/free
+```
+
+## Despliegue
+
+La aplicación se encuentra desplegada en una instancia de **AWS EC2 (us-east-1)** y está disponible en:
+
+**https://chatbot-utp.duckdns.org**
+
+La infraestructura de producción utiliza:
+
+- **Servidor**: AWS EC2 (Ubuntu Server)
+- **Servidor web**: Nginx como proxy inverso
+- **Base de datos**: PostgreSQL (Neon)
+- **Dominio**: DuckDNS
+- **HTTPS**: Let's Encrypt
+
+Para desplegar una nueva versión:
+
+1. Clonar o actualizar el repositorio en la instancia EC2.
+2. Instalar las dependencias:
+
+```bash
+pip install -r requirements.txt
+```
+
+3. Configurar las variables de entorno requeridas (`DATABASE_URL`, `OPENROUTER_API_KEY`, `SECRET_KEY`, entre otras).
+4. Reiniciar el servicio de la aplicación y Nginx si es necesario.
 
 ## Desarrollo local
 
-```bash
-python3 app.py
-# Servidor en http://localhost:8000
-```
+Instalar las dependencias:
 
 ```bash
-python3 app.py
-# Servidor en http://localhost:8000
+pip install -r requirements.txt
 ```
 
-Requiere variable de entorno `DATABASE_URL` con la conexión a PostgreSQL.
+Configurar las variables de entorno necesarias:
+
+- `DATABASE_URL`
+- `OPENROUTER_API_KEY`
+- `OPENROUTER_MODEL`
+- `SECRET_KEY`
+
+Iniciar la aplicación:
+
+```bash
+python app.py
+# Servidor en http://localhost:8000
+```
