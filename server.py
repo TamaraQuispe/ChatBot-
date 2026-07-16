@@ -1168,6 +1168,19 @@ class UTPHandler(BaseHTTPRequestHandler):
                 self._responder_html(f"<h1>Error al insertar datos: {e}</h1>")
             return
 
+        elif parsed_path == "/admin/debug-horarios":
+            if not self._es_admin():
+                self._redirect("/login")
+                return
+            db = Database()
+            from app.controllers.admin_controller import AdminController
+            admin = AdminController(db)
+            bloques = admin.obtener_bloques_horario()
+            import json
+            html = f"<h1>Datos reales en la Base de Datos</h1><pre style='background:#eee;padding:20px;'>{json.dumps(bloques, default=str, indent=4)}</pre>"
+            self._responder_html(html)
+            return
+
         elif parsed_path == "/admin/roles":
             if not self._es_admin():
                 self._redirect("/login")
