@@ -26,9 +26,28 @@ class ReservaService:
         from app.database.connection import fetch_all
         try:
             return fetch_all(
-                "SELECT e.*, t.nombre AS tipo FROM espacios_academicos e "
-                "JOIN tipos_espacio t ON e.id_tipo = t.id_tipo "
-                "WHERE t.nombre = %s AND e.estado = 'DISPONIBLE'",
+                """
+                SELECT 
+                    e.*, 
+                    t.nombre AS tipo,
+                    COALESCE(
+                        (SELECT string_agg(eq.nombre, ', ') 
+                         FROM espacio_equipamiento ee 
+                         JOIN equipamientos eq ON ee.id_equipamiento = eq.id_equipamiento 
+                         WHERE ee.id_espacio = e.id_espacio), 
+                        ''
+                    ) AS equipamiento,
+                    COALESCE(
+                        (SELECT string_agg(s.nombre, ', ') 
+                         FROM espacio_software es 
+                         JOIN software s ON es.id_software = s.id_software 
+                         WHERE es.id_espacio = e.id_espacio), 
+                        'Ninguno'
+                    ) AS software
+                FROM espacios_academicos e 
+                JOIN tipos_espacio t ON e.id_tipo = t.id_tipo 
+                WHERE t.nombre = %s AND e.estado = 'DISPONIBLE'
+                """,
                 (tipo,)
             )
         except Exception as e:
