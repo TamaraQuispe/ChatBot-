@@ -19,12 +19,12 @@ def seed():
         
         # Bloques de prueba distribuidos en varios días
         bloques = [
-            ("Base de Datos (Test)", "08:00", "10:00", "MARTES", "Diurno"),
-            ("Ingeniería de Software (Test)", "10:00", "12:00", "MARTES", "Diurno"),
-            ("Inteligencia Artificial (Test)", "14:00", "16:00", "MIERCOLES", "Tarde"),
-            ("Seguridad Informática (Test)", "16:00", "18:00", "JUEVES", "Tarde"),
-            ("Desarrollo Web (Test)", "08:00", "10:00", "VIERNES", "Diurno"),
-            ("Taller de Proyectos (Test)", "11:00", "13:00", "VIERNES", "Diurno")
+            ("Base de Datos (Test)", "08:00", "10:00", "MARTES", "DIURNO"),
+            ("Ingeniería de Software (Test)", "10:00", "12:00", "MARTES", "DIURNO"),
+            ("Inteligencia Artificial (Test)", "14:00", "16:00", "MIERCOLES", "NOCTURNO"),
+            ("Seguridad Informática (Test)", "16:00", "18:00", "JUEVES", "NOCTURNO"),
+            ("Desarrollo Web (Test)", "08:00", "10:00", "VIERNES", "DIURNO"),
+            ("Taller de Proyectos (Test)", "11:00", "13:00", "VIERNES", "DIURNO")
         ]
         
         print("Insertando bloques de horario...")
