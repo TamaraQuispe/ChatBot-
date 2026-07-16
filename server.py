@@ -278,10 +278,6 @@ class UTPHandler(BaseHTTPRequestHandler):
                             <span class="material-symbols-outlined text-[22px] text-white" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
                         </div>
                         <div class="flex-1 space-y-4">
-                            <div class="glass-dark p-7 rounded-3xl rounded-tl-none shadow-sm">
-                                <p class="text-text-primary font-body-md text-[17px] leading-relaxed">''' + escapar(msg.get("texto", "")) + '''</p>
-                            </div>
-                            <div class="space-y-4">
                     '''
                     for d in msg["data"]:
                         nombre = escapar(d["nombre"])
@@ -291,41 +287,74 @@ class UTPHandler(BaseHTTPRequestHandler):
                         software = escapar(d.get("software", ""))
                         id_espacio = d.get("id_espacio", 0)
                         historial_rendered += f'''
-                                <div class="bg-white rounded-[32px] shadow-[0_12px_40px_rgba(0,0,0,0.04)] border border-black/5 overflow-hidden group hover:shadow-[0_20px_50px_rgba(0,0,0,0.08)] transition-all duration-500">
-                                    <div class="p-6">
-                                        <div class="flex justify-between items-start mb-4">
-                                            <div>
-                                                <div class="flex items-center gap-2 mb-1">
-                                                    <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                                                    <span class="text-[11px] font-bold text-green-600 uppercase tracking-widest">Disponible</span>
-                                                </div>
-                                                <h3 class="text-xl font-bold text-text-primary">{nombre}</h3>
-                                                <p class="text-text-secondary text-sm flex items-center gap-1.5 mt-1">
-                                                    <span class="material-symbols-outlined text-[18px]">location_on</span>
-                                                    {ubicacion}
-                                                </p>
+                            <div class="bg-white rounded-[32px] shadow-[0_12px_40px_rgba(0,0,0,0.04)] border border-black/5 overflow-hidden group hover:shadow-[0_20px_50px_rgba(0,0,0,0.08)] transition-all duration-500">
+                                <div class="p-8">
+                                    <div class="flex justify-between items-start mb-8">
+                                        <div>
+                                            <div class="flex items-center gap-2 mb-1">
+                                                <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                                                <span class="text-[11px] font-bold text-green-600 uppercase tracking-widest">Disponible Ahora</span>
                                             </div>
-                                            <div class="w-12 h-12 rounded-2xl bg-utp-red-institutional/5 flex items-center justify-center text-utp-red-institutional">
-                                                <span class="material-symbols-outlined text-[28px]">computer</span>
-                                            </div>
+                                            <h3 class="font-headline-lg text-[26px] text-text-primary">{nombre}</h3>
+                                            <p class="text-text-secondary text-sm flex items-center gap-1.5 mt-1 font-medium">
+                                                <span class="material-symbols-outlined text-[18px]">location_on</span>
+                                                {ubicacion}
+                                            </p>
                                         </div>
-                                        <div class="grid grid-cols-3 gap-4 mb-4 text-sm">
-                                            <div><span class="text-[10px] text-text-secondary font-bold uppercase tracking-wider">Capacidad</span><p class="font-bold text-text-primary">{capacidad}</p></div>
-                                            <div class="col-span-2"><span class="text-[10px] text-text-secondary font-bold uppercase tracking-wider">Equipamiento</span><p class="text-text-primary truncate">{equipamiento}</p></div>
+                                        <div class="w-14 h-14 rounded-2xl bg-utp-red-institutional/5 flex items-center justify-center text-utp-red-institutional">
+                                            <span class="material-symbols-outlined text-[32px]">computer</span>
                                         </div>
-                                        <form method="POST" action="/reservar">
-                                            <input type="hidden" name="id_espacio" value="{id_espacio}">
-                                            <input type="hidden" name="nombre_aula" value="{nombre}">
-                                            <button type="submit" class="w-full py-3 bg-utp-red-institutional text-white font-bold rounded-xl transition-all hover:bg-primary hover:shadow-lg hover:shadow-utp-red-institutional/20 flex items-center justify-center gap-2 active:scale-[0.98] text-sm">
-                                                <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
-                                                Reservar
-                                            </button>
-                                        </form>
                                     </div>
+                                    <div class="grid grid-cols-2 gap-y-8 gap-x-12 mb-10">
+                                        <div class="flex items-center gap-4">
+                                            <div class="w-12 h-12 rounded-2xl bg-surface flex items-center justify-center text-text-secondary/80">
+                                                <span class="material-symbols-outlined">groups</span>
+                                            </div>
+                                            <div>
+                                                <p class="text-[10px] text-text-secondary font-bold uppercase tracking-wider mb-0.5">Capacidad</p>
+                                                <p class="text-text-primary font-bold text-[15px]">{capacidad} Alumnos</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center gap-4">
+                                            <div class="w-12 h-12 rounded-2xl bg-surface flex items-center justify-center text-text-secondary/80">
+                                                <span class="material-symbols-outlined">memory</span>
+                                            </div>
+                                            <div>
+                                                <p class="text-[10px] text-text-secondary font-bold uppercase tracking-wider mb-0.5">Hardware</p>
+                                                <p class="text-text-primary font-bold text-[15px]">{equipamiento}</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center gap-4">
+                                            <div class="w-12 h-12 rounded-2xl bg-surface flex items-center justify-center text-text-secondary/80">
+                                                <span class="material-symbols-outlined">code</span>
+                                            </div>
+                                            <div>
+                                                <p class="text-[10px] text-text-secondary font-bold uppercase tracking-wider mb-0.5">Software</p>
+                                                <p class="text-text-primary font-bold text-[15px]">{software}</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center gap-4">
+                                            <div class="w-12 h-12 rounded-2xl bg-surface flex items-center justify-center text-text-secondary/80">
+                                                <span class="material-symbols-outlined">schedule</span>
+                                            </div>
+                                            <div>
+                                                <p class="text-[10px] text-text-secondary font-bold uppercase tracking-wider mb-0.5">Horario</p>
+                                                <p class="text-text-primary font-bold text-[15px]">Miercoles 15:00 - 17:00</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <form method="POST" action="/reservar">
+                                        <input type="hidden" name="id_espacio" value="{id_espacio}">
+                                        <input type="hidden" name="nombre_aula" value="{nombre}">
+                                        <button type="submit" class="w-full py-4.5 bg-utp-red-institutional text-white font-bold rounded-[20px] transition-all hover:bg-primary hover:shadow-xl hover:shadow-utp-red-institutional/20 flex items-center justify-center gap-3 active:scale-[0.98]">
+                                            <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                                            Confirmar Reserva
+                                        </button>
+                                    </form>
                                 </div>
+                            </div>
                         '''
                     historial_rendered += '''
-                            </div>
                             <span class="inline-block text-[10px] text-text-secondary/50 font-bold uppercase tracking-widest">Asistente</span>
                         </div>
                     </div>
