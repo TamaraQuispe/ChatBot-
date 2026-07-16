@@ -1192,7 +1192,6 @@ class UTPHandler(BaseHTTPRequestHandler):
             db = Database()
             admin = AdminController(db)
             bloques = admin.obtener_bloques_horario()
-            import json
             html = f"<h1>Datos reales en la Base de Datos</h1><pre style='background:#eee;padding:20px;'>{json.dumps(bloques, default=str, indent=4)}</pre>"
             self._responder_html(html)
             return
