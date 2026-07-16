@@ -25,30 +25,12 @@ class ReservaService:
         tipo = self._determinar_tipo(palabra_clave)
         from app.database.connection import fetch_all
         try:
-            espacios = fetch_all(
+            return fetch_all(
                 "SELECT e.*, t.nombre AS tipo FROM espacios_academicos e "
                 "JOIN tipos_espacio t ON e.id_tipo = t.id_tipo "
                 "WHERE t.nombre = %s AND e.estado = 'DISPONIBLE'",
                 (tipo,)
             )
-            result = []
-            for e in espacios:
-                d = dict(e)
-                id_esp = d["id_espacio"]
-                equipos = fetch_all(
-                    "SELECT eq.nombre FROM espacio_equipamiento ee "
-                    "JOIN equipamientos eq ON ee.id_equipamiento = eq.id_equipamiento "
-                    "WHERE ee.id_espacio = %s", (id_esp,)
-                )
-                softwares = fetch_all(
-                    "SELECT s.nombre FROM espacio_software es "
-                    "JOIN software s ON es.id_software = s.id_software "
-                    "WHERE es.id_espacio = %s", (id_esp,)
-                )
-                d["equipamiento"] = ", ".join(r["nombre"] for r in equipos) if equipos else ""
-                d["software"] = ", ".join(r["nombre"] for r in softwares) if softwares else "Ninguno"
-                result.append(d)
-            return result
         except Exception as e:
             logger.error(f"Error buscando disponibilidad: {e}")
             return []
