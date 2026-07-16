@@ -678,8 +678,10 @@ class UTPHandler(BaseHTTPRequestHandler):
                 page_rendered = page_rendered.replace("$KPI_TOTAL_DOCENTES", str(stats.get("total_usuarios", 0)))
                 page_rendered = page_rendered.replace("$KPI_RESERVAS_PENDIENTES", str(stats.get("reservas_pendientes", 0)))
                 page_rendered = page_rendered.replace("$KPI_RESERVAS_HOY", str(stats.get("total_reservas", 0)))
-            except Exception:
-                page_rendered = HTML_ADMIN.replace("$HEADER", header).replace("$NOMBRE_ADMIN", usuario["nombre"]).replace("$TABLA_ESPACIOS", "")
+            except Exception as ex:
+                import traceback
+                error_trace = traceback.format_exc()
+                page_rendered = f"<h1>CRITICAL ERROR IN /admin</h1><pre>{error_trace}</pre>"
             self._responder_html(page_rendered)
 
         elif parsed_path == "/admin/salones":
