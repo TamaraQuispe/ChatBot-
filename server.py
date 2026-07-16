@@ -1190,7 +1190,6 @@ class UTPHandler(BaseHTTPRequestHandler):
                 self._redirect("/login")
                 return
             db = Database()
-            from app.controllers.admin_controller import AdminController
             admin = AdminController(db)
             bloques = admin.obtener_bloques_horario()
             import json
