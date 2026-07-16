@@ -19,9 +19,9 @@ _CONTENT = """<section class="px-0 pt-6 bg-surface flex-shrink-0">
 </div>
 <div class="grid grid-cols-2 sm:grid-cols-4 gap-gutter mb-6">
 <div class="glass-panel p-stack-md rounded-xl flex flex-col gap-2">
-<span class="text-label-md font-label-md text-secondary uppercase tracking-wider">Edificio (TEST)</span>
+<span class="text-label-md font-label-md text-secondary uppercase tracking-wider">Edificio</span>
 <select class="bg-transparent border-none p-0 focus:ring-0 font-title-lg text-title-lg text-on-surface">
-<option>Torre Tecnologica A (Prueba Despliegue)</option>
+<option>Torre Tecnologica A</option>
 <option>Pabellon de Ciencias</option>
 <option>Campus Central</option>
 </select>
