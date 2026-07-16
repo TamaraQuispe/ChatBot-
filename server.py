@@ -1160,12 +1160,27 @@ class UTPHandler(BaseHTTPRequestHandler):
                 self._redirect("/login")
                 return
             try:
-                import seed_horarios
-                seed_horarios.seed()
-                html = "<h1>Datos semilla insertados correctamente en la BD</h1><br><a href='/admin/horarios'>Volver a ver los horarios</a>"
+                db = Database()
+                conn = db.obtener_conexion()
+                cursor = conn.cursor()
+                bloques_prueba = [
+                    ("Clase Teorica (Test)", "08:00", "10:00", "MARTES", "DIURNO"),
+                    ("Laboratorio 1 (Test)", "10:00", "12:00", "MARTES", "DIURNO"),
+                    ("Inteligencia Art. (Test)", "14:00", "16:00", "MIERCOLES", "TARDE"),
+                    ("Seguridad (Test)", "16:00", "18:00", "JUEVES", "TARDE"),
+                    ("Desarrollo Web (Test)", "08:00", "10:00", "VIERNES", "DIURNO")
+                ]
+                for b in bloques_prueba:
+                    cursor.execute(
+                        "INSERT INTO bloques_horario (nombre, hora_inicio, hora_fin, dia_semana, turno) "
+                        "VALUES (%s, %s, %s, %s, %s)", b
+                    )
+                conn.commit()
+                conn.close()
+                html = "<h1>Datos semilla insertados correctamente en Supabase</h1><br><a href='/admin/horarios'>Volver a ver los horarios</a>"
                 self._responder_html(html)
             except Exception as e:
-                self._responder_html(f"<h1>Error al insertar datos: {e}</h1>")
+                self._responder_html(f"<h1>Error REAL de Base de datos: {str(e)}</h1>")
             return
 
         elif parsed_path == "/admin/debug-horarios":
