@@ -1064,6 +1064,19 @@ class UTPHandler(BaseHTTPRequestHandler):
                 logger.error(f"Error en /admin/reportes: {e}")
                 self._redirect("/admin")
 
+        elif parsed_path == "/admin/seed-horarios":
+            if not self._es_admin():
+                self._redirect("/login")
+                return
+            try:
+                import seed_horarios
+                seed_horarios.seed()
+                html = "<h1>Datos semilla insertados correctamente en la BD</h1><br><a href='/admin/horarios'>Volver a ver los horarios</a>"
+                self._responder_html(html)
+            except Exception as e:
+                self._responder_html(f"<h1>Error al insertar datos: {e}</h1>")
+            return
+
         elif parsed_path == "/admin/roles":
             if not self._es_admin():
                 self._redirect("/login")
