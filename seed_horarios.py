@@ -42,6 +42,7 @@ def seed():
         
     except Exception as e:
         print(f"Error al insertar datos: {e}")
+        raise
 
 if __name__ == '__main__':
     seed()
